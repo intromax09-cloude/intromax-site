@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://intromax-site.pages.dev/sitemap.xml
+Sitemap: https://intromax.pages.dev/sitemap.xml
