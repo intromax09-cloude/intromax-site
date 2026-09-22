@@ -9,6 +9,7 @@ const FIELDS = [
   ['name',     'Ім\u2019я'],
   ['contact',  'Контакт'],
   ['service',  'Що робили'],
+  ['service_other', 'Що саме (Інше)'],
   ['timeline', 'За який час'],
   ['consent',  'Згода на публікацію'],
   ['text',     'Відгук']
