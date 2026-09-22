@@ -419,7 +419,13 @@
   }
   .cta h2{font-size:clamp(24px,3.6vw,36px);margin-bottom:14px;position:relative;}
   .cta p{color:var(--text-dim);margin-bottom:30px;position:relative;}
-  .cta-actions{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;position:relative;}
+  .cta-actions{
+    display:grid;grid-template-columns:1fr 1fr;gap:14px;
+    max-width:380px;margin:0 auto;position:relative;
+  }
+  .cta-actions > .btn{justify-content:center;text-align:center;}
+  .cta-actions > .cta-primary{grid-column:1 / -1;}
+  @media (max-width:360px){ .cta-actions{grid-template-columns:1fr;} }
   .cta-actions .btn{
     background:transparent !important;
     border-color:var(--line) !important;
@@ -886,8 +892,8 @@
   <div class="wrap">
     <div class="hero-stats bloom">
       <div>
-        <div class="n" data-count="2" data-suffix="–3">0</div>
-        <p>дні на запуск базового бота</p>
+        <div class="n" data-count="2" data-count-to="3" data-sep="–">0–0</div>
+        <p>дні до запуску MVP</p>
       </div>
       <div>
         <div class="n"><span data-count="24">0</span>/7</div>
@@ -1387,11 +1393,28 @@
         <div class="field-row">
           <label class="field" for="rv-service">Що робили
             <select id="rv-service" name="service">
-              <option>Instagram-бот</option>
-              <option>AI-агент у Direct</option>
-              <option>Сайт</option>
-              <option>Бот + сайт</option>
-              <option>Інше</option>
+              <optgroup label="Боти">
+                <option>Бот у Direct</option>
+                <option>Telegram-бот</option>
+                <option>AI-агент</option>
+              </optgroup>
+              <optgroup label="Сайти">
+                <option>Сайт-візитка</option>
+                <option>Розширений сайт</option>
+              </optgroup>
+              <optgroup label="Заявки та CRM">
+                <option>CRM / дошка заявок</option>
+                <option>Сайт + CRM</option>
+                <option>Автоматизація процесів (n8n)</option>
+              </optgroup>
+              <optgroup label="Пакети">
+                <option>Пакет «Старт»</option>
+                <option>Пакет «Система»</option>
+              </optgroup>
+              <optgroup label="Інше">
+                <option>Підтримка готового рішення</option>
+                <option>Інше</option>
+              </optgroup>
             </select>
           </label>
           <label class="field" for="rv-timeline">За який час запустили
@@ -1403,6 +1426,11 @@
             </select>
           </label>
         </div>
+
+        <label class="field" for="rv-service-other" id="rv-other-wrap" hidden>Що саме замовляли <span class="req">*</span>
+          <input type="text" id="rv-service-other" name="service_other" maxlength="80" placeholder="Напишіть своїми словами">
+          <span class="hint">Покажу це поруч з відгуком замість слова «Інше».</span>
+        </label>
 
         <label class="field" for="rv-text">Відгук <span class="req">*</span>
           <textarea id="rv-text" name="text" rows="4" maxlength="600" placeholder="Як було до, що змінилось, як пройшла робота"></textarea>
@@ -1433,7 +1461,7 @@
       <h2>Готові перестати губити заявки?</h2>
       <p>Опишіть задачу у формі — відповім протягом доби з ціною, строком і демо під вашу нішу.</p>
       <div class="cta-actions">
-        <button type="button" class="btn btn-primary" data-lead="unsure">Залишити заявку</button>
+        <button type="button" class="btn btn-primary cta-primary" data-lead="unsure">Залишити заявку</button>
         <a href="https://www.instagram.com/intromax.tech/" class="btn btn-ghost" id="ig-link">Instagram</a>
         <a href="https://t.me/Intromax_tech" class="btn btn-ghost" id="tg-link">Telegram</a>
       </div>
@@ -1727,6 +1755,18 @@
   });
   starsBox.addEventListener('mouseleave', function(){ paintStars(currentRating()); });
 
+  /* «Інше» відкриває окреме поле — до вибору його не видно */
+  var serviceEl   = document.getElementById('rv-service');
+  var otherWrap   = document.getElementById('rv-other-wrap');
+  var otherInput  = document.getElementById('rv-service-other');
+  function syncOther(){
+    if(!serviceEl || !otherWrap) return;
+    var on = serviceEl.value === 'Інше';
+    otherWrap.hidden = !on;
+    if(!on){ otherInput.value = ''; clearInvalid(otherWrap); }
+  }
+  if(serviceEl) serviceEl.addEventListener('change', syncOther);
+
   /* лічильник символів */
   var textEl  = document.getElementById('rv-text');
   var countEl = document.getElementById('rv-count');
@@ -1772,6 +1812,10 @@
       markInvalid(textEl.closest('.field'));
       problems.push({ el: textEl, msg: 'Напишіть хоча б одне речення — так відгук буде корисним.' });
     }
+    if(otherWrap && !otherWrap.hidden && !otherInput.value.trim()){
+      markInvalid(otherWrap);
+      problems.push({ el: otherInput, msg: 'Напишіть, що саме замовляли.' });
+    }
     if(!consent.checked){
       markInvalid(document.getElementById('rv-consent-wrap'));
       problems.push({ el: consent, msg: 'Потрібна ваша згода на публікацію.' });
@@ -1784,7 +1828,7 @@
     var msg = 'Відгук про Intromax\n\n' +
               'Ім’я: ' + (data.get('name') || '—') + '\n' +
               'Оцінка: ' + (data.get('rating') || '—') + '/5\n' +
-              'Що робили: ' + (data.get('service') || '—') + '\n' +
+              'Що робили: ' + (data.get('service_other') || data.get('service') || '—') + '\n' +
               'За який час: ' + (data.get('timeline') || '—') + '\n\n' +
               (data.get('text') || '');
     function go(){ window.open(DIRECT_URL, '_blank', 'noopener'); }
@@ -1830,6 +1874,7 @@
     formPane.hidden = true;
     donePane.hidden = false;
     form.reset();
+    syncOther();
     paintStars(0);
     countEl.textContent = '0';
     submitBtn.disabled = false;
@@ -2058,13 +2103,24 @@
   function countUp(el){
     var target = parseInt(el.getAttribute('data-count'), 10);
     var suffix = el.getAttribute('data-suffix') || '';
+    var toAttr = el.getAttribute('data-count-to');
+    var target2 = toAttr === null ? null : parseInt(toAttr, 10);
+    var sep = el.getAttribute('data-sep') || '–';
     if(isNaN(target)) return;
-    if(reduce){ el.textContent = target + suffix; return; }
+    if(target2 !== null && isNaN(target2)) target2 = null;
+
+    // діапазон «2–3»: обидва числа рахуються разом, нічого не зʼявляється ривком
+    function render(p){
+      var eased = 1 - Math.pow(1 - p, 3);
+      var a = Math.round(target * eased);
+      if(target2 === null) return a + (p === 1 ? suffix : '');
+      return a + sep + Math.round(target2 * eased);
+    }
+    if(reduce){ el.textContent = render(1); return; }
     var start = performance.now(), dur = 900;
     function tick(now){
       var p = Math.min(1, (now - start) / dur);
-      var eased = 1 - Math.pow(1 - p, 3);
-      el.textContent = Math.round(target * eased) + (p === 1 ? suffix : '');
+      el.textContent = render(p);
       if(p < 1) requestAnimationFrame(tick);
     }
     requestAnimationFrame(tick);
@@ -2336,7 +2392,6 @@
     html +=
         '<button type="submit" class="btn btn-primary lead-submit" id="lead-submit">Надіслати заявку →</button>' +
         '<div id="lead-status" role="status" aria-live="polite"></div>' +
-        '<p class="lead-legal">Нічого не розсилаю і нікому не передаю. Використаю контакт тільки щоб відповісти на цю заявку.</p>' +
       '</form>';
     pane.innerHTML = html;
     if(cfg.plum){
