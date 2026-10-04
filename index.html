@@ -679,6 +679,80 @@
   .chip:focus-visible{outline:2px solid var(--amber);outline-offset:2px;}
   .chips-note{font-size:13px;color:var(--text-dim);margin-top:20px;}
 
+  /* ---------- КОНСТРУКТОР КОМПЛЕКТУ ---------- */
+  .kit{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(280px,1fr);gap:20px;align-items:start;}
+  @media (max-width:860px){ .kit{grid-template-columns:minmax(0,1fr);} }
+  .kit-main{border:1px solid var(--line);border-radius:var(--radius);background:var(--ink-2);padding:20px;min-width:0;}
+  .kit-tabs{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin:0 -20px;padding:2px 20px 4px;}
+  .kit-tabs::-webkit-scrollbar{display:none;}
+  .kit-tabs .chip{flex:0 0 auto;white-space:nowrap;background:var(--ink);}
+  .kit-tabs .chip.on{border-color:var(--amber);color:var(--amber);}
+  .kit-tabs .chip.picked::before{content:'\2713\00a0';color:var(--green);}
+  .kit-stage{
+    position:relative;height:clamp(290px,42vw,400px);margin-top:14px;border-radius:14px;overflow:hidden;
+    background:radial-gradient(60% 60% at 50% 45%,rgba(242,169,60,.10),transparent 70%),radial-gradient(50% 50% at 72% 72%,rgba(168,154,236,.10),transparent 70%);
+    touch-action:pan-y;cursor:grab;user-select:none;-webkit-user-select:none;
+  }
+  .kit-stage.drag{cursor:grabbing;}
+  #kit-canvas{position:absolute;inset:0;width:100%;height:100%;display:block;opacity:0;transition:opacity .5s ease;}
+  .kit-stage.ready #kit-canvas{opacity:1;}
+  .kit-fallback{position:absolute;inset:0;display:grid;place-items:center;}
+  .kit-fallback svg{width:96px;height:96px;fill:none;stroke:var(--amber);stroke-width:1.2;stroke-linecap:round;stroke-linejoin:round;}
+  .kit-stage.ready .kit-fallback{display:none;}
+  .kit-arrow{
+    position:absolute;top:50%;transform:translateY(-50%);width:42px;height:42px;border-radius:50%;
+    border:1px solid var(--line-strong);background:rgba(19,20,28,.6);color:var(--text);
+    font-size:22px;line-height:1;cursor:pointer;display:grid;place-items:center;padding:0 0 3px;
+    transition:border-color .2s ease,opacity .2s ease;
+  }
+  .kit-arrow.prev{left:10px;}
+  .kit-arrow.next{right:10px;}
+  .kit-arrow:hover{border-color:var(--amber);}
+  .kit-arrow:disabled{opacity:.25;cursor:default;}
+  .kit-dots{position:absolute;bottom:12px;left:0;right:0;display:flex;justify-content:center;gap:6px;pointer-events:none;}
+  .kit-dots i{width:6px;height:6px;border-radius:100px;background:var(--line-strong);transition:width .25s ease,background .25s ease;}
+  .kit-dots i.on{width:18px;background:var(--amber);}
+  .kit-info{margin-top:18px;}
+  .kit-info h3{font-size:20px;margin-bottom:8px;}
+  .kit-info p{color:var(--text-dim);font-size:14.5px;margin-bottom:14px;min-height:4.8em;}
+  .kit-meta{display:flex;flex-wrap:wrap;gap:6px 16px;align-items:baseline;margin-bottom:18px;font-family:'JetBrains Mono',monospace;}
+  .kit-meta b{font-size:20px;font-weight:600;}
+  .kit-meta span{font-size:12.5px;color:var(--text-dim);}
+  #kit-add{width:100%;justify-content:center;}
+  #kit-add.on{border-color:var(--green);color:var(--green);}
+  .kit-sum{
+    border:1px solid var(--line);border-radius:var(--radius);padding:24px;
+    background:linear-gradient(155deg,rgba(242,169,60,.07),rgba(168,154,236,.07));
+    position:sticky;top:90px;
+  }
+  @media (max-width:860px){ .kit-sum{position:static;} }
+  .kit-sum .t{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim);margin-bottom:14px;}
+  #kit-list{list-style:none;display:flex;flex-direction:column;gap:10px;margin-bottom:18px;}
+  #kit-list:empty{display:none;}
+  #kit-list li{display:flex;align-items:baseline;gap:10px;font-size:14px;}
+  #kit-list li span{margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--text-dim);white-space:nowrap;}
+  #kit-list li button{background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:15px;line-height:1;padding:2px 4px;}
+  #kit-list li button:hover{color:var(--amber);}
+  .kit-total{border-top:1px solid var(--line);padding-top:16px;}
+  #kit-list:empty + .kit-total{border-top:none;padding-top:0;}
+  .kit-total .cost{font-family:'JetBrains Mono',monospace;font-size:26px;font-weight:600;margin-bottom:4px;}
+  .kit-was{font-size:12.5px;color:var(--text-dim);margin-bottom:14px;}
+  .kit-was s{opacity:.75;}
+  .kit-save{
+    display:inline-block;margin-bottom:14px;font-family:'JetBrains Mono',monospace;font-size:11px;
+    color:var(--green);background:rgba(123,201,154,.10);border:1px solid rgba(123,201,154,.32);
+    padding:5px 10px;border-radius:100px;
+  }
+  .kit-save[hidden]{display:none;}
+  #kit-go{width:100%;justify-content:center;}
+  #kit-go:disabled{opacity:.45;cursor:not-allowed;transform:none;}
+  .kit-fine{font-size:12px;color:var(--text-dim);margin-top:12px;}
+  .kit-unsure{
+    display:block;width:100%;margin-top:14px;background:none;border:none;color:var(--text-dim);
+    font:inherit;font-size:13px;text-decoration:underline;cursor:pointer;text-align:center;
+  }
+  .kit-unsure:hover{color:var(--amber);}
+
   /* ---------- ПРОЦЕС на 4 кроки ---------- */
   .process.four{grid-template-columns:repeat(4,1fr);}
   @media (max-width:980px){ .process.four{grid-template-columns:1fr 1fr;} }
@@ -1016,7 +1090,7 @@
       <div class="svc bloom" data-svc="automation">
         <div class="svc-ico"><svg viewBox="0 0 24 24"><circle cx="6" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><circle cx="6" cy="18" r="2.5"/><path d="M8.5 6h5a4 4 0 0 1 4 4v5.5M6 8.5v7"/></svg></div>
         <h3>Автоматизація процесів</h3>
-        <p>Звʼязую сервіси, якими ви вже користуєтесь, щоб дані переходили самі, без копіювання руками.</p>
+        <p>Звʼязуємо сервіси, якими ви вже користуєтесь, щоб дані переходили самі, без копіювання руками.</p>
         <ul>
           <li>Заявка з сайту чи бота → CRM або Google Таблиця</li>
           <li>Сповіщення в Telegram про кожну нову заявку</li>
@@ -1065,22 +1139,41 @@
 <section id="order" class="tint-line">
   <div class="wrap">
     <div class="section-head">
-      <div class="kicker">Заявка</div>
-      <h2>Оберіть, що потрібно — і я зорієнтую по ціні та термінам</h2>
-      <p class="lead" style="font-size:16px;margin-top:16px;">Кожна форма — це 6–8 коротких питань саме про вашу задачу. Після неї я одразу розумію, що робити, і присилаю демо під вашу нішу, а не загальні слова.</p>
+      <div class="kicker">Конструктор</div>
+      <h2>Зберіть комплект і одразу побачите ціну</h2>
+      <p class="lead" style="font-size:16px;margin-top:16px;">Гортайте послуги й додавайте потрібні. Ціна, строк і знижка за комплект рахуються на місці. Точну цифру називаємо протягом доби після заявки.</p>
     </div>
-    <div class="chips bloom">
-      <button type="button" class="chip" data-lead="ig-bot">Бот у Direct</button>
-      <button type="button" class="chip" data-lead="tg-bot">Telegram-бот</button>
-      <button type="button" class="chip" data-lead="ai-agent">AI-агент</button>
-      <button type="button" class="chip" data-lead="site">Сайт-візитка</button>
-      <button type="button" class="chip" data-lead="site-pro">Розширений сайт</button>
-      <button type="button" class="chip" data-lead="automation">Автоматизація процесів</button>
-      <button type="button" class="chip" data-lead="support">Підтримка вже готового</button>
-      <button type="button" class="chip" data-lead="pack-start">Пакет послуг</button>
-      <button type="button" class="chip" data-lead="unsure">Ще не знаю, поясніть</button>
+    <div class="kit bloom" id="kit">
+      <div class="kit-main">
+        <div class="chips kit-tabs" id="kit-tabs"></div>
+        <div class="kit-stage" id="kit-stage">
+          <canvas id="kit-canvas" aria-hidden="true"></canvas>
+          <div class="kit-fallback" id="kit-fallback" aria-hidden="true"></div>
+          <button type="button" class="kit-arrow prev" id="kit-prev" aria-label="Попередня послуга">&#8249;</button>
+          <button type="button" class="kit-arrow next" id="kit-next" aria-label="Наступна послуга">&#8250;</button>
+          <div class="kit-dots" id="kit-dots" aria-hidden="true"></div>
+        </div>
+        <div class="kit-info" aria-live="polite">
+          <h3 id="kit-title"></h3>
+          <p id="kit-desc"></p>
+          <div class="kit-meta"><b id="kit-price"></b><span id="kit-term"></span></div>
+          <button type="button" class="btn btn-ghost" id="kit-add">Додати в комплект</button>
+        </div>
+      </div>
+      <aside class="kit-sum" aria-live="polite">
+        <div class="t">Ваш комплект</div>
+        <ul id="kit-list"></ul>
+        <div class="kit-total">
+          <div class="cost" id="kit-total">$0</div>
+          <div class="kit-was" id="kit-was">Додайте першу послугу, і тут зʼявиться ціна.</div>
+        </div>
+        <div class="kit-save" id="kit-save" hidden></div>
+        <button type="button" class="btn btn-primary" id="kit-go" disabled>Отримати точну ціну</button>
+        <p class="kit-fine">Розрахунок орієнтовний. Точну цифру називаємо до початку роботи, і далі вона не змінюється.</p>
+        <button type="button" class="kit-unsure" data-lead="unsure">Не знаєте, що обрати? Опишіть задачу словами</button>
+      </aside>
     </div>
-    <p class="chips-note">Не впевнені, що саме вам потрібно — беріть останню кнопку. Якщо бачу, що автоматизувати нічого, так і скажу.</p>
+    <p class="chips-note">Якщо бачимо, що автоматизувати нічого, так і скажемо.</p>
   </div>
 </section>
 
@@ -1094,22 +1187,22 @@
       <div class="step bloom">
         <span class="num">01 / заявка</span>
         <h3>Ви заповнюєте форму</h3>
-        <p>Дві хвилини, без дзвінка. Відповідаю протягом доби: що реально потрібно, скільки це коштує і скільки займе.</p>
+        <p>Дві хвилини, без дзвінка. Відповідаємо протягом доби: що реально потрібно, скільки це коштує і скільки займе.</p>
       </div>
       <div class="step bloom">
         <span class="num">02 / демо</span>
-        <h3>Показую на прикладі</h3>
+        <h3>Показуємо на прикладі</h3>
         <p>Демо саме під вашу задачу: бот, з яким можна поговорити, сторінка, яку можна відкрити, або схема ланцюжка, яку видно цілком.</p>
       </div>
       <div class="step bloom">
         <span class="num">03 / збірка</span>
-        <h3>Збираю і навмисне ламаю</h3>
+        <h3>Збираємо і навмисне ламаємо</h3>
         <p>Бота — опечатками й повідомленнями о третій ночі. Сайт — на старому телефоні й повільному інтернеті. Автоматизацію — на тестових заявках.</p>
       </div>
       <div class="step bloom">
         <span class="num">04 / запуск</span>
-        <h3>Передаю в роботу</h3>
-        <p>Підключаю до ваших акаунтів, домену й сервісів, перевіряю наживо і показую, як цим керувати. Далі — підтримка щомісяця, за бажанням.</p>
+        <h3>Передаємо в роботу</h3>
+        <p>Підключаємо до ваших акаунтів, домену й сервісів, перевіряємо наживо і показуємо, як цим керувати. Далі — підтримка щомісяця, за бажанням.</p>
       </div>
     </div>
     <p class="price-note"><b>Скільки це триває:</b> бот — 2–3 дні, сайт-візитка — до тижня, AI-агент або розширений сайт — 1–2 тижні, сценарій автоматизації — від одного дня, якщо доступи вже є. Від вас на всьому шляху потрібно 10 хвилин на бриф і відповіді на кілька уточнень.</p>
@@ -1148,7 +1241,7 @@
     <div class="section-head">
       <div class="kicker">Ціни</div>
       <h2>Прозорі тарифи, без прихованих платежів</h2>
-      <p class="lead" style="font-size:16px;margin-top:16px;">Це реальні діапазони, а не «від». Точну цифру називаю протягом доби після заявки — до початку роботи, і далі вона не змінюється.</p>
+      <p class="lead" style="font-size:16px;margin-top:16px;">Це реальні діапазони, а не «від». Точну цифру називаємо протягом доби після заявки — до початку роботи, і далі вона не змінюється.</p>
     </div>
 
     <div class="price-tables three">
@@ -1188,7 +1281,7 @@
             <div class="amount">$200–350<span class="retainer">+ від $20/міс</span></div>
           </div>
           <div class="price-row">
-            <div><div class="tier">Свій домен</div><div class="desc">Платите реєстратору напряму, не мені</div></div>
+            <div><div class="tier">Свій домен</div><div class="desc">Платите реєстратору напряму, не нам</div></div>
             <div class="amount">$10–15<span class="retainer">на рік</span></div>
           </div>
         </div>
@@ -1206,7 +1299,7 @@
           </div>
           <div class="price-row">
             <div><div class="tier">Індивідуальний сценарій</div><div class="desc">Ваш процес: кілька сервісів, умови, розклад</div></div>
-            <div class="amount">$200–300<span class="retainer">рахую після брифу</span></div>
+            <div class="amount">$200–300<span class="retainer">рахуємо після брифу</span></div>
           </div>
           <div class="price-row">
             <div><div class="tier">Нагадування про запис</div><div class="desc">Нагадування клієнту за добу + дошка заявок зі статусами</div></div>
@@ -1218,7 +1311,7 @@
 
     <div class="support bloom">
       <h3>Щомісячна підтримка — за бажанням</h3>
-      <p>Бот і сайт ваші та працюють без підтримки. Абонплата — для тих, хто не хоче тримати це в голові: правки, нагляд за оновленнями платформ і відповідь від мене протягом доби.</p>
+      <p>Бот і сайт ваші та працюють без підтримки. Абонплата — для тих, хто не хоче тримати це в голові: правки, нагляд за оновленнями платформ і відповідь від нас протягом доби.</p>
       <div class="support-grid">
         <div class="sup">
           <div class="t">Базова</div>
@@ -1226,7 +1319,7 @@
           <ul>
             <li>Правки в сценарії, текстах і цінах</li>
             <li>Нагляд, щоб нічого не відвалилось після оновлень Instagram, Telegram і сервісів</li>
-            <li>Відповідь від мене протягом доби</li>
+            <li>Відповідь від нас протягом доби</li>
           </ul>
         </div>
         <div class="sup">
@@ -1245,7 +1338,7 @@
           <ul>
             <li>Дошка заявок зі статусами й нагляд за тим, щоб вони туди доходили</li>
             <li>Пріоритетна відповідь у робочий день</li>
-            <li>Сезонні оновлення роблю сам, без нагадувань з вашого боку</li>
+            <li>Сезонні оновлення робимо самі, без нагадувань з вашого боку</li>
           </ul>
         </div>
       </div>
@@ -1284,7 +1377,7 @@
     <div class="faq bloom">
       <details>
         <summary>Скільки це коштує і від чого залежить ціна?</summary>
-        <div class="ans"><p>Базовий бот — $100–200, AI-агент — $250–400, сайт — $100–350 залежно від обсягу, сценарій автоматизації — $100–300. У діапазоні цифра залежить від кількості гілок сценарію, потрібних інтеграцій і того, чи є готові тексти й фото. Точну суму називаю протягом доби після заявки, до початку роботи.</p></div>
+        <div class="ans"><p>Базовий бот — $100–200, AI-агент — $250–400, сайт — $100–350 залежно від обсягу, сценарій автоматизації — $100–300. У діапазоні цифра залежить від кількості гілок сценарію, потрібних інтеграцій і того, чи є готові тексти й фото. Точну суму називаємо протягом доби після заявки, до початку роботи.</p></div>
       </details>
       <details>
         <summary>Скільки часу займає запуск?</summary>
@@ -1292,11 +1385,11 @@
       </details>
       <details>
         <summary>Чи потрібен вам пароль від мого Instagram?</summary>
-        <div class="ans"><p>Ні. Підключення офіційне, через кнопку Instagram у самому сервісі: ви заходите під собою і тиснете «дозволити». Пароль я не бачу, акаунт нікуди не переноситься, і відключити доступ можна в будь-який момент однією кнопкою.</p></div>
+        <div class="ans"><p>Ні. Підключення офіційне, через кнопку Instagram у самому сервісі: ви заходите під собою і тиснете «дозволити». Пароль ми не бачимо, акаунт нікуди не переноситься, і відключити доступ можна в будь-який момент однією кнопкою.</p></div>
       </details>
       <details>
         <summary>А якщо Instagram заблокує акаунт через бота?</summary>
-        <div class="ans"><p>Блокують за масові розсилки незнайомим людям. Бот відповідає тільки тим, хто написав вам сам, і працює через офіційне підключення Meta — це дозволений сценарій. Розсилки по старій базі в Instagram я не роблю й не обіцяю: така функція живе в Telegram, де вона легальна.</p></div>
+        <div class="ans"><p>Блокують за масові розсилки незнайомим людям. Бот відповідає тільки тим, хто написав вам сам, і працює через офіційне підключення Meta — це дозволений сценарій. Розсилки по старій базі в Instagram ми не робимо й не обіцяємо: така функція живе в Telegram, де вона легальна.</p></div>
       </details>
       <details>
         <summary>Що буде, якщо бот не зрозуміє клієнта?</summary>
@@ -1304,7 +1397,7 @@
       </details>
       <details>
         <summary>Чи можна спочатку подивитись, як він працює?</summary>
-        <div class="ans"><p>Так — і не на чужому прикладі, а на вашому. Після заявки я збираю демо під вашу задачу: бот із вашими послугами й цінами, макет сторінки або схему ланцюжка автоматизації. Демо приходить вам посиланням: можна відкрити, понатискати, поставити боту незручне питання і подивитись, що він відповість.</p><p>Це безкоштовно і ні до чого не зобовʼязує. Якщо після демо ви вирішите, що вам це не потрібно — нормально, принаймні ви побачили, як воно виглядає зсередини.</p></div>
+        <div class="ans"><p>Так — і не на чужому прикладі, а на вашому. Після заявки ми збираємо демо під вашу задачу: бот із вашими послугами й цінами, макет сторінки або схему ланцюжка автоматизації. Демо приходить вам посиланням: можна відкрити, понатискати, поставити боту незручне питання і подивитись, що він відповість.</p><p>Це безкоштовно і ні до чого не зобовʼязує. Якщо після демо ви вирішите, що вам це не потрібно — нормально, принаймні ви побачили, як воно виглядає зсередини.</p></div>
       </details>
       <details>
         <summary>Що таке автоматизація на n8n простими словами?</summary>
@@ -1312,22 +1405,22 @@
       </details>
       <details>
         <summary>Хто платить за платформу і чи є обовʼязкова підписка?</summary>
-        <div class="ans"><p>Бот живе на офіційній ліцензійній платформі розсилок — базового безкоштовного тарифу вистачає більшості малих бізнесів. Якщо ваш обсяг переростає безкоштовні ліміти, я кажу про це заздалегідь і показую реальну ціну тарифу: платите ви напряму сервісу, не мені. Сайт розміщується на безкоштовному хостингу, домен — $10–15 на рік реєстратору.</p></div>
+        <div class="ans"><p>Бот живе на офіційній ліцензійній платформі розсилок — базового безкоштовного тарифу вистачає більшості малих бізнесів. Якщо ваш обсяг переростає безкоштовні ліміти, ми кажемо про це заздалегідь і показуємо реальну ціну тарифу: платите ви напряму сервісу, не нам. Сайт розміщується на безкоштовному хостингу, домен — $10–15 на рік реєстратору.</p></div>
       </details>
       <details>
         <summary>Що входить у щомісячну підтримку і чи вона обовʼязкова?</summary>
-        <div class="ans"><p>Не обовʼязкова — бот і сайт працюють без неї. Входять правки в сценарії й текстах, нагляд за тим, щоб нічого не відвалилось після оновлень платформ, дрібні доробки без окремого рахунку і відповідь від мене протягом доби. Не входять: новий бот на інший акаунт, розробка сайту, реклама — це окремі роботи, і я кажу про це одразу.</p></div>
+        <div class="ans"><p>Не обовʼязкова — бот і сайт працюють без неї. Входять правки в сценарії й текстах, нагляд за тим, щоб нічого не відвалилось після оновлень платформ, дрібні доробки без окремого рахунку і відповідь від нас протягом доби. Не входять: новий бот на інший акаунт, розробка сайту, реклама — це окремі роботи, і ми кажемо про це одразу.</p></div>
       </details>
       <details>
         <summary>Чи є у вас кейси й відгуки?</summary>
-        <div class="ans"><p>Intromax тільки починає роботу з клієнтами, тому відгуків поки мало, і вигадувати їх я не буду. Замість них є те, що можна перевірити просто зараз: живий бот у Direct, цей сайт і прозорий прайс. Перші реальні кейси зʼявляться на цій сторінці одразу після здачі.</p></div>
+        <div class="ans"><p>Intromax тільки починає роботу з клієнтами, тому відгуків поки мало, і вигадувати їх ми не будемо. Замість них є те, що можна перевірити просто зараз: живий бот у Direct, цей сайт і прозорий прайс. Перші реальні кейси зʼявляться на цій сторінці одразу після здачі.</p></div>
       </details>
       <details>
         <summary>Як відбувається оплата?</summary>
         <div class="ans"><p>Етапами: частина на старті, решта після того, як ви побачили робочий результат. Ціна фіксується до початку і не росте в процесі. Зручний спосіб оплати узгоджуємо в переписці — скажіть, як вам звично.</p></div>
       </details>
     </div>
-    <p class="faq-foot">Не знайшли відповідь — <button type="button" data-lead="unsure">поставте своє питання</button>, відповім протягом доби.</p>
+    <p class="faq-foot">Не знайшли відповідь — <button type="button" data-lead="unsure">поставте своє питання</button>, відповімо протягом доби.</p>
   </div>
 </section>
 
@@ -1371,7 +1464,7 @@
       <div class="reviews-empty bloom">
         <div class="icon">💬</div>
         <h3>Тут з'являться перші відгуки</h3>
-        <p>Intromax тільки починає роботу з клієнтами. Вигадувати відгуки не буду — з'являться справжні, одразу опублікую тут.</p>
+        <p>Intromax тільки починає роботу з клієнтами. Вигадувати відгуки не будемо — з'являться справжні, одразу опублікуємо тут.</p>
         <button type="button" class="btn btn-ghost" data-open-review style="margin-top:22px;">Залишити відгук</button>
       </div>
     </div>
@@ -1383,7 +1476,7 @@
 
     <div id="review-form-pane">
       <h3 id="review-modal-title">Залишити відгук</h3>
-      <p class="review-modal-sub">Займе хвилину. Публікую після короткої перевірки — зазвичай протягом доби.</p>
+      <p class="review-modal-sub">Займе хвилину. Публікуємо після короткої перевірки — зазвичай протягом доби.</p>
 
       <form id="review-form" name="review" method="POST" data-netlify="true" netlify-honeypot="bot-field" novalidate>
         <input type="hidden" name="form-name" value="review">
@@ -1400,7 +1493,7 @@
 
         <label class="field" for="rv-contact">Instagram або Telegram <span class="opt">— не обов'язково</span>
           <input type="text" id="rv-contact" name="contact" maxlength="60" placeholder="@nickname">
-          <span class="hint">Покажу поруч з відгуком — так видно, що він від живої людини.</span>
+          <span class="hint">Покажемо поруч з відгуком — так видно, що він від живої людини.</span>
         </label>
 
         <div class="field-row">
@@ -1442,7 +1535,7 @@
 
         <label class="field" for="rv-service-other" id="rv-other-wrap" hidden>Що саме замовляли <span class="req">*</span>
           <input type="text" id="rv-service-other" name="service_other" maxlength="80" placeholder="Напишіть своїми словами">
-          <span class="hint">Покажу це поруч з відгуком замість слова «Інше».</span>
+          <span class="hint">Покажемо це поруч з відгуком замість слова «Інше».</span>
         </label>
 
         <label class="field" for="rv-text">Відгук <span class="req">*</span>
@@ -1462,8 +1555,8 @@
 
     <div id="review-done-pane" class="review-done" hidden>
       <div class="mark">✓</div>
-      <h3>Дякую!</h3>
-      <p>Відгук у мене. Перевірю і опублікую на сайті — зазвичай протягом доби.</p>
+      <h3>Дякуємо!</h3>
+      <p>Відгук у нас. Перевіримо і опублікуємо на сайті — зазвичай протягом доби.</p>
       <button type="button" class="btn btn-ghost" id="done-close-btn">Закрити</button>
     </div>
   </div>
@@ -1472,7 +1565,7 @@
   <div class="wrap">
     <div class="cta bloom">
       <h2>Готові перестати губити заявки?</h2>
-      <p>Опишіть задачу у формі — відповім протягом доби з ціною, строком і демо під вашу нішу.</p>
+      <p>Опишіть задачу у формі — відповімо протягом доби з ціною, строком і демо під вашу нішу.</p>
       <div class="cta-actions">
         <button type="button" class="btn btn-primary cta-primary" data-lead="unsure">Залишити заявку</button>
         <a href="https://www.instagram.com/intromax.tech/" class="btn btn-ghost" id="ig-link">Instagram</a>
@@ -1488,8 +1581,8 @@
     <div id="lead-form-pane"></div>
     <div id="lead-done-pane" class="review-done" hidden>
       <div class="mark">✓</div>
-      <h3>Заявка у мене</h3>
-      <p>Відповім протягом доби — з точною ціною, строком і демо під вашу нішу.</p>
+      <h3>Заявка у нас</h3>
+      <p>Відповімо протягом доби — з точною ціною, строком і демо під вашу нішу.</p>
       <button type="button" class="btn btn-ghost" id="lead-done-close">Закрити</button>
     </div>
   </div>
@@ -1501,7 +1594,7 @@
       <div class="foot-brand">
         <div class="logo" style="font-size:16px;margin-bottom:12px;"><span class="logo-dot"></span> Intromax</div>
         <p class="foot-about">Боти, сайти та автоматизація процесів для бізнесу в Україні.</p>
-        <div class="foot-status">відповідаю протягом доби</div>
+        <div class="foot-status">відповідаємо протягом доби</div>
         <div class="foot-contacts">
           <a href="#order" class="btn btn-primary">Залишити заявку</a>
           <a href="https://www.instagram.com/intromax.tech/" class="btn btn-ghost">Instagram</a>
@@ -1527,7 +1620,7 @@
     </div>
     <div class="foot-row">
       <div>© 2026 Intromax</div>
-      <div class="mono">зроблено самостійно, без конструкторів</div>
+      <div class="mono">власна розробка, без конструкторів</div>
     </div>
   </div>
 </footer>
@@ -2194,14 +2287,14 @@
       options:['Якнайшвидше','Цього тижня','Цього місяця','Поки просто цікавлюсь']},
     {t:'text', name:'name', label:'Як до вас звертатись', ph:'Ім\u2019я', req:true},
     {t:'text', name:'contact', label:'Куди відповісти', ph:'@нік, телефон або пошта', req:true,
-      hint:'Пишу туди, звідки вам зручніше відповідати.'},
+      hint:'Пишемо туди, звідки вам зручніше відповідати.'},
     {t:'area', name:'extra', label:'Що ще важливо знати', ph:'Необов\u2019язково'}
   ];
 
   var FORMS = {
     'ig-bot':{
       title:'Бот у Instagram Direct',
-      sub:'Вісім коротких питань — і я зберу демо саме під ваш акаунт.',
+      sub:'Вісім коротких питань — і ми зберемо демо саме під ваш акаунт.',
       icon:'<rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/>',
       fields:[
         {t:'text', name:'account', label:'Акаунт, для якого потрібен бот', ph:'@нік або посилання', req:true},
@@ -2216,7 +2309,7 @@
     },
     'tg-bot':{
       title:'Telegram-бот',
-      sub:'Розкажіть, що має робити бот — і я покажу, як це виглядатиме.',
+      sub:'Розкажіть, що має робити бот — і ми покажемо, як це виглядатиме.',
       icon:'<path d="M21 4.5 3.5 11l5 1.8L19 6.8l-7.8 7.3.4 5 2.6-3.3 4.2 3.1z"/>',
       plum:true,
       fields:[
@@ -2233,7 +2326,7 @@
     },
     'ai-agent':{
       title:'AI-агент',
-      sub:'Щоб агент відповідав вашими словами, мені потрібно знати, звідки він візьме відповіді.',
+      sub:'Щоб агент відповідав вашими словами, нам потрібно знати, звідки він візьме відповіді.',
       icon:'<rect x="4" y="7" width="16" height="12" rx="4"/><path d="M12 3v4M9 13h.01M15 13h.01M9.5 16.5h5"/>',
       fields:[
         {t:'text', name:'niche', label:'Сфера бізнесу', ph:'Наприклад: студія манікюру, Львів', req:true},
@@ -2299,7 +2392,7 @@
     },
     'support':{
       title:'Підтримка готового рішення',
-      sub:'Підхоплюю і те, що робив не я — спочатку подивлюсь, у якому воно стані.',
+      sub:'Підхоплюємо і те, що робили не ми — спочатку подивимось, у якому воно стані.',
       icon:'<path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/><circle cx="12" cy="12" r="3"/>',
       fields:[
         {t:'opts', name:'object', label:'Що потрібно підтримувати', req:true,
@@ -2313,7 +2406,7 @@
     },
     'pack':{
       title:'Пакет послуг',
-      sub:'Зберіть комплект — порахую його дешевше, ніж ті самі послуги по черзі.',
+      sub:'Зберіть комплект — порахуємо його дешевше, ніж ті самі послуги по черзі.',
       icon:'<path d="M3.5 7.5 12 3l8.5 4.5v9L12 21l-8.5-4.5z"/><path d="M3.5 7.5 12 12l8.5-4.5M12 12v9"/>',
       fields:[
         {t:'multi', name:'items', label:'Що входить у ваш пакет', req:true,
@@ -2327,7 +2420,7 @@
     },
     'unsure':{
       title:'Опишіть задачу своїми словами',
-      sub:'Не обов\u2019язково знати, як це називається. Прочитаю, скажу, що реально потрібно — і чи потрібно взагалі.',
+      sub:'Не обов\u2019язково знати, як це називається. Прочитаємо, скажемо, що реально потрібно — і чи потрібно взагалі.',
       icon:'<circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.6 2.6 0 1 1 3.4 2.5c-.6.2-.9.8-.9 1.4v.4M12 17h.01"/>',
       fields:[
         {t:'area', name:'task', label:'Що зараз забирає час або губиться', req:true,
@@ -2538,6 +2631,9 @@
 
   function open(key, trigger){
     var preset = PRESETS[key];
+    if(key === 'pack-custom' && trigger){
+      preset = {form:'pack', items:(trigger.getAttribute('data-items') || '').split('|')};
+    }
     if(preset) key = preset.form;
     if(!FORMS[key]) key = 'unsure';
     lastFocus = trigger || document.activeElement;
@@ -2595,13 +2691,387 @@
   "@context":"https://schema.org",
   "@type":"FAQPage",
   "mainEntity":[
-    {"@type":"Question","name":"Скільки коштує бот або сайт?","acceptedAnswer":{"@type":"Answer","text":"Базовий бот — $100–200, AI-агент — $250–400, сайт — $100–350, сценарій автоматизації — $100–300. Точну ціну називаю протягом доби після заявки, до початку роботи."}},
+    {"@type":"Question","name":"Скільки коштує бот або сайт?","acceptedAnswer":{"@type":"Answer","text":"Базовий бот — $100–200, AI-агент — $250–400, сайт — $100–350, сценарій автоматизації — $100–300. Точну ціну називаємо протягом доби після заявки, до початку роботи."}},
     {"@type":"Question","name":"Скільки часу займає запуск?","acceptedAnswer":{"@type":"Answer","text":"Базовий бот — 2–3 дні, сайт-візитка — до тижня, AI-агент або розширений сайт — 1–2 тижні. Від вас потрібно 10 хвилин на бриф."}},
     {"@type":"Question","name":"Чи потрібен пароль від Instagram?","acceptedAnswer":{"@type":"Answer","text":"Ні. Підключення офіційне через Meta: ви самі натискаєте «дозволити» і можете відключити доступ однією кнопкою. Пароль виконавець не бачить."}},
     {"@type":"Question","name":"Що буде, якщо бот не зрозуміє клієнта?","acceptedAnswer":{"@type":"Answer","text":"Бот не вигадує відповідь: він каже, що передасть питання людині, і лишає повідомлення власнику. У кожному боті є кнопка «покликати людину»."}},
     {"@type":"Question","name":"Що таке автоматизація на n8n простими словами?","acceptedAnswer":{"@type":"Answer","text":"Це коли сервіси передають дані один одному без вас: заявка з сайту потрапляє в CRM або таблицю, вам приходить сповіщення, а клієнту — нагадування за добу до візиту."}}
   ]
 }
+</script>
+
+<script>
+/* ===========================================================================
+   КОНСТРУКТОР КОМПЛЕКТУ
+   Гортаєте послуги (3D-моделі в одному canvas), додаєте потрібні —
+   ціна, строк і знижка рахуються на місці. Three.js підвантажується лише
+   тоді, коли секція поруч з екраном; без WebGL лишається іконка.
+   =========================================================================== */
+(function(){
+  var root = document.getElementById('kit');
+  if(!root) return;
+
+  /* ціни — ті самі, що в секціях «Послуги» та «Ціни» */
+  var ITEMS = [
+    {k:'ig-bot', n:'Бот у Direct', lo:100, hi:200, term:'2–3 дні', extra:'+ від $10/міс',
+      d:'Відповідає на часті питання, показує ціни й забирає контакт, поки у вас зайняті руки.',
+      ico:'<rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/>'},
+    {k:'tg-bot', n:'Telegram-бот', lo:100, hi:180, term:'2–3 дні', extra:'або +$50–80 до бота в Direct',
+      d:'Меню, прайс, запис і розсилка по вашій базі без ризику блокування. Заявки приходять у робочий чат.',
+      ico:'<path d="M21 4.5 3.5 11l5 1.8L19 6.8l-7.8 7.3.4 5 2.6-3.3 4.2 3.1z"/>'},
+    {k:'ai-agent', n:'AI-агент', lo:250, hi:400, term:'1–2 тижні', extra:'+ $40/міс',
+      d:'Розуміє живу мову і голосові з помилками. Відповідає за вашим прайсом, а чого не знає, передає вам.',
+      ico:'<rect x="4" y="7" width="16" height="12" rx="4"/><path d="M12 3v4M9 13h.01M15 13h.01M9.5 16.5h5"/>'},
+    {k:'site', n:'Сайт-візитка', lo:100, hi:200, term:'до тижня', extra:'+ від $10/міс',
+      d:'Послуги, ціни, відповіді на питання і форма заявки, яка приходить вам у Telegram.',
+      ico:'<rect x="3" y="4" width="18" height="16" rx="3"/><path d="M3 9h18M7 6.5h.01M10 6.5h.01"/>'},
+    {k:'site-pro', n:'Розширений сайт', lo:200, hi:350, term:'1–2 тижні', extra:'+ від $20/міс',
+      d:'Каталог із фото й цінами, окремі форми під кожну послугу, запис із підтвердженням і базове SEO.',
+      ico:'<rect x="3" y="4" width="18" height="16" rx="3"/><path d="M3 9h18M7.5 13h4M7.5 16.5h9M14.5 13h2"/>'},
+    {k:'automation', n:'Автоматизація процесів', lo:100, hi:300, term:'від 1 дня', extra:'за сценарій',
+      d:'Заявка сама потрапляє в CRM або таблицю, вам приходить сповіщення, клієнту йде нагадування за добу.',
+      ico:'<circle cx="6" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><circle cx="6" cy="18" r="2.5"/><path d="M8.5 6h5a4 4 0 0 1 4 4v5.5M6 8.5v7"/>'},
+    {k:'support', n:'Підтримка вже готового', direct:true, price:'$10–50 / міс', term:'щомісяця, за бажанням',
+      d:'Правки в сценаріях і текстах, нагляд за оновленнями платформ і відповідь від нас протягом доби.',
+      ico:'<circle cx="12" cy="12" r="3.2"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/>'}
+  ];
+  var N = ITEMS.length, cur = 0, picked = {};
+
+  var $ = function(id){ return document.getElementById(id); };
+  var tabs = $('kit-tabs'), stage = $('kit-stage'), dots = $('kit-dots'), fallback = $('kit-fallback');
+  var elTitle = $('kit-title'), elDesc = $('kit-desc'), elPrice = $('kit-price'), elTerm = $('kit-term');
+  var btnAdd = $('kit-add'), btnPrev = $('kit-prev'), btnNext = $('kit-next'), btnGo = $('kit-go');
+  var elList = $('kit-list'), elTotal = $('kit-total'), elWas = $('kit-was'), elSave = $('kit-save');
+
+  ITEMS.forEach(function(it, i){
+    var b = document.createElement('button');
+    b.type = 'button'; b.className = 'chip'; b.textContent = it.n;
+    b.addEventListener('click', function(){ go(i); });
+    tabs.appendChild(b);
+    dots.appendChild(document.createElement('i'));
+  });
+
+  function round10(x){ return Math.round(x / 10) * 10; }
+  function keys(){ return ITEMS.filter(function(it){ return picked[it.k]; }); }
+
+  /* знижка за комплект: 2 послуги — до 15%, 3 і більше — до 20% (як у пакетах «Старт» і «Система») */
+  function calc(){
+    var sel = keys(), n = sel.length;
+    if(!n) return null;
+    var lo = 0, hi = 0;
+    sel.forEach(function(it){ lo += it.lo; hi += it.hi; });
+    var r = {n:n, lo:lo, hi:hi, wasLo:lo, wasHi:hi, pct:0, term:sel[0].term};
+    if(n === 1) return r;
+    var has = function(k){ return !!picked[k]; };
+    if(n === 2 && has('ig-bot') && has('tg-bot')){
+      /* Telegram як доповнення до бота в Direct — окрема ціна, без відсотка */
+      r.lo = 150; r.hi = 280; r.term = '3–5 днів'; r.note = 'Telegram-бот до бота в Direct: +$50–80';
+      return r;
+    }
+    r.pct = n >= 3 ? 20 : 15;
+    r.lo = round10(lo * (1 - r.pct / 100));
+    r.hi = round10(hi * (1 - r.pct / 100));
+    if(n === 2 && has('ig-bot') && has('site')){ r.lo = 170; r.hi = 330; }
+    var heavy = has('ai-agent') || has('site-pro');
+    r.term = heavy ? '2–3 тижні' : (n === 2 ? '4–6 днів' : '1–2 тижні');
+    return r;
+  }
+
+  function renderSum(){
+    var sel = keys(), r = calc();
+    elList.innerHTML = '';
+    sel.forEach(function(it){
+      var li = document.createElement('li');
+      li.innerHTML = it.n + '<span>$' + it.lo + '–' + it.hi + '</span>';
+      var x = document.createElement('button');
+      x.type = 'button'; x.setAttribute('aria-label', 'Прибрати: ' + it.n); x.innerHTML = '&times;';
+      x.addEventListener('click', function(){ toggle(it.k); });
+      li.appendChild(x);
+      elList.appendChild(li);
+    });
+    if(!r){
+      elTotal.textContent = '$0';
+      elWas.textContent = 'Додайте першу послугу, і тут зʼявиться ціна.';
+      elSave.hidden = true;
+      btnGo.disabled = true; btnGo.removeAttribute('data-lead'); btnGo.removeAttribute('data-items');
+      return;
+    }
+    elTotal.textContent = '$' + r.lo + '–' + r.hi;
+    if(r.pct){
+      elWas.innerHTML = 'окремо вийшло б <s>$' + r.wasLo + '–' + r.wasHi + '</s> · запуск ' + r.term;
+      elSave.textContent = 'економія до ' + r.pct + '%'; elSave.hidden = false;
+    } else {
+      elWas.textContent = (r.note ? r.note + ' · ' : '') + 'запуск ' + r.term;
+      elSave.hidden = true;
+    }
+    btnGo.disabled = false;
+    if(r.n === 1){
+      btnGo.setAttribute('data-lead', sel[0].k); btnGo.removeAttribute('data-items');
+    } else {
+      btnGo.setAttribute('data-lead', 'pack-custom');
+      btnGo.setAttribute('data-items', sel.map(function(it){ return it.n; }).join('|'));
+    }
+  }
+
+  function renderInfo(){
+    var it = ITEMS[cur];
+    elTitle.textContent = it.n;
+    elDesc.textContent = it.d;
+    elPrice.textContent = it.direct ? it.price : '$' + it.lo + '–' + it.hi;
+    elTerm.textContent = (it.extra ? it.extra + ' · ' : '') + (it.direct ? it.term : 'запуск ' + it.term);
+    fallback.innerHTML = '<svg viewBox="0 0 24 24">' + it.ico + '</svg>';
+    if(it.direct){
+      btnAdd.textContent = 'Залишити заявку на підтримку';
+      btnAdd.classList.remove('on'); btnAdd.setAttribute('data-lead', 'support');
+    } else {
+      btnAdd.removeAttribute('data-lead');
+      btnAdd.classList.toggle('on', !!picked[it.k]);
+      btnAdd.textContent = picked[it.k] ? '✓ У комплекті — прибрати' : 'Додати в комплект';
+    }
+    [].forEach.call(tabs.children, function(b, i){
+      b.classList.toggle('on', i === cur);
+      b.classList.toggle('picked', !!picked[ITEMS[i].k]);
+    });
+    [].forEach.call(dots.children, function(d, i){ d.classList.toggle('on', i === cur); });
+    btnPrev.disabled = cur === 0; btnNext.disabled = cur === N - 1;
+  }
+
+  function go(i){
+    cur = Math.max(0, Math.min(N - 1, i));
+    renderInfo();
+    var b = tabs.children[cur];
+    tabs.scrollTo({left: b.offsetLeft - (tabs.clientWidth - b.offsetWidth) / 2, behavior:'smooth'});
+  }
+
+  function toggle(k){
+    picked[k] = !picked[k];
+    /* візитка і розширений сайт — один сайт, тож лишається останній обраний */
+    if(picked[k] && k === 'site') picked['site-pro'] = false;
+    if(picked[k] && k === 'site-pro') picked['site'] = false;
+    renderInfo(); renderSum();
+  }
+
+  btnAdd.addEventListener('click', function(){ if(!ITEMS[cur].direct) toggle(ITEMS[cur].k); });
+  btnPrev.addEventListener('click', function(e){ e.stopPropagation(); go(cur - 1); });
+  btnNext.addEventListener('click', function(e){ e.stopPropagation(); go(cur + 1); });
+  stage.addEventListener('keydown', function(e){
+    if(e.key === 'ArrowLeft') go(cur - 1);
+    if(e.key === 'ArrowRight') go(cur + 1);
+  });
+
+  /* свайп: тягнете модель — ряд їде за пальцем, відпустили — доводка до сусідньої */
+  var drag = 0, startX = null;
+  stage.addEventListener('pointerdown', function(e){
+    if(e.target.closest('.kit-arrow')) return;
+    startX = e.clientX; stage.classList.add('drag');
+    try{ stage.setPointerCapture(e.pointerId); }catch(_){}
+  });
+  stage.addEventListener('pointermove', function(e){
+    if(startX === null) return;
+    drag = (e.clientX - startX) / stage.clientWidth;
+  });
+  function endDrag(){
+    if(startX === null) return;
+    if(drag < -0.12) go(cur + 1); else if(drag > 0.12) go(cur - 1);
+    drag = 0; startX = null; stage.classList.remove('drag');
+  }
+  stage.addEventListener('pointerup', endDrag);
+  stage.addEventListener('pointercancel', endDrag);
+
+  renderInfo(); renderSum();
+
+  /* ---------------- 3D ---------------- */
+  var reduced = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var started = false;
+
+  function start(){
+    if(started) return; started = true;
+    import('https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.min.js')
+      .then(function(T){ init3d(T); })
+      .catch(function(){ /* лишається іконка */ });
+  }
+  if('IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(en){
+      if(en[0].isIntersecting){ io.disconnect(); start(); }
+    }, {rootMargin:'600px 0px'});
+    io.observe(stage);
+  } else { start(); }
+
+  function init3d(T){
+    var canvas = $('kit-canvas');
+    var renderer;
+    try{ renderer = new T.WebGLRenderer({canvas:canvas, antialias:true, alpha:true}); }
+    catch(_){ return; }
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+
+    var scene = new T.Scene();
+    var cam = new T.PerspectiveCamera(32, 1, 0.1, 60);
+    cam.position.set(0, 0.15, 7.4);
+    scene.add(new T.HemisphereLight(0xfff4e0, 0x1b1d29, 1.5));
+    var key = new T.DirectionalLight(0xffffff, 2.4); key.position.set(3, 4, 6); scene.add(key);
+    var rimA = new T.DirectionalLight(0xf2a93c, 1.6); rimA.position.set(-5, 1, -2); scene.add(rimA);
+    var rimP = new T.DirectionalLight(0xa89aec, 1.6); rimP.position.set(5, -2, -2); scene.add(rimP);
+
+    var C = {amber:0xf2a93c, plum:0xa89aec, cream:0xeee9db, ink:0x1b1d29, slate:0x343850, mid:0x4b4e66, green:0x7bc99a};
+    function mat(c, o){
+      var p = {color:c, roughness:0.4, metalness:0.2};
+      if(o) for(var k in o) p[k] = o[k];
+      return new T.MeshStandardMaterial(p);
+    }
+    function mesh(geo, m, x, y, z){
+      var o = new T.Mesh(geo, m); o.position.set(x || 0, y || 0, z || 0); return o;
+    }
+    function rrShape(w, h, r){
+      var s = new T.Shape(), x = -w / 2, y = -h / 2;
+      s.moveTo(x + r, y);
+      s.lineTo(x + w - r, y); s.quadraticCurveTo(x + w, y, x + w, y + r);
+      s.lineTo(x + w, y + h - r); s.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+      s.lineTo(x + r, y + h); s.quadraticCurveTo(x, y + h, x, y + h - r);
+      s.lineTo(x, y + r); s.quadraticCurveTo(x, y, x + r, y);
+      return s;
+    }
+    function extrude(shape, d, bevel){
+      var b = bevel == null ? 0.05 : bevel;
+      var g = new T.ExtrudeGeometry(shape, {depth:d, bevelEnabled:b > 0, bevelSize:b, bevelThickness:b, bevelSegments:3, curveSegments:18});
+      g.center(); return g;
+    }
+    function rbox(w, h, d, r, bevel){ return extrude(rrShape(w, h, r), d, bevel); }
+
+    function windowModel(s){
+      var g = new T.Group();
+      g.add(mesh(rbox(2.7, 1.9, 0.16, 0.2), mat(C.slate)));
+      g.add(mesh(rbox(2.5, 0.26, 0.06, 0.1, 0.02), mat(C.mid), 0, 0.72, 0.12));
+      [C.amber, C.plum, C.green].forEach(function(c, i){
+        g.add(mesh(new T.SphereGeometry(0.055, 16, 12), mat(c), -1.08 + i * 0.17, 0.72, 0.19));
+      });
+      g.add(mesh(rbox(1.0, 0.18, 0.05, 0.06, 0.015), mat(C.cream), -0.6, 0.3, 0.13));
+      g.add(mesh(rbox(1.2, 0.07, 0.04, 0.03, 0.01), mat(C.mid), -0.5, 0.02, 0.13));
+      g.add(mesh(rbox(0.9, 0.07, 0.04, 0.03, 0.01), mat(C.mid), -0.65, -0.14, 0.13));
+      g.add(mesh(rbox(0.62, 0.22, 0.07, 0.1, 0.02), mat(C.amber), -0.79, -0.5, 0.14));
+      g.add(mesh(rbox(0.85, 0.95, 0.06, 0.1, 0.02), mat(C.plum), 0.72, -0.18, 0.13));
+      g.scale.setScalar(s || 1);
+      return g;
+    }
+
+    var BUILD = {
+      'ig-bot': function(){
+        var g = new T.Group();
+        var sh = rrShape(2.3, 2.3, 0.66); sh.holes.push(rrShape(1.72, 1.72, 0.42));
+        g.add(mesh(extrude(sh, 0.36, 0.06), mat(C.amber)));
+        g.add(mesh(new T.TorusGeometry(0.47, 0.13, 20, 56), mat(C.cream)));
+        g.add(mesh(new T.SphereGeometry(0.13, 24, 18), mat(C.plum), 0.55, 0.55, 0));
+        return g;
+      },
+      'tg-bot': function(){
+        var g = new T.Group();
+        var Nn = [1.5, 0.05, 0], L = [-1.1, 0.25, 1.0], R = [-1.1, 0.25, -1.0], Cc = [-0.7, 0.05, 0], K = [-0.95, -0.6, 0];
+        var v = [].concat(Nn, L, Cc, Nn, Cc, R, Nn, Cc, K);
+        var geo = new T.BufferGeometry();
+        geo.setAttribute('position', new T.Float32BufferAttribute(v, 3));
+        geo.computeVertexNormals();
+        var plane = new T.Mesh(geo, mat(C.plum, {side:T.DoubleSide, flatShading:true, roughness:0.55}));
+        plane.rotation.set(0.25, 0, 0.3);
+        g.add(plane);
+        return g;
+      },
+      'ai-agent': function(){
+        var g = new T.Group();
+        g.add(mesh(rbox(2.0, 1.55, 1.1, 0.42, 0.08), mat(C.cream)));
+        g.add(mesh(rbox(1.5, 0.95, 0.1, 0.28, 0.03), mat(C.ink, {roughness:0.25}), 0, -0.02, 0.62));
+        var eye = mat(C.amber, {emissive:C.amber, emissiveIntensity:0.9});
+        g.add(mesh(new T.SphereGeometry(0.15, 24, 18), eye, -0.36, 0.08, 0.68));
+        g.add(mesh(new T.SphereGeometry(0.15, 24, 18), eye, 0.36, 0.08, 0.68));
+        g.add(mesh(rbox(0.46, 0.07, 0.04, 0.03, 0.01), mat(C.cream), 0, -0.3, 0.7));
+        g.add(mesh(new T.CylinderGeometry(0.04, 0.04, 0.42, 12), mat(C.mid), 0, 1.05, 0));
+        g.add(mesh(new T.SphereGeometry(0.12, 20, 16), mat(C.plum, {emissive:C.plum, emissiveIntensity:0.5}), 0, 1.3, 0));
+        var ear = new T.CylinderGeometry(0.2, 0.2, 0.16, 24);
+        var e1 = mesh(ear, mat(C.plum), -1.12, 0, 0); e1.rotation.z = Math.PI / 2; g.add(e1);
+        var e2 = mesh(ear, mat(C.plum), 1.12, 0, 0); e2.rotation.z = Math.PI / 2; g.add(e2);
+        g.position.y = -0.15;
+        var w = new T.Group(); w.add(g); return w;
+      },
+      'site': function(){ return windowModel(1); },
+      'site-pro': function(){
+        var g = new T.Group();
+        [[-0.38, 0.3, -0.55], [0, 0, 0], [0.38, -0.3, 0.55]].forEach(function(p){
+          var w = windowModel(0.78); w.position.set(p[0], p[1], p[2]); g.add(w);
+        });
+        return g;
+      },
+      'automation': function(){
+        var g = new T.Group();
+        var A = new T.Vector3(-1.05, 0.7, 0), B = new T.Vector3(1.1, 0.55, 0.2), D = new T.Vector3(0, -0.85, -0.1);
+        var curve = new T.CatmullRomCurve3([A, B, D], true, 'catmullrom', 0.6);
+        g.add(mesh(new T.TubeGeometry(curve, 90, 0.045, 10, true), mat(C.mid)));
+        g.add(mesh(new T.SphereGeometry(0.34, 28, 20), mat(C.amber), A.x, A.y, A.z));
+        g.add(mesh(new T.SphereGeometry(0.34, 28, 20), mat(C.plum), B.x, B.y, B.z));
+        g.add(mesh(new T.SphereGeometry(0.34, 28, 20), mat(C.cream), D.x, D.y, D.z));
+        var pulse = mesh(new T.SphereGeometry(0.1, 16, 12), mat(C.green, {emissive:C.green, emissiveIntensity:1.2}));
+        g.add(pulse);
+        g.userData.tick = function(t){ pulse.position.copy(curve.getPointAt((t * 0.22) % 1)); };
+        return g;
+      },
+      'support': function(){
+        var g = new T.Group(), teeth = 9, sh = new T.Shape();
+        for(var i = 0; i < teeth * 4; i++){
+          var a = i / (teeth * 4) * Math.PI * 2, r = (i % 4 < 2) ? 1.15 : 0.88;
+          if(i === 0) sh.moveTo(Math.cos(a) * r, Math.sin(a) * r); else sh.lineTo(Math.cos(a) * r, Math.sin(a) * r);
+        }
+        sh.closePath();
+        var hole = new T.Path(); hole.absarc(0, 0, 0.42, 0, Math.PI * 2, true); sh.holes.push(hole);
+        g.add(mesh(extrude(sh, 0.34, 0.05), mat(C.plum)));
+        g.add(mesh(new T.TorusGeometry(0.42, 0.07, 14, 40), mat(C.amber)));
+        return g;
+      }
+    };
+
+    var S = 3.5, row = new T.Group(), models = [];
+    scene.add(row);
+    ITEMS.forEach(function(it, i){
+      var m = BUILD[it.k](), holder = new T.Group();
+      holder.add(m); holder.position.x = i * S; holder.rotation.x = 0.12;
+      holder.userData.m = m;
+      row.add(holder); models.push(holder);
+    });
+    row.position.x = -cur * S;
+
+    function resize(){
+      var w = stage.clientWidth, h = stage.clientHeight;
+      if(!w || !h) return;
+      renderer.setSize(w, h, false);
+      cam.aspect = w / h;
+      /* на вузькому екрані відсуваємо камеру, щоб модель лишалась великою, але не різалась */
+      cam.position.z = cam.aspect < 1.25 ? 6.9 : 7.4;
+      cam.updateProjectionMatrix();
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    var visible = true;
+    if('IntersectionObserver' in window){
+      new IntersectionObserver(function(en){ visible = en[0].isIntersecting; }).observe(stage);
+    }
+    var clock = new T.Clock(), t = 0;
+    function frame(){
+      requestAnimationFrame(frame);
+      if(!visible || document.hidden) return;
+      var dt = Math.min(clock.getDelta(), 0.05); t += dt;
+      var target = -cur * S + drag * S * 1.1;
+      row.position.x += (target - row.position.x) * Math.min(1, dt * 9);
+      models.forEach(function(h, i){
+        var m = h.userData.m, on = i === cur, sc = on ? 1 : 0.56;
+        h.scale.x += (sc - h.scale.x) * Math.min(1, dt * 8); h.scale.y = h.scale.z = h.scale.x;
+        m.rotation.y += dt * (reduced ? 0.12 : (on ? 0.7 : 0.25));
+        h.position.y = reduced ? 0 : Math.sin(t * 1.1 + i * 1.7) * 0.07;
+        h.visible = Math.abs(h.position.x + row.position.x) < S * 1.6;
+        if(m.userData.tick) m.userData.tick(t);
+      });
+      renderer.render(scene, cam);
+    }
+    frame();
+    stage.classList.add('ready');
+  }
+})();
 </script>
 
 </body>
