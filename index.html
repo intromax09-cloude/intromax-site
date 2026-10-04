@@ -3414,7 +3414,7 @@ window.IMX3D = {
     var renderer;
     try{ renderer = new T.WebGLRenderer({canvas:canvas, antialias:true, alpha:true}); }
     catch(_){ return; }
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.75));
 
     var scene = new T.Scene();
     window.IMX3D.stage(T, renderer, scene);
@@ -3439,6 +3439,16 @@ window.IMX3D = {
     });
     row.position.x = -cur * S;
 
+    /* прогрів: шейдери й геометрія всіх моделей готуються заздалегідь, а не в момент першого свайпу */
+    function warm(){
+      var list = [];
+      scene.traverse(function(o){ if(o.isMesh){ list.push(o); o.frustumCulled = false; } });
+      models.forEach(function(h){ h.visible = true; });
+      renderer.render(scene, cam);
+      list.forEach(function(o){ o.frustumCulled = true; });
+    }
+    (renderer.compileAsync ? renderer.compileAsync(scene, cam) : Promise.resolve(renderer.compile(scene, cam))).then(warm, warm);
+
     function resize(){
       var w = stage.clientWidth, h = stage.clientHeight;
       if(!w || !h) return;
@@ -3461,7 +3471,7 @@ window.IMX3D = {
       if(!visible || document.hidden) return;
       var dt = Math.min(clock.getDelta(), 0.05); t += dt;
       var target = -cur * S + drag * S * 1.1;
-      row.position.x += (target - row.position.x) * Math.min(1, dt * 9);
+      row.position.x += (target - row.position.x) * Math.min(1, dt * (startX !== null ? 30 : 9)); /* під пальцем ряд їде без запізнення */
       models.forEach(function(h, i){
         var m = h.userData.m, on = i === cur, sc = on ? 1 : 0.56;
         h.scale.x += (sc - h.scale.x) * Math.min(1, dt * 8); h.scale.y = h.scale.z = h.scale.x;
@@ -3589,7 +3599,7 @@ window.IMX3D = {
     var renderer;
     try{ renderer = new T.WebGLRenderer({canvas:canvas, antialias:true, alpha:true}); }
     catch(_){ fail(); return; }
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.75));
     var scene = new T.Scene(), cam = new T.PerspectiveCamera(34, 1, 0.1, 80);
     window.IMX3D.stage(T, renderer, scene);
     scene.add(new T.HemisphereLight(0xfff4e0, 0x1b1d29, 0.3));
