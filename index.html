@@ -2392,6 +2392,10 @@
     logoEl.style.transform = 'none';
     logoEl.style.top = from.top + 'px';
     logoEl.style.left = from.left + 'px';
+    logoEl.style.transformOrigin = 'top left';
+    // змушуємо браузер зафіксувати цей стан до старту переходу: інакше перехід стартує
+    // від старого translate(-50%,-50%) і напис стрибає вліво-вгору на пів своєї ширини
+    void logoEl.offsetWidth;
 
     var scale = to.height / from.height;
     var dx = to.left - from.left;
