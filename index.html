@@ -753,6 +753,38 @@
   }
   .kit-unsure:hover{color:var(--amber);}
 
+  /* ---------- КЕЙСИ ---------- */
+  .cases{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+  @media (max-width:980px){ .cases{grid-template-columns:1fr 1fr;} }
+  @media (max-width:700px){ .cases{grid-template-columns:1fr;} }
+  .case{
+    display:flex;flex-direction:column;border:1px solid var(--line);border-radius:var(--radius);
+    background:var(--ink-2);overflow:hidden;transition:border-color .2s ease,transform .2s ease;
+  }
+  .case:hover{border-color:var(--line-strong);transform:translateY(-2px);}
+  .case-bar{
+    display:flex;align-items:center;gap:8px;padding:12px 18px;border-bottom:1px solid var(--line);
+    font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text-dim);background:rgba(255,255,255,.02);
+  }
+  .case-bar::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 0 3px rgba(123,201,154,.15);}
+  .case-bar span{margin-left:auto;color:var(--green);}
+  .case-body{display:flex;flex-direction:column;flex:1;padding:22px 22px 24px;}
+  .case-meta{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-dim);margin-bottom:12px;}
+  .case h3{font-size:19px;margin-bottom:10px;}
+  .case p{color:var(--text-dim);font-size:14px;margin-bottom:20px;}
+  .case-num{display:flex;align-items:baseline;gap:14px;padding:16px 0;border-top:1px solid var(--line);margin-top:auto;}
+  .case-num b{font-family:'Unbounded',sans-serif;font-size:34px;line-height:1;color:var(--amber);}
+  .case.plum .case-num b{color:var(--plum);}
+  .case-num span{font-size:13px;color:var(--text-dim);line-height:1.45;}
+  .case-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px;}
+  .case-tags i{font-style:normal;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-dim);border:1px solid var(--line);border-radius:100px;padding:4px 10px;}
+  .case .btn{justify-content:center;}
+  .case.next{background:linear-gradient(155deg,rgba(242,169,60,.07),rgba(168,154,236,.07));}
+  .case.next .case-bar::before{background:var(--amber);box-shadow:0 0 0 3px rgba(242,169,60,.15);}
+  .case.next .case-bar span{color:var(--amber);}
+  .case.next p{margin-bottom:auto;padding-bottom:20px;}
+  @media (prefers-reduced-motion: reduce){ .case:hover{transform:none;} }
+
   /* ---------- ПРОЦЕС на 4 кроки ---------- */
   .process.four{grid-template-columns:repeat(4,1fr);}
   @media (max-width:980px){ .process.four{grid-template-columns:1fr 1fr;} }
@@ -927,6 +959,7 @@
       <a href="#pricing" data-nav>Ціни</a>
       <a href="#process" data-nav>Як працюємо</a>
       <a href="#faq" data-nav>Питання</a>
+      <a href="#cases" data-nav>Кейси</a>
       <a href="#reviews" data-nav>Відгуки</a>
     </div>
     <div class="nav-right">
@@ -941,6 +974,7 @@
     <a href="#pricing">Ціни</a>
     <a href="#process">Як працюємо</a>
     <a href="#faq">Питання</a>
+    <a href="#cases">Кейси</a>
     <a href="#reviews">Відгуки</a>
     <a href="#order" class="btn btn-primary">Залишити заявку</a>
   </div>
@@ -1413,7 +1447,7 @@
       </details>
       <details>
         <summary>Чи є у вас кейси й відгуки?</summary>
-        <div class="ans"><p>Intromax тільки починає роботу з клієнтами, тому відгуків поки мало, і вигадувати їх ми не будемо. Замість них є те, що можна перевірити просто зараз: живий бот у Direct, цей сайт і прозорий прайс. Перші реальні кейси зʼявляться на цій сторінці одразу після здачі.</p></div>
+        <div class="ans"><p>Intromax тільки починає роботу з клієнтами, тому відгуків поки мало, і вигадувати їх ми не будемо. Замість них є те, що можна перевірити просто зараз: два зданих проєкти з живими посиланнями в розділі «Кейси», бот у Direct і прозорий прайс.</p></div>
       </details>
       <details>
         <summary>Як відбувається оплата?</summary>
@@ -1450,6 +1484,49 @@
           <li>Чекаєте «бота, який продасть замість мене» або «сайт, який сам приведе клієнтів» — так не буває</li>
         </ul>
       </div>
+    </div>
+  </div>
+</section>
+
+<section id="cases" class="tint-amber tint-line">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="kicker">Кейси</div>
+      <h2>Проєкти, які можна відкрити просто зараз</h2>
+      <p class="lead" style="font-size:16px;margin-top:16px;">Обидва здані замовникам через Сейф Freelancehunt і працюють у відкритому доступі. Цифри взяті з самих проєктів.</p>
+    </div>
+    <div class="cases">
+      <article class="case bloom">
+        <div class="case-bar">fotoanalyzer.com<span>онлайн</span></div>
+        <div class="case-body">
+          <div class="case-meta">Вебсервіс · розпізнавання рослин · 2026</div>
+          <h3>PhytoAnalyzer AI</h3>
+          <p>Людина завантажує фото рослини й отримує її назву. Замовник бачить журнал запитів, вивантажує його в Excel і щодня отримує резервну копію.</p>
+          <div class="case-num"><b>117</b><span>автотестів перевіряють сервіс перед кожним оновленням</span></div>
+          <div class="case-tags"><i>FastAPI</i><i>Pl@ntNet API</i><i>UA / EN</i><i>здано за 6 днів</i></div>
+          <a href="https://fotoanalyzer.com" class="btn btn-ghost btn-sm" target="_blank" rel="noopener">Відкрити живий сайт ↗</a>
+        </div>
+      </article>
+      <article class="case plum bloom">
+        <div class="case-bar">domlounge.it<span>онлайн</span></div>
+        <div class="case-body">
+          <div class="case-meta">Сайт · ресторан, Італія · 2026</div>
+          <h3>DOM Risto Lounge Bar</h3>
+          <p>Сайт італійського ресторану з кухнею, баром і винною картою. Позиції й ціни власниця змінює сама, а бронювання приходить у WhatsApp.</p>
+          <div class="case-num"><b>3</b><span>меню в CMS, які оновлюються без розробника</span></div>
+          <div class="case-tags"><i>Framer</i><i>CMS</i><i>свій домен</i><i>італійською</i></div>
+          <a href="https://domlounge.it" class="btn btn-ghost btn-sm" target="_blank" rel="noopener">Відкрити живий сайт ↗</a>
+        </div>
+      </article>
+      <article class="case next bloom">
+        <div class="case-bar">ваш-бізнес.ua<span>демо</span></div>
+        <div class="case-body">
+          <div class="case-meta">Наступний кейс</div>
+          <h3>Тут може бути ваш проєкт</h3>
+          <p>Після заявки збираємо демо під вашу задачу: бота з вашими послугами або макет сторінки. Його можна відкрити й понатискати ще до оплати.</p>
+          <button type="button" class="btn btn-primary btn-sm" data-lead="unsure">Отримати демо</button>
+        </div>
+      </article>
     </div>
   </div>
 </section>
@@ -1615,6 +1692,7 @@
         <a href="#process">Як працюємо</a>
         <a href="#terms">Умови роботи</a>
         <a href="#faq">Часті запитання</a>
+        <a href="#cases">Кейси</a>
         <a href="#reviews">Відгуки</a>
       </div>
     </div>
