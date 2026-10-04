@@ -3032,16 +3032,22 @@ window.IMX3D = {
       m.rotation.x = -Math.PI / 2; m.scale.set(size, size * 0.8, 1); m.position.y = -1.5; m.renderOrder = -2; return m;
     }
 
-    function gearGeo(teeth, rOut, rIn, hole, depth){
-      var sh = new T.Shape(), n = teeth * 4;
-      for(var i = 0; i < n; i++){
-        var ph = i % 4, a = (i + (ph === 0 || ph === 2 ? 0.18 : -0.18) * (ph < 2 ? 1 : -1)) / n * Math.PI * 2;
-        var r = ph < 2 ? rOut : rIn;
-        if(i === 0) sh.moveTo(Math.cos(a) * r, Math.sin(a) * r); else sh.lineTo(Math.cos(a) * r, Math.sin(a) * r);
+    function gearGeo(z, mod, hole, depth, lightN, lightR, lightAt){
+      var rp = mod * z / 2, rTip = rp + mod * 0.9, rRoot = rp - mod * 1.1, p = Math.PI * 2 / z, sh = new T.Shape();
+      for(var i = 0; i < z; i++){
+        var a = i * p;
+        [[-0.27, rRoot], [-0.13, rTip], [0.13, rTip], [0.27, rRoot]].forEach(function(q, j){
+          var x = Math.cos(a + q[0] * p) * q[1], y = Math.sin(a + q[0] * p) * q[1];
+          if(i === 0 && j === 0) sh.moveTo(x, y); else sh.lineTo(x, y);
+        });
       }
       sh.closePath();
       var h = new T.Path(); h.absarc(0, 0, hole, 0, Math.PI * 2, true); sh.holes.push(h);
-      return extrude(sh, depth, 0.045);
+      for(var k = 0; k < lightN; k++){
+        var b = (k + 0.5) / lightN * Math.PI * 2, l = new T.Path();
+        l.absarc(Math.cos(b) * lightAt, Math.sin(b) * lightAt, lightR, 0, Math.PI * 2, true); sh.holes.push(l);
+      }
+      return new T.ExtrudeGeometry(sh, {depth:depth, bevelEnabled:true, bevelSize:0.02, bevelThickness:0.02, bevelSegments:4, curveSegments:28}).translate(0, 0, -depth / 2);
     }
 
     function windowModel(scale, cursor){
@@ -3159,13 +3165,28 @@ window.IMX3D = {
         return g;
       },
       'support': function(){
-        var g = new T.Group();
-        var big = mesh(gearGeo(11, 1.12, 0.9, 0.4, 0.3), metal(C.plum, {roughness:0.26}), -0.28, 0.18, 0);
-        big.add(mesh(new T.TorusGeometry(0.42, 0.06, 16, 48), metal(C.amber)));
-        var small = mesh(gearGeo(7, 0.7, 0.52, 0.22, 0.3), metal(C.amber, {roughness:0.2}), 1.02, -0.92, 0);
-        small.add(mesh(new T.TorusGeometry(0.24, 0.045, 14, 40), metal(C.cream)));
-        g.add(big); g.add(small);
-        g.userData.tick = function(t){ big.rotation.z = t * 0.5; small.rotation.z = -t * 0.5 * 11 / 7 + 0.25; };
+        /* дві шестерні з одним модулем: центри на відстані суми ділильних радіусів,
+           швидкості обернено пропорційні числу зубів, зуб однієї входить у западину іншої */
+        var g = new T.Group(), MOD = 0.1, Z1 = 18, Z2 = 12, D = MOD * (Z1 + Z2) / 2, PHI = -0.66;
+        var c1 = [-0.42, 0.3], c2 = [c1[0] + Math.cos(PHI) * D, c1[1] + Math.sin(PHI) * D];
+        function gear(z, color, hole, n, r, at, pos){
+          var w = new T.Group();
+          w.add(mesh(gearGeo(z, MOD, hole, 0.26, n, r, at), metal(color, {roughness:0.24})));
+          w.add(mesh(new T.TorusGeometry(hole + 0.05, 0.035, 14, 48), metal(C.cream, {roughness:0.15}), 0, 0, 0.14));
+          w.add(mesh(new T.TorusGeometry(hole + 0.05, 0.035, 14, 48), metal(C.cream, {roughness:0.15}), 0, 0, -0.14));
+          var axle = mesh(new T.CylinderGeometry(hole * 0.82, hole * 0.82, 0.62, 28), metal(C.mid, {roughness:0.35}));
+          axle.rotation.x = Math.PI / 2;
+          var hold = new T.Group(); hold.add(w); hold.add(axle); hold.position.set(pos[0], pos[1], 0);
+          g.add(hold); return w;
+        }
+        var big = gear(Z1, C.plum, 0.2, 6, 0.13, 0.5, c1);
+        var small = gear(Z2, C.amber, 0.14, 4, 0.085, 0.31, c2);
+        g.userData.tick = function(t){
+          var a = PHI + t * 0.45;
+          big.rotation.z = a;
+          small.rotation.z = PHI + Math.PI - Math.PI / Z2 - (a - PHI) * Z1 / Z2;
+        };
+        g.userData.tick(0);
         return g;
       }
     };
