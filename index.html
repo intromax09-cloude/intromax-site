@@ -805,7 +805,12 @@
     backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
   }
   .orbit.ready .orbit-label{opacity:1;}
-  .orbit-label::before{content:'';display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--amber);margin-right:9px;vertical-align:1px;}
+  .orbit-label{display:flex;align-items:center;min-width:calc(22ch + 78px);text-align:left;}
+  .orbit-label::before{content:'';flex-shrink:0;width:7px;height:7px;border-radius:50%;background:var(--amber);margin-right:9px;}
+  .orbit-caret{flex-shrink:0;width:1.5px;height:1.15em;background:var(--amber);margin-left:2px;animation:blink 1s step-end infinite;}
+  .orbit-arrow{margin-left:auto;padding-left:10px;color:var(--text-dim);}
+  .orbit-label:hover .orbit-arrow{color:var(--amber);}
+  @media (prefers-reduced-motion: reduce){ .orbit-caret{display:none;} }
   .orbit-label:hover{border-color:var(--amber);color:var(--amber);}
   .orbit-hint{position:absolute;left:0;right:0;top:0;text-align:center;font-size:11px;color:var(--text-dim);letter-spacing:.04em;opacity:0;transition:opacity .4s ease;pointer-events:none;}
   .orbit.ready .orbit-hint{opacity:.8;}
@@ -3625,6 +3630,26 @@ window.IMX3D = {
   }
   label.addEventListener('click', function(e){ e.stopPropagation(); goSvc(SATS[front][0]); });
 
+  /* підпис друкується: стара назва стирається, нова набирається — щоразу, коли попереду інша послуга */
+  label.innerHTML = '<span class="orbit-word"></span><span class="orbit-caret"></span><span class="orbit-arrow">→</span>';
+  var wordEl = label.firstChild, typed = '', want = '', typing = null;
+  function typeStep(){
+    typing = null;
+    var keep = want.slice(0, typed.length) === typed;
+    if(!keep) typed = typed.slice(0, -1);
+    else if(typed.length < want.length) typed = want.slice(0, typed.length + 1);
+    else return;
+    wordEl.textContent = typed;
+    var erasing = want.slice(0, typed.length) !== typed;
+    var done = !erasing && typed.length === want.length;
+    if(!done) typing = setTimeout(typeStep, erasing ? 26 : (typed.length ? 52 : 180));
+  }
+  function setWord(w){
+    want = w;
+    if(reduced){ typed = w; wordEl.textContent = w; return; }
+    if(!typing) typing = setTimeout(typeStep, 90);
+  }
+
   function fail(){ box.classList.add('off'); }
   if(!('IntersectionObserver' in window)){ fail(); return; }
   var io = new IntersectionObserver(function(en){
@@ -3732,7 +3757,7 @@ window.IMX3D = {
         h.userData.pulse.visible = k > 0.24 && k < 0.86;
         if(z > best){ best = z; front = i; }
       });
-      if(front !== shown){ shown = front; label.textContent = SATS[front][1] + ' →'; }
+      if(front !== shown){ shown = front; setWord(SATS[front][1]); }
       renderer.render(scene, cam);
     }
     frame();
