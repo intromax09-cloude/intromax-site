@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Intromax — боти, сайти та автоматизація для малого бізнесу</title>
-<meta name="description" content="Instagram- і Telegram-боти, сайти, AI-агенти та автоматизація процесів на n8n: заявки самі потрапляють у CRM, клієнт отримує відповідь за секунду. Запуск від 2 днів, Київ і вся Україна.">
+<meta name="description" content="Боти для Instagram Direct і Telegram, AI-агенти, сайти й автоматизація на n8n для малого бізнесу. Відповідь клієнту за секунду, запуск від 2 днів.">
 <meta name="theme-color" content="#13141c">
 <link rel="canonical" href="https://intromax.com.ua/">
 <!-- Favicon вшито в сам файл (data URI) — не залежить від зовнішніх картинок і не зникає при деплої -->
@@ -17,6 +17,9 @@
 <meta property="og:title" content="Intromax — боти, сайти та автоматизація для малого бізнесу">
 <meta property="og:description" content="Боти в Direct і Telegram, сайти та автоматизація процесів на n8n. Клієнт отримує відповідь за секунду, заявка падає в CRM. Запуск від 2 днів.">
 <meta property="og:image" content="https://intromax.com.ua/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Intromax — боти, сайти та автоматизація для малого бізнесу">
 <meta property="og:url" content="https://intromax.com.ua/">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Intromax — боти, сайти та автоматизація для малого бізнесу">
@@ -24,7 +27,7 @@
 <meta name="twitter:image" content="https://intromax.com.ua/og-image.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600;700;800&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600;700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
 <style>
   :root{
@@ -781,6 +784,104 @@
   .foot-row a:hover{color:var(--amber);}
   .lead-legal a{text-decoration:underline;}
 
+  /* ---------- 3D-СИСТЕМА В «ПОСЛУГАХ» ---------- */
+  .svc-top{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:32px;align-items:center;margin-bottom:44px;}
+  .svc-top .section-head{margin-bottom:0;}
+  @media (max-width:900px){ .svc-top{grid-template-columns:minmax(0,1fr);gap:8px;margin-bottom:32px;} }
+  .orbit{position:relative;height:clamp(300px,36vw,420px);touch-action:pan-y;cursor:grab;user-select:none;-webkit-user-select:none;}
+  .orbit.drag{cursor:grabbing;}
+  .orbit.off{display:none;}
+  .orbit::before{
+    content:'';position:absolute;inset:8% 12%;border-radius:50%;pointer-events:none;
+    background:radial-gradient(closest-side,rgba(242,169,60,.13),rgba(168,154,236,.07) 55%,transparent 75%);
+  }
+  .orbit canvas{position:absolute;inset:0;width:100%;height:100%;display:block;opacity:0;transition:opacity .6s ease;}
+  .orbit.ready canvas{opacity:1;}
+  .orbit-label{
+    position:absolute;left:50%;bottom:6px;transform:translateX(-50%);white-space:nowrap;
+    font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--text);
+    background:rgba(19,20,28,.72);border:1px solid var(--line-strong);border-radius:100px;
+    padding:8px 16px;cursor:pointer;opacity:0;transition:opacity .4s ease,border-color .2s ease,color .2s ease;
+    backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+  }
+  .orbit.ready .orbit-label{opacity:1;}
+  .orbit-label::before{content:'';display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--amber);margin-right:9px;vertical-align:1px;}
+  .orbit-label:hover{border-color:var(--amber);color:var(--amber);}
+  .orbit-hint{position:absolute;left:0;right:0;top:0;text-align:center;font-size:11px;color:var(--text-dim);letter-spacing:.04em;opacity:0;transition:opacity .4s ease;pointer-events:none;}
+  .orbit.ready .orbit-hint{opacity:.8;}
+  .svc.flash{animation:svcflash 1.6s ease;}
+  @keyframes svcflash{
+    0%,100%{box-shadow:0 0 0 0 rgba(242,169,60,0);}
+    20%,60%{box-shadow:0 0 0 2px var(--amber),0 0 40px rgba(242,169,60,.25);}
+  }
+
+  /* ---------- НАВІГАТОР: рейка на десктопі, док на телефоні ---------- */
+  .rail{
+    position:fixed;right:18px;top:50%;transform:translateY(-50%);z-index:40;
+    display:none;flex-direction:column;gap:2px;align-items:flex-end;
+  }
+  @media (min-width:1240px){ .rail{display:flex;} }
+  .rail a{display:flex;align-items:center;gap:10px;padding:5px 4px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-dim);}
+  .rail a span{
+    opacity:0;transform:translateX(6px);transition:opacity .2s ease,transform .2s ease;
+    background:rgba(19,20,28,.85);border:1px solid var(--line);border-radius:100px;padding:3px 10px;white-space:nowrap;
+  }
+  .rail:hover a span,.rail a.on span,.rail a:focus-visible span{opacity:1;transform:none;}
+  .rail a i{width:7px;height:7px;border-radius:50%;background:var(--line-strong);transition:transform .25s ease,background .25s ease,box-shadow .25s ease;flex-shrink:0;}
+  .rail a.seen i{background:var(--amber-dim);}
+  .rail a.on{color:var(--text);}
+  .rail a.on i{background:var(--amber);transform:scale(1.5);box-shadow:0 0 12px rgba(242,169,60,.7);}
+  .rail a:hover{color:var(--amber);}
+
+  .dock{
+    position:fixed;left:50%;bottom:calc(14px + env(safe-area-inset-bottom));z-index:45;
+    transform:translate(-50%,calc(100% + 40px));transition:transform .35s cubic-bezier(.2,.8,.25,1);
+    display:flex;align-items:center;gap:6px;padding:6px;border-radius:100px;
+    background:rgba(27,29,41,.88);border:1px solid var(--line-strong);
+    backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:0 12px 40px rgba(0,0,0,.45);
+    max-width:calc(100vw - 24px);
+  }
+  .dock.show{transform:translate(-50%,0);}
+  @media (min-width:1240px){ .dock,.dock-sheet,.dock-veil{display:none !important;} }
+  .modal-lock .dock{display:none;}
+  .dock-where{
+    display:flex;align-items:center;gap:10px;min-width:0;background:none;border:none;color:var(--text);
+    font:inherit;font-size:14px;font-weight:600;padding:6px 10px 6px 6px;cursor:pointer;border-radius:100px;
+  }
+  .dock-where #dock-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:42vw;}
+  .dock-ring{
+    --p:0;width:30px;height:30px;border-radius:50%;flex-shrink:0;display:grid;place-items:center;
+    background:conic-gradient(var(--amber) calc(var(--p) * 1%),var(--line-strong) 0);
+  }
+  .dock-ring i{
+    width:24px;height:24px;border-radius:50%;background:var(--ink-2);display:grid;place-items:center;
+    font-style:normal;font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--text-dim);
+  }
+  .dock-caret{font-size:10px;color:var(--text-dim);transition:transform .25s ease;}
+  .dock-where[aria-expanded="true"] .dock-caret{transform:rotate(180deg);}
+  .dock-cta{background:var(--amber);color:#1a1206;font-weight:700;font-size:14px;padding:10px 18px;border-radius:100px;white-space:nowrap;}
+  .dock-veil{position:fixed;inset:0;z-index:43;background:rgba(10,10,16,.55);opacity:0;pointer-events:none;transition:opacity .25s ease;}
+  .dock-veil.open{opacity:1;pointer-events:auto;}
+  .dock-sheet{
+    position:fixed;left:12px;right:12px;bottom:calc(76px + env(safe-area-inset-bottom));z-index:44;
+    max-width:420px;margin:0 auto;max-height:min(62vh,520px);overflow-y:auto;
+    background:var(--ink-2);border:1px solid var(--line-strong);border-radius:22px;padding:10px;
+    opacity:0;transform:translateY(16px) scale(.98);pointer-events:none;
+    transition:opacity .25s ease,transform .25s cubic-bezier(.2,.8,.25,1);
+    box-shadow:0 20px 60px rgba(0,0,0,.5);
+  }
+  .dock-sheet.open{opacity:1;transform:none;pointer-events:auto;}
+  .dock-sheet a{display:flex;align-items:center;gap:14px;padding:12px 14px;border-radius:14px;font-size:15px;font-weight:600;}
+  .dock-sheet a b{font-family:'JetBrains Mono',monospace;font-weight:500;font-size:11px;color:var(--text-dim);width:18px;}
+  .dock-sheet a em{margin-left:auto;font-style:normal;font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--amber);opacity:0;}
+  .dock-sheet a.on{background:rgba(242,169,60,.08);color:var(--amber);}
+  .dock-sheet a.on em{opacity:1;}
+  .dock-sheet a.seen b{color:var(--amber-dim);}
+  @media (prefers-reduced-motion: reduce){
+    .dock,.dock-sheet,.rail a span,.rail a i{transition:none;}
+    .svc.flash{animation:none;}
+  }
+
   /* ---------- КЕЙСИ ---------- */
   .cases{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
   @media (max-width:980px){ .cases{grid-template-columns:1fr 1fr;} }
@@ -967,6 +1068,7 @@
   }
 
 </style>
+<noscript><style>#intro{display:none}.bloom,.navlinks a,.nav-cta{opacity:1;transform:none}</style></noscript>
 </head>
 <body>
 <div class="grain"></div>
@@ -984,10 +1086,10 @@
     <div class="logo" id="brand-logo"><span class="logo-dot"></span><span class="logo-word" role="img" aria-label="Intromax"><i>I</i><i>n</i><i>t</i><i>r</i><i>o</i><i>m</i><i>a</i><i>x</i></span></div>
     <div class="navlinks">
       <a href="#services" data-nav>Послуги</a>
+      <a href="#cases" data-nav>Кейси</a>
       <a href="#pricing" data-nav>Ціни</a>
       <a href="#process" data-nav>Як працюємо</a>
       <a href="#faq" data-nav>Питання</a>
-      <a href="#cases" data-nav>Кейси</a>
       <a href="#reviews" data-nav>Відгуки</a>
     </div>
     <div class="nav-right">
@@ -1015,8 +1117,8 @@
       <h1>Поки ви спите,<br><em>бізнес відповідає сам</em></h1>
       <p class="lead">Робимо ботів для Direct і Telegram, сайти та автоматизацію процесів. Клієнт отримує відповідь за секунду, а заявка потрапляє у вашу таблицю або CRM.</p>
       <div class="hero-actions">
-        <a href="#order" class="btn btn-primary">Залишити заявку →</a>
-        <a href="#pricing" class="btn btn-ghost">Подивитись ціни</a>
+        <a href="#order" class="btn btn-primary">Порахувати ціну →</a>
+        <a href="#cases" class="btn btn-ghost">Подивитись кейси</a>
       </div>
     </div>
     <div class="phone bloom" data-hero>
@@ -1094,10 +1196,17 @@
 
 <section id="services" class="tint-amber tint-line">
   <div class="wrap">
-    <div class="section-head">
-      <div class="kicker">Послуги</div>
-      <h2>Шість послуг, з яких складається ваша система</h2>
-      <p class="lead" style="font-size:16px;margin-top:16px;">Кожна працює окремо. Разом вони дають один ланцюжок: клієнт пише, бот відповідає, сайт показує ціни, заявка потрапляє у вашу таблицю або CRM.</p>
+    <div class="svc-top">
+      <div class="section-head">
+        <div class="kicker">Послуги</div>
+        <h2>Шість послуг, з яких складається ваша система</h2>
+        <p class="lead" style="font-size:16px;margin-top:16px;">Кожна працює окремо. Разом вони дають один ланцюжок: клієнт пише, бот відповідає, сайт показує ціни, заявка потрапляє у вашу таблицю або CRM.</p>
+      </div>
+      <div class="orbit" id="orbit">
+        <canvas aria-hidden="true"></canvas>
+        <div class="orbit-hint mono" aria-hidden="true">крутіть систему · торкніться послуги</div>
+        <button type="button" class="orbit-label" id="orbit-label" aria-label="Перейти до послуги"></button>
+      </div>
     </div>
 
     <div class="svc-grid">
@@ -1230,6 +1339,49 @@
   </div>
 </section>
 
+<section id="cases" class="tint-plum tint-line">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="kicker">Кейси</div>
+      <h2>Проєкти, які можна відкрити просто зараз</h2>
+      <p class="lead" style="font-size:16px;margin-top:16px;">Обидва здані замовникам через Сейф Freelancehunt і працюють у відкритому доступі. Цифри взяті з самих проєктів.</p>
+    </div>
+    <div class="cases">
+      <article class="case bloom">
+        <div class="case-bar">fotoanalyzer.com<span>онлайн</span></div>
+        <div class="case-body">
+          <div class="case-meta">Вебсервіс · розпізнавання рослин · 2026</div>
+          <h3>PhytoAnalyzer AI</h3>
+          <p>Людина завантажує фото рослини й отримує її назву. Замовник бачить журнал запитів, вивантажує його в Excel і щодня отримує резервну копію.</p>
+          <div class="case-num"><b>117</b><span>автотестів перевіряють сервіс перед кожним оновленням</span></div>
+          <div class="case-tags"><i>FastAPI</i><i>Pl@ntNet API</i><i>UA / EN</i><i>здано за 6 днів</i></div>
+          <a href="https://fotoanalyzer.com" class="btn btn-ghost btn-sm" target="_blank" rel="noopener">Відкрити живий сайт ↗</a>
+        </div>
+      </article>
+      <article class="case plum bloom">
+        <div class="case-bar">domlounge.it<span>онлайн</span></div>
+        <div class="case-body">
+          <div class="case-meta">Сайт · ресторан, Італія · 2026</div>
+          <h3>DOM Risto Lounge Bar</h3>
+          <p>Сайт італійського ресторану з кухнею, баром і винною картою. Позиції й ціни власниця змінює сама, а бронювання приходить у WhatsApp.</p>
+          <div class="case-num"><b>3</b><span>меню в CMS, які оновлюються без розробника</span></div>
+          <div class="case-tags"><i>Framer</i><i>CMS</i><i>свій домен</i><i>італійською</i></div>
+          <a href="https://domlounge.it" class="btn btn-ghost btn-sm" target="_blank" rel="noopener">Відкрити живий сайт ↗</a>
+        </div>
+      </article>
+      <article class="case next bloom">
+        <div class="case-bar">ваш-бізнес.ua<span>демо</span></div>
+        <div class="case-body">
+          <div class="case-meta">Наступний кейс</div>
+          <h3>Тут може бути ваш проєкт</h3>
+          <p>Після заявки збираємо демо під вашу задачу: бота з вашими послугами або макет сторінки. Його можна відкрити й понатискати ще до оплати.</p>
+          <button type="button" class="btn btn-primary btn-sm" data-lead="unsure">Отримати демо</button>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
 <section id="order" class="tint-line">
   <div class="wrap">
     <div class="section-head">
@@ -1248,7 +1400,7 @@
           <div class="kit-dots" id="kit-dots" aria-hidden="true"></div>
         </div>
         <div class="kit-info" aria-live="polite">
-          <h3 id="kit-title"></h3>
+          <h3 id="kit-title">Бот у Direct</h3>
           <p id="kit-desc"></p>
           <div class="kit-meta"><b id="kit-price"></b><span id="kit-term"></span></div>
           <button type="button" class="btn btn-ghost" id="kit-add">Додати в комплект</button>
@@ -1324,7 +1476,7 @@
       </div>
       <div class="term bloom">
         <h3>Все лишається вашим</h3>
-        <p>Бот, сайт і сценарії живуть у ваших акаунтах. Ніщо не тримається на моєму доступі.</p>
+        <p>Бот, сайт і сценарії живуть у ваших акаунтах. Ніщо не тримається на нашому доступі.</p>
       </div>
     </div>
   </div>
@@ -1544,49 +1696,6 @@
           <li>Чекаєте «бота, який продасть замість мене» або «сайт, який сам приведе клієнтів» — так не буває</li>
         </ul>
       </div>
-    </div>
-  </div>
-</section>
-
-<section id="cases" class="tint-amber tint-line">
-  <div class="wrap">
-    <div class="section-head">
-      <div class="kicker">Кейси</div>
-      <h2>Проєкти, які можна відкрити просто зараз</h2>
-      <p class="lead" style="font-size:16px;margin-top:16px;">Обидва здані замовникам через Сейф Freelancehunt і працюють у відкритому доступі. Цифри взяті з самих проєктів.</p>
-    </div>
-    <div class="cases">
-      <article class="case bloom">
-        <div class="case-bar">fotoanalyzer.com<span>онлайн</span></div>
-        <div class="case-body">
-          <div class="case-meta">Вебсервіс · розпізнавання рослин · 2026</div>
-          <h3>PhytoAnalyzer AI</h3>
-          <p>Людина завантажує фото рослини й отримує її назву. Замовник бачить журнал запитів, вивантажує його в Excel і щодня отримує резервну копію.</p>
-          <div class="case-num"><b>117</b><span>автотестів перевіряють сервіс перед кожним оновленням</span></div>
-          <div class="case-tags"><i>FastAPI</i><i>Pl@ntNet API</i><i>UA / EN</i><i>здано за 6 днів</i></div>
-          <a href="https://fotoanalyzer.com" class="btn btn-ghost btn-sm" target="_blank" rel="noopener">Відкрити живий сайт ↗</a>
-        </div>
-      </article>
-      <article class="case plum bloom">
-        <div class="case-bar">domlounge.it<span>онлайн</span></div>
-        <div class="case-body">
-          <div class="case-meta">Сайт · ресторан, Італія · 2026</div>
-          <h3>DOM Risto Lounge Bar</h3>
-          <p>Сайт італійського ресторану з кухнею, баром і винною картою. Позиції й ціни власниця змінює сама, а бронювання приходить у WhatsApp.</p>
-          <div class="case-num"><b>3</b><span>меню в CMS, які оновлюються без розробника</span></div>
-          <div class="case-tags"><i>Framer</i><i>CMS</i><i>свій домен</i><i>італійською</i></div>
-          <a href="https://domlounge.it" class="btn btn-ghost btn-sm" target="_blank" rel="noopener">Відкрити живий сайт ↗</a>
-        </div>
-      </article>
-      <article class="case next bloom">
-        <div class="case-bar">ваш-бізнес.ua<span>демо</span></div>
-        <div class="case-body">
-          <div class="case-meta">Наступний кейс</div>
-          <h3>Тут може бути ваш проєкт</h3>
-          <p>Після заявки збираємо демо під вашу задачу: бота з вашими послугами або макет сторінки. Його можна відкрити й понатискати ще до оплати.</p>
-          <button type="button" class="btn btn-primary btn-sm" data-lead="unsure">Отримати демо</button>
-        </div>
-      </article>
     </div>
   </div>
 </section>
@@ -1895,7 +2004,7 @@
       '</div>' +
       '<div class="reviews-cta">' +
         '<button type="button" class="btn btn-ghost" data-open-review>Залишити відгук</button>' +
-        '<span class="hint">Працювали зі мною? Відгук займе хвилину.</span>' +
+        '<span class="hint">Працювали з нами? Відгук займе хвилину.</span>' +
       '</div>';
 
     wireScroller();
@@ -2236,6 +2345,10 @@
   }
   setupTapFill();
 
+  try{
+    if(introEl && sessionStorage.getItem('intro')){ introEl.remove(); introEl = null; }
+    else sessionStorage.setItem('intro', '1');
+  }catch(_){}
   if(reduceMotion || !introEl){
     if(introEl) introEl.remove();
     document.querySelectorAll('[data-nav],[data-hero],.bloom').forEach(function(el){ el.classList.add('reveal'); });
@@ -2807,21 +2920,21 @@
 <script type="application/ld+json">
 {
   "@context":"https://schema.org",
-  "@type":"ProfessionalService",
+  "@type":"Organization",
   "name":"Intromax",
   "description":"Боти для Instagram Direct і Telegram, сайти та автоматизація бізнес-процесів на n8n для малого бізнесу.",
   "url":"https://intromax.com.ua/",
-  "areaServed":"UA",
-  "address":{"@type":"PostalAddress","addressLocality":"Київ","addressCountry":"UA"},
+  "logo":"https://intromax.com.ua/favicon-180.png",
+  "image":"https://intromax.com.ua/og-image.png",
+  "areaServed":{"@type":"Country","name":"UA"},
   "sameAs":["https://www.instagram.com/intromax.tech/","https://t.me/Intromax_tech"],
-  "priceRange":"$100-$900",
   "makesOffer":[
-    {"@type":"Offer","name":"Бот у Instagram Direct","priceCurrency":"USD","price":"100"},
-    {"@type":"Offer","name":"Telegram-бот","priceCurrency":"USD","price":"100"},
-    {"@type":"Offer","name":"AI-агент","priceCurrency":"USD","price":"250"},
-    {"@type":"Offer","name":"Сайт-візитка","priceCurrency":"USD","price":"100"},
-    {"@type":"Offer","name":"Розширений сайт","priceCurrency":"USD","price":"200"},
-    {"@type":"Offer","name":"Автоматизація процесів на n8n","priceCurrency":"USD","price":"100"}
+    {"@type":"Offer","name":"Бот у Instagram Direct","priceSpecification":{"@type":"PriceSpecification","priceCurrency":"USD","minPrice":100,"maxPrice":200}},
+    {"@type":"Offer","name":"Telegram-бот","priceSpecification":{"@type":"PriceSpecification","priceCurrency":"USD","minPrice":100,"maxPrice":180}},
+    {"@type":"Offer","name":"AI-агент","priceSpecification":{"@type":"PriceSpecification","priceCurrency":"USD","minPrice":250,"maxPrice":400}},
+    {"@type":"Offer","name":"Сайт-візитка","priceSpecification":{"@type":"PriceSpecification","priceCurrency":"USD","minPrice":100,"maxPrice":200}},
+    {"@type":"Offer","name":"Розширений сайт","priceSpecification":{"@type":"PriceSpecification","priceCurrency":"USD","minPrice":200,"maxPrice":350}},
+    {"@type":"Offer","name":"Автоматизація процесів на n8n","priceSpecification":{"@type":"PriceSpecification","priceCurrency":"USD","minPrice":100,"maxPrice":300}}
   ]
 }
 </script>
@@ -2830,13 +2943,138 @@
   "@context":"https://schema.org",
   "@type":"FAQPage",
   "mainEntity":[
-    {"@type":"Question","name":"Скільки коштує бот або сайт?","acceptedAnswer":{"@type":"Answer","text":"Базовий бот — $100–200, AI-агент — $250–400, сайт — $100–350, сценарій автоматизації — $100–300. Точну ціну називаємо протягом доби після заявки, до початку роботи."}},
+    {"@type":"Question","name":"Скільки це коштує і від чого залежить ціна?","acceptedAnswer":{"@type":"Answer","text":"Базовий бот — $100–200, AI-агент — $250–400, сайт — $100–350, сценарій автоматизації — $100–300. Точну ціну називаємо протягом доби після заявки, до початку роботи."}},
     {"@type":"Question","name":"Скільки часу займає запуск?","acceptedAnswer":{"@type":"Answer","text":"Базовий бот — 2–3 дні, сайт-візитка — до тижня, AI-агент або розширений сайт — 1–2 тижні. Від вас потрібно 10 хвилин на бриф."}},
-    {"@type":"Question","name":"Чи потрібен пароль від Instagram?","acceptedAnswer":{"@type":"Answer","text":"Ні. Підключення офіційне через Meta: ви самі натискаєте «дозволити» і можете відключити доступ однією кнопкою. Пароль виконавець не бачить."}},
+    {"@type":"Question","name":"Чи потрібен вам пароль від мого Instagram?","acceptedAnswer":{"@type":"Answer","text":"Ні. Підключення офіційне, через кнопку Instagram у самому сервісі: ви заходите під собою і тиснете «дозволити». Пароль ми не бачимо, і відключити доступ можна в будь-який момент однією кнопкою."}},
     {"@type":"Question","name":"Що буде, якщо бот не зрозуміє клієнта?","acceptedAnswer":{"@type":"Answer","text":"Бот не вигадує відповідь: він каже, що передасть питання людині, і лишає повідомлення власнику. У кожному боті є кнопка «покликати людину»."}},
     {"@type":"Question","name":"Що таке автоматизація на n8n простими словами?","acceptedAnswer":{"@type":"Answer","text":"Це коли сервіси передають дані один одному без вас: заявка з сайту потрапляє в CRM або таблицю, вам приходить сповіщення, а клієнту — нагадування за добу до візиту."}}
   ]
 }
+</script>
+
+<script>
+/* Спільне для обох 3D-сцен: одне завантаження three.js і одні будівники моделей */
+window.IMX3D = {
+  load: function(){
+    return this._p || (this._p = import('https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.min.js'));
+  },
+  models: function(T){
+    var C = {amber:0xf2a93c, plum:0xa89aec, cream:0xeee9db, ink:0x1b1d29, slate:0x343850, mid:0x4b4e66, green:0x7bc99a};
+    function mat(c, o){
+      var p = {color:c, roughness:0.4, metalness:0.2};
+      if(o) for(var k in o) p[k] = o[k];
+      return new T.MeshStandardMaterial(p);
+    }
+    function mesh(geo, m, x, y, z){
+      var o = new T.Mesh(geo, m); o.position.set(x || 0, y || 0, z || 0); return o;
+    }
+    function rrShape(w, h, r){
+      var s = new T.Shape(), x = -w / 2, y = -h / 2;
+      s.moveTo(x + r, y);
+      s.lineTo(x + w - r, y); s.quadraticCurveTo(x + w, y, x + w, y + r);
+      s.lineTo(x + w, y + h - r); s.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+      s.lineTo(x + r, y + h); s.quadraticCurveTo(x, y + h, x, y + h - r);
+      s.lineTo(x, y + r); s.quadraticCurveTo(x, y, x + r, y);
+      return s;
+    }
+    function extrude(shape, d, bevel){
+      var b = bevel == null ? 0.05 : bevel;
+      var g = new T.ExtrudeGeometry(shape, {depth:d, bevelEnabled:b > 0, bevelSize:b, bevelThickness:b, bevelSegments:3, curveSegments:18});
+      g.center(); return g;
+    }
+    function rbox(w, h, d, r, bevel){ return extrude(rrShape(w, h, r), d, bevel); }
+
+    function windowModel(s){
+      var g = new T.Group();
+      g.add(mesh(rbox(2.7, 1.9, 0.16, 0.2), mat(C.slate)));
+      g.add(mesh(rbox(2.5, 0.26, 0.06, 0.1, 0.02), mat(C.mid), 0, 0.72, 0.12));
+      [C.amber, C.plum, C.green].forEach(function(c, i){
+        g.add(mesh(new T.SphereGeometry(0.055, 16, 12), mat(c), -1.08 + i * 0.17, 0.72, 0.19));
+      });
+      g.add(mesh(rbox(1.0, 0.18, 0.05, 0.06, 0.015), mat(C.cream), -0.6, 0.3, 0.13));
+      g.add(mesh(rbox(1.2, 0.07, 0.04, 0.03, 0.01), mat(C.mid), -0.5, 0.02, 0.13));
+      g.add(mesh(rbox(0.9, 0.07, 0.04, 0.03, 0.01), mat(C.mid), -0.65, -0.14, 0.13));
+      g.add(mesh(rbox(0.62, 0.22, 0.07, 0.1, 0.02), mat(C.amber), -0.79, -0.5, 0.14));
+      g.add(mesh(rbox(0.85, 0.95, 0.06, 0.1, 0.02), mat(C.plum), 0.72, -0.18, 0.13));
+      g.scale.setScalar(s || 1);
+      return g;
+    }
+
+    var BUILD = {
+      'ig-bot': function(){
+        var g = new T.Group();
+        var sh = rrShape(2.3, 2.3, 0.66); sh.holes.push(rrShape(1.72, 1.72, 0.42));
+        g.add(mesh(extrude(sh, 0.36, 0.06), mat(C.amber)));
+        g.add(mesh(new T.TorusGeometry(0.47, 0.13, 20, 56), mat(C.cream)));
+        g.add(mesh(new T.SphereGeometry(0.13, 24, 18), mat(C.plum), 0.55, 0.55, 0));
+        return g;
+      },
+      'tg-bot': function(){
+        var g = new T.Group();
+        var Nn = [1.5, 0.05, 0], L = [-1.1, 0.25, 1.0], R = [-1.1, 0.25, -1.0], Cc = [-0.7, 0.05, 0], K = [-0.95, -0.6, 0];
+        var v = [].concat(Nn, L, Cc, Nn, Cc, R, Nn, Cc, K);
+        var geo = new T.BufferGeometry();
+        geo.setAttribute('position', new T.Float32BufferAttribute(v, 3));
+        geo.computeVertexNormals();
+        var plane = new T.Mesh(geo, mat(C.plum, {side:T.DoubleSide, flatShading:true, roughness:0.55}));
+        plane.rotation.set(0.25, 0, 0.3);
+        g.add(plane);
+        return g;
+      },
+      'ai-agent': function(){
+        var g = new T.Group();
+        g.add(mesh(rbox(2.0, 1.55, 1.1, 0.42, 0.08), mat(C.cream)));
+        g.add(mesh(rbox(1.5, 0.95, 0.1, 0.28, 0.03), mat(C.ink, {roughness:0.25}), 0, -0.02, 0.62));
+        var eye = mat(C.amber, {emissive:C.amber, emissiveIntensity:0.9});
+        g.add(mesh(new T.SphereGeometry(0.15, 24, 18), eye, -0.36, 0.08, 0.68));
+        g.add(mesh(new T.SphereGeometry(0.15, 24, 18), eye, 0.36, 0.08, 0.68));
+        g.add(mesh(rbox(0.46, 0.07, 0.04, 0.03, 0.01), mat(C.cream), 0, -0.3, 0.7));
+        g.add(mesh(new T.CylinderGeometry(0.04, 0.04, 0.42, 12), mat(C.mid), 0, 1.05, 0));
+        g.add(mesh(new T.SphereGeometry(0.12, 20, 16), mat(C.plum, {emissive:C.plum, emissiveIntensity:0.5}), 0, 1.3, 0));
+        var ear = new T.CylinderGeometry(0.2, 0.2, 0.16, 24);
+        var e1 = mesh(ear, mat(C.plum), -1.12, 0, 0); e1.rotation.z = Math.PI / 2; g.add(e1);
+        var e2 = mesh(ear, mat(C.plum), 1.12, 0, 0); e2.rotation.z = Math.PI / 2; g.add(e2);
+        g.position.y = -0.15;
+        var w = new T.Group(); w.add(g); return w;
+      },
+      'site': function(){ return windowModel(1); },
+      'site-pro': function(){
+        var g = new T.Group();
+        [[-0.38, 0.3, -0.55], [0, 0, 0], [0.38, -0.3, 0.55]].forEach(function(p){
+          var w = windowModel(0.78); w.position.set(p[0], p[1], p[2]); g.add(w);
+        });
+        return g;
+      },
+      'automation': function(){
+        var g = new T.Group();
+        var A = new T.Vector3(-1.05, 0.7, 0), B = new T.Vector3(1.1, 0.55, 0.2), D = new T.Vector3(0, -0.85, -0.1);
+        var curve = new T.CatmullRomCurve3([A, B, D], true, 'catmullrom', 0.6);
+        g.add(mesh(new T.TubeGeometry(curve, 90, 0.045, 10, true), mat(C.mid)));
+        g.add(mesh(new T.SphereGeometry(0.34, 28, 20), mat(C.amber), A.x, A.y, A.z));
+        g.add(mesh(new T.SphereGeometry(0.34, 28, 20), mat(C.plum), B.x, B.y, B.z));
+        g.add(mesh(new T.SphereGeometry(0.34, 28, 20), mat(C.cream), D.x, D.y, D.z));
+        var pulse = mesh(new T.SphereGeometry(0.1, 16, 12), mat(C.green, {emissive:C.green, emissiveIntensity:1.2}));
+        g.add(pulse);
+        g.userData.tick = function(t){ pulse.position.copy(curve.getPointAt((t * 0.22) % 1)); };
+        return g;
+      },
+      'support': function(){
+        var g = new T.Group(), teeth = 9, sh = new T.Shape();
+        for(var i = 0; i < teeth * 4; i++){
+          var a = i / (teeth * 4) * Math.PI * 2, r = (i % 4 < 2) ? 1.15 : 0.88;
+          if(i === 0) sh.moveTo(Math.cos(a) * r, Math.sin(a) * r); else sh.lineTo(Math.cos(a) * r, Math.sin(a) * r);
+        }
+        sh.closePath();
+        var hole = new T.Path(); hole.absarc(0, 0, 0.42, 0, Math.PI * 2, true); sh.holes.push(hole);
+        g.add(mesh(extrude(sh, 0.34, 0.05), mat(C.plum)));
+        g.add(mesh(new T.TorusGeometry(0.42, 0.07, 14, 40), mat(C.amber)));
+        return g;
+      }
+    };
+
+    return {BUILD:BUILD, mat:mat, mesh:mesh, C:C};
+  }
+};
 </script>
 
 <script>
@@ -2984,6 +3222,7 @@
 
   function toggle(k){
     picked[k] = !picked[k];
+    if(picked[k]){ fx.jump = 1; fx.spin = 10; }
     /* візитка і розширений сайт — один сайт, тож лишається останній обраний */
     if(picked[k] && k === 'site') picked['site-pro'] = false;
     if(picked[k] && k === 'site-pro') picked['site'] = false;
@@ -2999,7 +3238,7 @@
   });
 
   /* свайп: тягнете модель — ряд їде за пальцем, відпустили — доводка до сусідньої */
-  var drag = 0, startX = null;
+  var drag = 0, startX = null, fx = {spin:0, jump:0};
   stage.addEventListener('pointerdown', function(e){
     if(e.target.closest('.kit-arrow')) return;
     startX = e.clientX; stage.classList.add('drag');
@@ -3012,6 +3251,7 @@
   function endDrag(){
     if(startX === null) return;
     if(drag < -0.12) go(cur + 1); else if(drag > 0.12) go(cur - 1);
+    else if(Math.abs(drag) < 0.02) fx.spin = 14; /* торкнулись моделі — вона розкручується */
     drag = 0; startX = null; stage.classList.remove('drag');
   }
   stage.addEventListener('pointerup', endDrag);
@@ -3025,7 +3265,7 @@
 
   function start(){
     if(started) return; started = true;
-    import('https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.min.js')
+    window.IMX3D.load()
       .then(function(T){ init3d(T); })
       .catch(function(){ /* лишається іконка */ });
   }
@@ -3051,118 +3291,7 @@
     var rimA = new T.DirectionalLight(0xf2a93c, 1.6); rimA.position.set(-5, 1, -2); scene.add(rimA);
     var rimP = new T.DirectionalLight(0xa89aec, 1.6); rimP.position.set(5, -2, -2); scene.add(rimP);
 
-    var C = {amber:0xf2a93c, plum:0xa89aec, cream:0xeee9db, ink:0x1b1d29, slate:0x343850, mid:0x4b4e66, green:0x7bc99a};
-    function mat(c, o){
-      var p = {color:c, roughness:0.4, metalness:0.2};
-      if(o) for(var k in o) p[k] = o[k];
-      return new T.MeshStandardMaterial(p);
-    }
-    function mesh(geo, m, x, y, z){
-      var o = new T.Mesh(geo, m); o.position.set(x || 0, y || 0, z || 0); return o;
-    }
-    function rrShape(w, h, r){
-      var s = new T.Shape(), x = -w / 2, y = -h / 2;
-      s.moveTo(x + r, y);
-      s.lineTo(x + w - r, y); s.quadraticCurveTo(x + w, y, x + w, y + r);
-      s.lineTo(x + w, y + h - r); s.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
-      s.lineTo(x + r, y + h); s.quadraticCurveTo(x, y + h, x, y + h - r);
-      s.lineTo(x, y + r); s.quadraticCurveTo(x, y, x + r, y);
-      return s;
-    }
-    function extrude(shape, d, bevel){
-      var b = bevel == null ? 0.05 : bevel;
-      var g = new T.ExtrudeGeometry(shape, {depth:d, bevelEnabled:b > 0, bevelSize:b, bevelThickness:b, bevelSegments:3, curveSegments:18});
-      g.center(); return g;
-    }
-    function rbox(w, h, d, r, bevel){ return extrude(rrShape(w, h, r), d, bevel); }
-
-    function windowModel(s){
-      var g = new T.Group();
-      g.add(mesh(rbox(2.7, 1.9, 0.16, 0.2), mat(C.slate)));
-      g.add(mesh(rbox(2.5, 0.26, 0.06, 0.1, 0.02), mat(C.mid), 0, 0.72, 0.12));
-      [C.amber, C.plum, C.green].forEach(function(c, i){
-        g.add(mesh(new T.SphereGeometry(0.055, 16, 12), mat(c), -1.08 + i * 0.17, 0.72, 0.19));
-      });
-      g.add(mesh(rbox(1.0, 0.18, 0.05, 0.06, 0.015), mat(C.cream), -0.6, 0.3, 0.13));
-      g.add(mesh(rbox(1.2, 0.07, 0.04, 0.03, 0.01), mat(C.mid), -0.5, 0.02, 0.13));
-      g.add(mesh(rbox(0.9, 0.07, 0.04, 0.03, 0.01), mat(C.mid), -0.65, -0.14, 0.13));
-      g.add(mesh(rbox(0.62, 0.22, 0.07, 0.1, 0.02), mat(C.amber), -0.79, -0.5, 0.14));
-      g.add(mesh(rbox(0.85, 0.95, 0.06, 0.1, 0.02), mat(C.plum), 0.72, -0.18, 0.13));
-      g.scale.setScalar(s || 1);
-      return g;
-    }
-
-    var BUILD = {
-      'ig-bot': function(){
-        var g = new T.Group();
-        var sh = rrShape(2.3, 2.3, 0.66); sh.holes.push(rrShape(1.72, 1.72, 0.42));
-        g.add(mesh(extrude(sh, 0.36, 0.06), mat(C.amber)));
-        g.add(mesh(new T.TorusGeometry(0.47, 0.13, 20, 56), mat(C.cream)));
-        g.add(mesh(new T.SphereGeometry(0.13, 24, 18), mat(C.plum), 0.55, 0.55, 0));
-        return g;
-      },
-      'tg-bot': function(){
-        var g = new T.Group();
-        var Nn = [1.5, 0.05, 0], L = [-1.1, 0.25, 1.0], R = [-1.1, 0.25, -1.0], Cc = [-0.7, 0.05, 0], K = [-0.95, -0.6, 0];
-        var v = [].concat(Nn, L, Cc, Nn, Cc, R, Nn, Cc, K);
-        var geo = new T.BufferGeometry();
-        geo.setAttribute('position', new T.Float32BufferAttribute(v, 3));
-        geo.computeVertexNormals();
-        var plane = new T.Mesh(geo, mat(C.plum, {side:T.DoubleSide, flatShading:true, roughness:0.55}));
-        plane.rotation.set(0.25, 0, 0.3);
-        g.add(plane);
-        return g;
-      },
-      'ai-agent': function(){
-        var g = new T.Group();
-        g.add(mesh(rbox(2.0, 1.55, 1.1, 0.42, 0.08), mat(C.cream)));
-        g.add(mesh(rbox(1.5, 0.95, 0.1, 0.28, 0.03), mat(C.ink, {roughness:0.25}), 0, -0.02, 0.62));
-        var eye = mat(C.amber, {emissive:C.amber, emissiveIntensity:0.9});
-        g.add(mesh(new T.SphereGeometry(0.15, 24, 18), eye, -0.36, 0.08, 0.68));
-        g.add(mesh(new T.SphereGeometry(0.15, 24, 18), eye, 0.36, 0.08, 0.68));
-        g.add(mesh(rbox(0.46, 0.07, 0.04, 0.03, 0.01), mat(C.cream), 0, -0.3, 0.7));
-        g.add(mesh(new T.CylinderGeometry(0.04, 0.04, 0.42, 12), mat(C.mid), 0, 1.05, 0));
-        g.add(mesh(new T.SphereGeometry(0.12, 20, 16), mat(C.plum, {emissive:C.plum, emissiveIntensity:0.5}), 0, 1.3, 0));
-        var ear = new T.CylinderGeometry(0.2, 0.2, 0.16, 24);
-        var e1 = mesh(ear, mat(C.plum), -1.12, 0, 0); e1.rotation.z = Math.PI / 2; g.add(e1);
-        var e2 = mesh(ear, mat(C.plum), 1.12, 0, 0); e2.rotation.z = Math.PI / 2; g.add(e2);
-        g.position.y = -0.15;
-        var w = new T.Group(); w.add(g); return w;
-      },
-      'site': function(){ return windowModel(1); },
-      'site-pro': function(){
-        var g = new T.Group();
-        [[-0.38, 0.3, -0.55], [0, 0, 0], [0.38, -0.3, 0.55]].forEach(function(p){
-          var w = windowModel(0.78); w.position.set(p[0], p[1], p[2]); g.add(w);
-        });
-        return g;
-      },
-      'automation': function(){
-        var g = new T.Group();
-        var A = new T.Vector3(-1.05, 0.7, 0), B = new T.Vector3(1.1, 0.55, 0.2), D = new T.Vector3(0, -0.85, -0.1);
-        var curve = new T.CatmullRomCurve3([A, B, D], true, 'catmullrom', 0.6);
-        g.add(mesh(new T.TubeGeometry(curve, 90, 0.045, 10, true), mat(C.mid)));
-        g.add(mesh(new T.SphereGeometry(0.34, 28, 20), mat(C.amber), A.x, A.y, A.z));
-        g.add(mesh(new T.SphereGeometry(0.34, 28, 20), mat(C.plum), B.x, B.y, B.z));
-        g.add(mesh(new T.SphereGeometry(0.34, 28, 20), mat(C.cream), D.x, D.y, D.z));
-        var pulse = mesh(new T.SphereGeometry(0.1, 16, 12), mat(C.green, {emissive:C.green, emissiveIntensity:1.2}));
-        g.add(pulse);
-        g.userData.tick = function(t){ pulse.position.copy(curve.getPointAt((t * 0.22) % 1)); };
-        return g;
-      },
-      'support': function(){
-        var g = new T.Group(), teeth = 9, sh = new T.Shape();
-        for(var i = 0; i < teeth * 4; i++){
-          var a = i / (teeth * 4) * Math.PI * 2, r = (i % 4 < 2) ? 1.15 : 0.88;
-          if(i === 0) sh.moveTo(Math.cos(a) * r, Math.sin(a) * r); else sh.lineTo(Math.cos(a) * r, Math.sin(a) * r);
-        }
-        sh.closePath();
-        var hole = new T.Path(); hole.absarc(0, 0, 0.42, 0, Math.PI * 2, true); sh.holes.push(hole);
-        g.add(mesh(extrude(sh, 0.34, 0.05), mat(C.plum)));
-        g.add(mesh(new T.TorusGeometry(0.42, 0.07, 14, 40), mat(C.amber)));
-        return g;
-      }
-    };
+    var BUILD = window.IMX3D.models(T).BUILD;
 
     var S = 3.5, row = new T.Group(), models = [];
     scene.add(row);
@@ -3200,15 +3329,227 @@
       models.forEach(function(h, i){
         var m = h.userData.m, on = i === cur, sc = on ? 1 : 0.56;
         h.scale.x += (sc - h.scale.x) * Math.min(1, dt * 8); h.scale.y = h.scale.z = h.scale.x;
-        m.rotation.y += dt * (reduced ? 0.12 : (on ? 0.7 : 0.25));
-        h.position.y = reduced ? 0 : Math.sin(t * 1.1 + i * 1.7) * 0.07;
+        m.rotation.y += dt * (reduced ? 0.12 : (on ? 0.7 + fx.spin : 0.25));
+        h.position.y = (reduced ? 0 : Math.sin(t * 1.1 + i * 1.7) * 0.07) + (on ? Math.sin(fx.jump * Math.PI) * 0.45 : 0);
         h.visible = Math.abs(h.position.x + row.position.x) < S * 1.6;
         if(m.userData.tick) m.userData.tick(t);
       });
+      fx.spin *= Math.pow(0.03, dt); fx.jump = Math.max(0, fx.jump - dt * 2.2);
       renderer.render(scene, cam);
     }
     frame();
     stage.classList.add('ready');
+  }
+})();
+</script>
+
+<nav class="rail" id="rail" aria-label="Розділи сторінки"></nav>
+<div class="dock-veil" id="dock-veil"></div>
+<div class="dock-sheet" id="dock-sheet" role="dialog" aria-label="Розділи сторінки"></div>
+<div class="dock" id="dock">
+  <button type="button" class="dock-where" id="dock-where" aria-expanded="false" aria-controls="dock-sheet">
+    <span class="dock-ring" id="dock-ring"><i id="dock-num">01</i></span>
+    <span id="dock-name">Початок</span>
+    <span class="dock-caret" aria-hidden="true">&#9652;</span>
+  </button>
+  <a href="#order" class="dock-cta">Заявка</a>
+</div>
+
+<script>
+/* ===========================================================================
+   НАВІГАТОР
+   Десктоп — рейка з точками праворуч, телефон — док унизу: де ви зараз,
+   скільки сторінки пройдено, список розділів і кнопка заявки під пальцем.
+   =========================================================================== */
+(function(){
+  var SECTIONS = [
+    ['night','Два сценарії'], ['services','Послуги'], ['cases','Кейси'], ['order','Конструктор'],
+    ['process','Процес'], ['terms','Умови'], ['pricing','Ціни'], ['niches','Ніші'],
+    ['fit','Кому підходить'], ['faq','Питання'], ['reviews','Відгуки'], ['cta','Заявка']
+  ].filter(function(s){ return document.getElementById(s[0]); });
+  var rail = document.getElementById('rail'), dock = document.getElementById('dock');
+  var sheet = document.getElementById('dock-sheet'), veil = document.getElementById('dock-veil');
+  var where = document.getElementById('dock-where'), nameEl = document.getElementById('dock-name');
+  var ring = document.getElementById('dock-ring'), numEl = document.getElementById('dock-num');
+  if(!rail || !dock || !SECTIONS.length) return;
+
+  function pad(n){ return (n < 10 ? '0' : '') + n; }
+  SECTIONS.forEach(function(s, i){
+    rail.insertAdjacentHTML('beforeend', '<a href="#' + s[0] + '"><span>' + s[1] + '</span><i></i></a>');
+    sheet.insertAdjacentHTML('beforeend', '<a href="#' + s[0] + '"><b>' + pad(i + 1) + '</b>' + s[1] + '<em>ви тут</em></a>');
+  });
+  var els = SECTIONS.map(function(s){ return document.getElementById(s[0]); });
+  var footer = document.querySelector('footer');
+
+  function setSheet(open){
+    sheet.classList.toggle('open', open); veil.classList.toggle('open', open);
+    where.setAttribute('aria-expanded', open ? 'true' : 'false');
+  }
+  where.addEventListener('click', function(){ setSheet(!sheet.classList.contains('open')); });
+  veil.addEventListener('click', function(){ setSheet(false); });
+  sheet.addEventListener('click', function(e){ if(e.target.closest('a')) setSheet(false); });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') setSheet(false); });
+
+  var cur = -2, ticking = false;
+  function update(){
+    ticking = false;
+    var y = window.scrollY, vh = window.innerHeight, line = vh * 0.42, idx = -1;
+    for(var i = 0; i < els.length; i++){ if(els[i].getBoundingClientRect().top <= line) idx = i; }
+    var max = document.documentElement.scrollHeight - vh;
+    ring.style.setProperty('--p', max > 0 ? Math.min(100, y / max * 100).toFixed(1) : 0);
+    var nearEnd = footer && footer.getBoundingClientRect().top < vh - 40;
+    dock.classList.toggle('show', idx >= 0 && !nearEnd);
+    if(nearEnd) setSheet(false);
+    if(idx === cur) return;
+    cur = idx;
+    nameEl.textContent = idx < 0 ? 'Початок' : SECTIONS[idx][1];
+    numEl.textContent = pad(Math.max(1, idx + 1));
+    [rail, sheet].forEach(function(box){
+      [].forEach.call(box.children, function(a, i){
+        a.classList.toggle('on', i === idx); a.classList.toggle('seen', i < idx);
+      });
+    });
+  }
+  window.addEventListener('scroll', function(){ if(!ticking){ ticking = true; requestAnimationFrame(update); } }, {passive:true});
+  window.addEventListener('resize', update);
+  update();
+})();
+</script>
+
+<script>
+/* ===========================================================================
+   3D-СИСТЕМА В «ПОСЛУГАХ»
+   Шість послуг обертаються навколо ядра «ваш бізнес». Систему можна крутити,
+   торкання послуги веде до її картки, торкання ядра розганяє орбіту.
+   =========================================================================== */
+(function(){
+  var box = document.getElementById('orbit');
+  if(!box || !window.IMX3D) return;
+  var canvas = box.querySelector('canvas'), label = document.getElementById('orbit-label');
+  var SATS = [['ig-bot','Бот у Direct'], ['tg-bot','Telegram-бот'], ['ai-agent','AI-агент'],
+              ['site','Сайт-візитка'], ['site-pro','Розширений сайт'], ['automation','Автоматизація процесів']];
+  var reduced = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var front = 0;
+
+  function goSvc(key){
+    var el = document.querySelector('.svc[data-svc="' + key + '"]');
+    if(!el) return;
+    el.scrollIntoView({behavior: reduced ? 'auto' : 'smooth', block:'center'});
+    el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+    setTimeout(function(){ el.classList.remove('flash'); }, 1700);
+  }
+  label.addEventListener('click', function(e){ e.stopPropagation(); goSvc(SATS[front][0]); });
+
+  function fail(){ box.classList.add('off'); }
+  if(!('IntersectionObserver' in window)){ fail(); return; }
+  var io = new IntersectionObserver(function(en){
+    if(!en[0].isIntersecting) return;
+    io.disconnect();
+    window.IMX3D.load().then(init).catch(fail);
+  }, {rootMargin:'500px 0px'});
+  io.observe(box);
+
+  function init(T){
+    var renderer;
+    try{ renderer = new T.WebGLRenderer({canvas:canvas, antialias:true, alpha:true}); }
+    catch(_){ fail(); return; }
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    var scene = new T.Scene(), cam = new T.PerspectiveCamera(34, 1, 0.1, 80);
+    scene.add(new T.HemisphereLight(0xfff4e0, 0x1b1d29, 1.5));
+    var key = new T.DirectionalLight(0xffffff, 2.4); key.position.set(3, 5, 6); scene.add(key);
+    var rimA = new T.DirectionalLight(0xf2a93c, 1.6); rimA.position.set(-5, 1, -2); scene.add(rimA);
+    var rimP = new T.DirectionalLight(0xa89aec, 1.6); rimP.position.set(5, -2, -2); scene.add(rimP);
+
+    var M = window.IMX3D.models(T), C = M.C, R = 2.9;
+    var sys = new T.Group(); sys.rotation.x = 0.34; scene.add(sys);
+
+    /* ядро — «ваш бізнес» */
+    var core = new T.Group();
+    core.add(M.mesh(new T.SphereGeometry(0.6, 40, 28), M.mat(C.amber, {emissive:C.amber, emissiveIntensity:0.35, roughness:0.3})));
+    var r1 = M.mesh(new T.TorusGeometry(0.95, 0.03, 12, 80), M.mat(C.cream)); r1.rotation.x = 1.25; core.add(r1);
+    var r2 = M.mesh(new T.TorusGeometry(1.12, 0.022, 12, 80), M.mat(C.plum)); r2.rotation.set(0.5, 0.9, 0); core.add(r2);
+    core.userData.core = true;
+    sys.add(core);
+
+    var path = M.mesh(new T.TorusGeometry(R, 0.012, 8, 140), new T.MeshBasicMaterial({color:C.mid, transparent:true, opacity:0.7}));
+    path.rotation.x = Math.PI / 2; sys.add(path);
+
+    var sats = SATS.map(function(s, i){
+      var h = new T.Group(), m = M.BUILD[s[0]]();
+      m.scale.multiplyScalar(0.42); h.add(m);
+      h.userData = {key:s[0], idx:i, m:m, a:i / SATS.length * Math.PI * 2};
+      sys.add(h);
+      var p = M.mesh(new T.SphereGeometry(0.055, 12, 10), M.mat(C.green, {emissive:C.green, emissiveIntensity:1.3}));
+      sys.add(p); h.userData.pulse = p;
+      return h;
+    });
+
+    function resize(){
+      var w = box.clientWidth, h = box.clientHeight;
+      if(!w || !h) return;
+      renderer.setSize(w, h, false);
+      cam.aspect = w / h;
+      var d = Math.max(8.8, 3.75 / (0.3057 * cam.aspect));
+      cam.position.set(0, d * 0.16, d); cam.lookAt(0, -0.1, 0);
+      cam.updateProjectionMatrix();
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    /* керування: тягнете — крутите, торкаєтесь — переходите */
+    var ang = 0, vel = 0, downX = null, lastX = 0, moved = 0;
+    var ray = new T.Raycaster(), ptr = new T.Vector2();
+    box.addEventListener('pointerdown', function(e){
+      if(e.target === label) return;
+      downX = lastX = e.clientX; moved = 0; box.classList.add('drag');
+      try{ box.setPointerCapture(e.pointerId); }catch(_){}
+    });
+    box.addEventListener('pointermove', function(e){
+      if(downX === null) return;
+      var dx = e.clientX - lastX; lastX = e.clientX; moved += Math.abs(dx);
+      ang += dx * 0.009; vel = dx * 0.5;
+    });
+    function up(e){
+      if(downX === null) return;
+      downX = null; box.classList.remove('drag');
+      if(moved > 6) return;
+      var r = canvas.getBoundingClientRect();
+      ptr.set((e.clientX - r.left) / r.width * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
+      ray.setFromCamera(ptr, cam);
+      var hit = ray.intersectObjects(sys.children, true)[0], o = hit && hit.object;
+      while(o && !(o.userData && (o.userData.key || o.userData.core))) o = o.parent;
+      if(o && o.userData.core){ vel = 9; return; }
+      if(o && o.userData.key) goSvc(o.userData.key);
+    }
+    box.addEventListener('pointerup', up);
+    box.addEventListener('pointercancel', function(){ downX = null; box.classList.remove('drag'); });
+
+    var visible = true;
+    new IntersectionObserver(function(en){ visible = en[0].isIntersecting; }).observe(box);
+    var clock = new T.Clock(), t = 0, shown = -1;
+    function frame(){
+      requestAnimationFrame(frame);
+      if(!visible || document.hidden) return;
+      var dt = Math.min(clock.getDelta(), 0.05); t += dt;
+      if(downX === null) ang += ((reduced ? 0.04 : 0.2) + vel) * dt;
+      vel *= Math.pow(0.08, dt);
+      core.rotation.y += dt * 0.5; r1.rotation.z += dt * 0.6; r2.rotation.z -= dt * 0.4;
+      var best = -1e9;
+      sats.forEach(function(h, i){
+        var a = h.userData.a + ang, x = Math.cos(a) * R, z = Math.sin(a) * R;
+        h.position.set(x, 0, z);
+        h.userData.m.rotation.y += dt * 0.6;
+        if(h.userData.m.userData.tick) h.userData.m.userData.tick(t);
+        var p = (t * 0.35 + i * 0.37) % 1, k = 1 - p;
+        h.userData.pulse.position.set(x * k, 0, z * k);
+        h.userData.pulse.visible = k > 0.24 && k < 0.86;
+        if(z > best){ best = z; front = i; }
+      });
+      if(front !== shown){ shown = front; label.textContent = SATS[front][1] + ' →'; }
+      renderer.render(scene, cam);
+    }
+    frame();
+    box.classList.add('ready');
   }
 })();
 </script>
