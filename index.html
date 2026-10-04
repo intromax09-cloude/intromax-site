@@ -814,11 +814,10 @@
   .orbit-label:hover{border-color:var(--amber);color:var(--amber);}
   .orbit-hint{position:absolute;left:0;right:0;top:0;text-align:center;font-size:11px;color:var(--text-dim);letter-spacing:.04em;opacity:0;transition:opacity .4s ease;pointer-events:none;}
   .orbit.ready .orbit-hint{opacity:.8;}
-  .svc.flash{animation:svcflash 1.6s ease;}
-  @keyframes svcflash{
-    0%,100%{box-shadow:0 0 0 0 rgba(242,169,60,0);}
-    20%,60%{box-shadow:0 0 0 2px var(--amber),0 0 40px rgba(242,169,60,.25);}
-  }
+  /* підсвітка картки, до якої привела 3D-система. Без властивості animation: вона перебивала б анімацію появи, і картка зникала */
+  .svc{transition:border-color .25s ease,transform .25s ease,box-shadow .45s ease;}
+  .svc.flash{border-color:var(--amber);box-shadow:0 0 0 1px var(--amber),0 0 44px rgba(242,169,60,.28);}
+  .svc.plum.flash{border-color:var(--plum);box-shadow:0 0 0 1px var(--plum),0 0 44px rgba(168,154,236,.3);}
 
   /* ---------- НАВІГАТОР: рейка на десктопі, док на телефоні ---------- */
   .rail{
@@ -884,7 +883,6 @@
   .dock-sheet a.seen b{color:var(--amber-dim);}
   @media (prefers-reduced-motion: reduce){
     .dock,.dock-sheet,.rail a span,.rail a i{transition:none;}
-    .svc.flash{animation:none;}
   }
 
   /* ---------- КЕЙСИ ---------- */
@@ -3625,8 +3623,10 @@ window.IMX3D = {
     var el = document.querySelector('.svc[data-svc="' + key + '"]');
     if(!el) return;
     el.scrollIntoView({behavior: reduced ? 'auto' : 'smooth', block:'center'});
-    el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
-    setTimeout(function(){ el.classList.remove('flash'); }, 1700);
+    [].forEach.call(document.querySelectorAll('.svc.flash'), function(o){ o.classList.remove('flash'); });
+    el.classList.add('flash');
+    clearTimeout(goSvc.t);
+    goSvc.t = setTimeout(function(){ el.classList.remove('flash'); }, 2600);
   }
   label.addEventListener('click', function(e){ e.stopPropagation(); goSvc(SATS[front][0]); });
 
