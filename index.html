@@ -2380,7 +2380,9 @@
   }
 
   function flyToHeader(){
-    caretEl.style.display = 'none';
+    // ховаємо курсор без зміни ширини напису — інакше центрований напис стрибає перед польотом
+    caretEl.style.animation = 'none';
+    caretEl.style.visibility = 'hidden';
     var headerLogo = document.querySelector('header .logo');
     if(!headerLogo){ finishIntro(); return; }
     var from = logoEl.getBoundingClientRect();
