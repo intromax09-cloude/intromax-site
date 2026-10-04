@@ -1068,122 +1068,18 @@
   }
 
 
-  /* ---------- ПОВІТРЯ ----------
-     Той самий зміст, менша щільність: більші відступи між розділами й усередині карток,
-     крупніший другорядний текст, спокійніші підзаголовки, деталі за розкриттям. */
-  body{line-height:1.65;}
-  section{padding:128px 0;}
-  .section-head{max-width:620px;margin-bottom:68px;}
-  .kicker{margin-bottom:20px;letter-spacing:.1em;}
-  .section-head h2{line-height:1.14;}
-  .section-head p.lead{color:var(--text-dim);line-height:1.7;margin-top:22px !important;max-width:54ch;}
-  .hero p.lead{line-height:1.65;}
-
-  .svc-grid{gap:26px;}
-  .svc{padding:34px 32px 30px;}
-  .svc-ico{margin-bottom:22px;}
-  .svc h3{margin-bottom:12px;}
-  .svc p{font-size:15px;line-height:1.62;margin-bottom:18px;}
-  .svc li{font-size:14px;line-height:1.5;}
-  .svc ul{gap:10px;}
-  .svc-more{margin:0 0 22px;}
-  .svc-more summary{
-    list-style:none;cursor:pointer;display:inline-flex;align-items:center;gap:10px;
-    font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.04em;color:var(--text-dim);
-    padding:6px 0;transition:color .2s ease;
-  }
-  .svc-more summary::-webkit-details-marker{display:none;}
-  .svc-more summary::after{
-    content:'';width:7px;height:7px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;
-    transform:rotate(45deg) translateY(-2px);transition:transform .2s ease;
-  }
-  .svc-more[open] summary::after{transform:rotate(-135deg) translateY(-2px);}
-  .svc-more summary:hover,.svc-more[open] summary{color:var(--amber);}
-  .svc.plum .svc-more summary:hover,.svc.plum .svc-more[open] summary{color:var(--plum);}
-  .svc-more summary:focus-visible{outline:2px solid var(--amber);outline-offset:4px;border-radius:6px;}
-  .svc-more ul{margin:14px 0 0;}
-
-  .packs{gap:26px;margin-top:26px;}
-  .pack{padding:34px 32px;}
-  .pack p{font-size:15px;line-height:1.62;margin-bottom:22px;}
-  .pack .rows{gap:11px;margin-bottom:26px;}
-  .pack .rows div{font-size:14.5px;}
-
-  .duo{gap:26px;}
-  .duo-col{padding:34px 32px;}
-  .duo-line{gap:22px;margin-bottom:28px;}
-  .duo-line p{font-size:15px;line-height:1.55;}
-
-  .cases{gap:26px;}
-  .case-body{padding:28px 28px 30px;}
-  .case p{font-size:14.5px;line-height:1.62;margin-bottom:24px;}
-
-  .kit{gap:26px;}
-  .kit-main{padding:26px;}
-  .kit-tabs{margin:0 -26px;padding:2px 26px 4px;}
-  .kit-info{margin-top:24px;}
-  .kit-info p{font-size:15px;line-height:1.62;}
-  .kit-sum{padding:30px;}
-
-  .process{gap:34px;}
-  .process.four{gap:34px;}
-  .step h3{margin-bottom:10px;}
-  .step p{font-size:14.5px;line-height:1.65;}
-
-  .terms-grid{gap:26px;}
-  .term{padding:30px 28px;}
-  .term h3{font-size:16px;margin-bottom:10px;}
-  .term p{font-size:14.5px;line-height:1.62;}
-
-  .price-tables{gap:26px;}
-  .price-block-head{padding:28px 30px 24px;}
-  .price-rows{padding:8px 30px 26px;}
-  .price-row{padding:18px 0;}
-  .price-row .desc{font-size:13.5px;line-height:1.5;margin-top:5px;}
-  .support{margin-top:34px;}
-  .sup{padding:24px;}
-  .sup p,.sup li{font-size:13.5px;line-height:1.55;}
-  .sup ul{gap:9px;}
-  .price-note{font-size:14px;line-height:1.7;margin-top:30px;}
-
-  .niches{gap:22px;}
-  .niche{padding:26px 24px;}
-  .niche .t{font-size:15.5px;margin-bottom:8px;}
-  .niche p{font-size:14px;line-height:1.55;}
-
-  .faq summary{padding:26px 44px 26px 0;font-size:16.5px;}
-  .faq .ans p{font-size:15px;line-height:1.7;padding-bottom:28px;}
-
-  .notfit ul{gap:13px;}
-  .notfit li{font-size:14.5px;line-height:1.55;}
-  .notfit h3{margin-bottom:16px;}
-
-  .cta p{line-height:1.65;margin-bottom:36px;}
-  footer{padding:56px 0 44px;}
-  .foot-grid{padding-bottom:40px;margin-bottom:28px;}
-
   /* ---------- ТЕЛЕФОН: КОМПАКТНА ВЕРСІЯ ----------
      Довгі стовпці карток стають горизонтальними стрічками зі свайпом,
      відступи між розділами менші. Зміст той самий, сторінка коротша на третину. */
   .m-dots{display:none;}
   @media (max-width:700px){
-    section{padding:72px 0;}
-    .section-head{margin-bottom:38px;}
-    .svc{padding:28px 24px 26px;}
-    .pack,.duo-col{padding:28px 24px;}
-    .term{padding:26px 22px;}
-    .case-body{padding:24px 22px 26px;}
-    .kit-main{padding:20px;}
-    .kit-tabs{margin:0 -20px;padding:2px 20px 4px;}
-    .kit-sum{padding:24px;}
-    .price-block-head{padding:24px 22px 20px;}
-    .price-rows{padding:6px 22px 22px;}
-    .faq summary{padding:22px 40px 22px 0;font-size:16px;}
+    section{padding:46px 0;}
+    .section-head{margin-bottom:28px;}
     .svc-top{margin-bottom:22px;}
     .orbit{height:280px;}
 
     .svc-grid,.packs,.price-tables.three,.cases,.duo,.niches,.terms-grid,.support-grid{
-      display:flex;grid-template-columns:none;gap:16px;align-items:stretch;
+      display:flex;grid-template-columns:none;gap:14px;align-items:stretch;
       overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;
       scrollbar-width:none;overscroll-behavior-x:contain;
       margin-left:-24px;margin-right:-24px;padding:4px 24px 6px;scroll-padding:0 24px;
@@ -1357,15 +1253,12 @@
         <div class="svc-ico"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg></div>
         <h3>Бот у Instagram Direct</h3>
         <p>Відповідає на часті питання, показує ціни й забирає контакт, поки у вас зайняті руки.</p>
-        <details class="svc-more">
-        <summary>Що входить</summary>
         <ul>
           <li>Відповіді по сценарію: ціни, графік, послуги</li>
           <li>Автовідповідь на коментарі під постами</li>
           <li>Заявка з контактом — одним повідомленням</li>
           <li>Кнопка «покликати людину» — бот замовкає</li>
         </ul>
-        </details>
         <div class="svc-foot">
           <div class="svc-cost">$100–200<span>+ від $10/міс</span></div>
           <button type="button" class="btn btn-ghost btn-sm" data-lead="ig-bot">Заявка</button>
@@ -1376,15 +1269,12 @@
         <div class="svc-ico"><svg viewBox="0 0 24 24"><path d="M21 4.5 3.5 11l5 1.8L19 6.8l-7.8 7.3.4 5 2.6-3.3 4.2 3.1z"/></svg></div>
         <h3>Telegram-бот</h3>
         <p>Той самий сценарій у Telegram — там, де немає 24-годинного вікна Meta і можна писати всій базі.</p>
-        <details class="svc-more">
-        <summary>Що входить</summary>
         <ul>
           <li>Меню, прайс, запис і збір заявок</li>
           <li>Розсилка по вашій базі без ризику блокування</li>
           <li>Заявки приходять у ваш робочий чат</li>
           <li>Переноситься зі сценарію Instagram за кілька годин</li>
         </ul>
-        </details>
         <div class="svc-foot">
           <div class="svc-cost">$100–180<span>або +$50–80 до бота</span></div>
           <button type="button" class="btn btn-ghost btn-sm" data-lead="tg-bot">Заявка</button>
@@ -1395,15 +1285,12 @@
         <div class="svc-ico"><svg viewBox="0 0 24 24"><rect x="4" y="7" width="16" height="12" rx="4"/><path d="M12 3v4M9 13h.01M15 13h.01M9.5 16.5h5"/></svg></div>
         <h3>AI-агент</h3>
         <p>Розуміє живу мову, а не лише кнопки: «скіко кошту», «а є щось на суботу», голосові з помилками.</p>
-        <details class="svc-more">
-        <summary>Що входить</summary>
         <ul>
           <li>Відповідає за вашим прайсом і базою знань</li>
           <li>Не вигадує: не знає — передає вам</li>
           <li>Працює і в Direct, і в Telegram</li>
           <li>Апгрейд із базового бота — без збірки з нуля</li>
         </ul>
-        </details>
         <div class="svc-foot">
           <div class="svc-cost">$250–400<span>+ $40/міс</span></div>
           <button type="button" class="btn btn-ghost btn-sm" data-lead="ai-agent">Заявка</button>
@@ -1414,15 +1301,12 @@
         <div class="svc-ico"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M3 9h18M7 6.5h.01M10 6.5h.01"/></svg></div>
         <h3>Сайт-візитка</h3>
         <p>Сторінка, яку не соромно кинути в переписці: послуги, ціни, відповіді на питання і форма заявки.</p>
-        <details class="svc-more">
-        <summary>Що входить</summary>
         <ul>
           <li>До 5 секцій, адаптив під телефон</li>
           <li>Форма заявки — одразу вам у Telegram</li>
           <li>Свій домен і SSL, без чужого бренду в адресі</li>
           <li>Вантажиться за секунду навіть з мобільного</li>
         </ul>
-        </details>
         <div class="svc-foot">
           <div class="svc-cost">$100–200<span>+ від $10/міс</span></div>
           <button type="button" class="btn btn-ghost btn-sm" data-lead="site">Заявка</button>
@@ -1433,15 +1317,12 @@
         <div class="svc-ico"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M3 9h18M7.5 13h4M7.5 16.5h9M14.5 13h2"/></svg></div>
         <h3>Розширений сайт</h3>
         <p>Коли однієї сторінки мало: каталог, кілька форм під різні послуги, запис і базове SEO.</p>
-        <details class="svc-more">
-        <summary>Що входить</summary>
         <ul>
           <li>Каталог або меню з фото, цінами й пошуком</li>
           <li>Окремі форми під кожну послугу</li>
           <li>Запис або бронювання з підтвердженням</li>
           <li>Title, description, sitemap, Search Console</li>
         </ul>
-        </details>
         <div class="svc-foot">
           <div class="svc-cost">$200–350<span>+ від $20/міс</span></div>
           <button type="button" class="btn btn-ghost btn-sm" data-lead="site-pro">Заявка</button>
@@ -1452,15 +1333,12 @@
         <div class="svc-ico"><svg viewBox="0 0 24 24"><circle cx="6" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><circle cx="6" cy="18" r="2.5"/><path d="M8.5 6h5a4 4 0 0 1 4 4v5.5M6 8.5v7"/></svg></div>
         <h3>Автоматизація процесів</h3>
         <p>Звʼязуємо сервіси, якими ви вже користуєтесь, щоб дані переходили самі, без копіювання руками.</p>
-        <details class="svc-more">
-        <summary>Що входить</summary>
         <ul>
           <li>Заявка з сайту чи бота → CRM або Google Таблиця</li>
           <li>Сповіщення в Telegram про кожну нову заявку</li>
           <li>Нагадування клієнтам про запис за добу</li>
           <li>Пошта, календар, таблиці, месенджери в одній звʼязці</li>
         </ul>
-        </details>
         <div class="svc-foot">
           <div class="svc-cost">$100–300<span>за сценарій</span></div>
           <button type="button" class="btn btn-ghost btn-sm" data-lead="automation">Заявка</button>
