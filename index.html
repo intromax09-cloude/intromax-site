@@ -1457,6 +1457,7 @@
         </div>
         <div class="kit-save" id="kit-save" hidden></div>
         <button type="button" class="btn btn-primary" id="kit-go" disabled>Отримати точну ціну</button>
+        <p class="kit-fine">Знижка росте з кожною послугою: до 15% за дві, до 20% за три, до 25% за чотири, до 30% за пʼять.</p>
         <p class="kit-fine">Розрахунок орієнтовний. Точну цифру називаємо до початку роботи, і далі вона не змінюється.</p>
         <button type="button" class="kit-unsure" data-lead="unsure">Не знаєте, що обрати? Опишіть задачу словами</button>
       </aside>
@@ -3306,7 +3307,8 @@ window.IMX3D = {
   function round10(x){ return Math.round(x / 10) * 10; }
   function keys(){ return ITEMS.filter(function(it){ return picked[it.k]; }); }
 
-  /* знижка за комплект: 2 послуги — до 15%, 3 і більше — до 20% (як у пакетах «Старт» і «Система») */
+  /* знижка росте з кількістю послуг: 2 — до 15%, далі +5% за кожну наступну (3 — 20%, 4 — 25%, 5 — 30%).
+     Пакети «Старт» (2 послуги) і «Система» (3 послуги) лягають у цю саму шкалу. */
   function calc(){
     var sel = keys(), n = sel.length;
     if(!n) return null;
@@ -3320,7 +3322,7 @@ window.IMX3D = {
       r.lo = 150; r.hi = 280; r.term = '3–5 днів'; r.note = 'Telegram-бот до бота в Direct: +$50–80';
       return r;
     }
-    r.pct = n >= 3 ? 20 : 15;
+    r.pct = Math.min(30, 15 + (n - 2) * 5);
     r.lo = round10(lo * (1 - r.pct / 100));
     r.hi = round10(hi * (1 - r.pct / 100));
     if(n === 2 && has('ig-bot') && has('site')){ r.lo = 170; r.hi = 330; }
