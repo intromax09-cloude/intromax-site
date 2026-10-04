@@ -885,6 +885,18 @@
     .dock,.dock-sheet,.rail a span,.rail a i{transition:none;}
   }
 
+  /* ---------- ЦІНИ ЗАПУСКУ ---------- */
+  .pr{font-weight:inherit;}
+  .pr s{display:block;font-size:11.5px;font-weight:400;color:var(--text-dim);opacity:.85;margin-bottom:2px;}
+  .kit-meta b s{font-size:12.5px;font-weight:400;color:var(--text-dim);margin-right:10px;}
+  .promo-note{
+    display:inline-flex;align-items:center;gap:10px;margin:0 0 22px;
+    font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.5;color:var(--amber);
+    background:rgba(242,169,60,.08);border:1px solid rgba(242,169,60,.28);border-radius:14px;padding:9px 16px;
+  }
+  .promo-note::before{content:'';flex-shrink:0;width:7px;height:7px;border-radius:50%;background:var(--amber);}
+  [data-after][hidden]{display:none !important;}
+
   /* ---------- КЕЙСИ ---------- */
   .cases{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
   @media (max-width:980px){ .cases{grid-template-columns:1fr 1fr;} }
@@ -1251,6 +1263,7 @@
       </div>
     </div>
 
+    <p class="promo-note" data-promo>Ціни запуску діють до 1 листопада 2026. Далі повертаються звичайні, вони закреслені поруч.</p>
     <div class="svc-grid">
       <div class="svc bloom" data-svc="ig-bot">
         <div class="svc-ico"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg></div>
@@ -1263,7 +1276,7 @@
           <li>Кнопка «покликати людину» — бот замовкає</li>
         </ul>
         <div class="svc-foot">
-          <div class="svc-cost">$100–200<span>+ від $10/міс</span></div>
+          <div class="svc-cost"><b class="pr" data-full="$100–200"><s>$100–200</s>$70–140</b><span>+ від $10/міс</span></div>
           <button type="button" class="btn btn-ghost btn-sm" data-lead="ig-bot">Заявка</button>
         </div>
       </div>
@@ -1279,7 +1292,7 @@
           <li>Переноситься зі сценарію Instagram за кілька годин</li>
         </ul>
         <div class="svc-foot">
-          <div class="svc-cost">$100–180<span>або +$50–80 до бота</span></div>
+          <div class="svc-cost"><b class="pr" data-full="$100–180"><s>$100–180</s>$70–130</b><span>або <b class="pr" data-full="+$50–80">+$40–60</b> до бота</span></div>
           <button type="button" class="btn btn-ghost btn-sm" data-lead="tg-bot">Заявка</button>
         </div>
       </div>
@@ -1295,7 +1308,7 @@
           <li>Апгрейд із базового бота — без збірки з нуля</li>
         </ul>
         <div class="svc-foot">
-          <div class="svc-cost">$250–400<span>+ $40/міс</span></div>
+          <div class="svc-cost"><b class="pr" data-full="$250–400"><s>$250–400</s>$180–280</b><span>+ $40/міс</span></div>
           <button type="button" class="btn btn-ghost btn-sm" data-lead="ai-agent">Заявка</button>
         </div>
       </div>
@@ -1311,7 +1324,7 @@
           <li>Вантажиться за секунду навіть з мобільного</li>
         </ul>
         <div class="svc-foot">
-          <div class="svc-cost">$100–200<span>+ від $10/міс</span></div>
+          <div class="svc-cost"><b class="pr" data-full="$100–200"><s>$100–200</s>$70–140</b><span>+ від $10/міс</span></div>
           <button type="button" class="btn btn-ghost btn-sm" data-lead="site">Заявка</button>
         </div>
       </div>
@@ -1327,7 +1340,7 @@
           <li>Title, description, sitemap, Search Console</li>
         </ul>
         <div class="svc-foot">
-          <div class="svc-cost">$200–350<span>+ від $20/міс</span></div>
+          <div class="svc-cost"><b class="pr" data-full="$200–350"><s>$200–350</s>$140–250</b><span>+ від $20/міс</span></div>
           <button type="button" class="btn btn-ghost btn-sm" data-lead="site-pro">Заявка</button>
         </div>
       </div>
@@ -1343,7 +1356,7 @@
           <li>Пошта, календар, таблиці, месенджери в одній звʼязці</li>
         </ul>
         <div class="svc-foot">
-          <div class="svc-cost">$100–300<span>за сценарій</span></div>
+          <div class="svc-cost"><b class="pr" data-full="$100–300"><s>$100–300</s>$70–200</b><span>за сценарій</span></div>
           <button type="button" class="btn btn-ghost btn-sm" data-lead="automation">Заявка</button>
         </div>
       </div>
@@ -1351,7 +1364,7 @@
 
     <div class="packs">
       <div class="pack bloom">
-        <span class="save">економія до 15%</span>
+        <span class="save" data-full="економія до 15%">ціна запуску до 1 листопада</span>
         <h3>Пакет «Старт»</h3>
         <p>Мінімальний комплект, щоб клієнт побачив ціни на сайті й отримав відповідь у Direct.</p>
         <div class="rows">
@@ -1359,13 +1372,14 @@
           <div>Сайт-візитка з формою заявки</div>
           <div>Заявки приходять вам у Telegram</div>
         </div>
-        <div class="cost">$170–330</div>
-        <div class="was">окремо вийшло б <s>$200–400</s> · запуск 4–6 днів</div>
+        <div class="cost"><b class="pr" data-full="$170–330">$120–240</b></div>
+        <div class="was" data-promo>звичайна ціна <s>$170–330</s> · запуск 4–6 днів</div>
+        <div class="was" data-after hidden>окремо вийшло б <s>$200–400</s> · запуск 4–6 днів</div>
         <button type="button" class="btn btn-primary btn-sm" data-lead="pack-start">Зібрати пакет</button>
       </div>
 
       <div class="pack bloom">
-        <span class="save">економія до 20%</span>
+        <span class="save" data-full="економія до 20%">ціна запуску до 1 листопада</span>
         <h3>Пакет «Система»</h3>
         <p>Коли потік заявок уже є і його треба не тільки приймати, а й не втрачати далі.</p>
         <div class="rows">
@@ -1373,8 +1387,9 @@
           <div>Розширений сайт із каталогом</div>
           <div>Один сценарій автоматизації: заявки → CRM → сповіщення</div>
         </div>
-        <div class="cost">$440–840</div>
-        <div class="was">окремо вийшло б <s>$550–1050</s> · запуск 2–3 тижні</div>
+        <div class="cost"><b class="pr" data-full="$440–840">$310–580</b></div>
+        <div class="was" data-promo>звичайна ціна <s>$440–840</s> · запуск 2–3 тижні</div>
+        <div class="was" data-after hidden>окремо вийшло б <s>$550–1050</s> · запуск 2–3 тижні</div>
         <button type="button" class="btn btn-primary btn-sm" data-lead="pack-system">Зібрати пакет</button>
       </div>
     </div>
@@ -1457,7 +1472,8 @@
         </div>
         <div class="kit-save" id="kit-save" hidden></div>
         <button type="button" class="btn btn-primary" id="kit-go" disabled>Отримати точну ціну</button>
-        <p class="kit-fine">Знижка росте з кожною послугою: до 15% за дві, до 20% за три, до 25% за чотири, до 30% за пʼять.</p>
+        <p class="kit-fine" data-promo>До 1 листопада діють ціни запуску. За дві й більше послуг додаємо ще 10% знижки.</p>
+        <p class="kit-fine" data-after hidden>Знижка росте з кожною послугою: до 15% за дві, до 20% за три, до 25% за чотири, до 30% за пʼять.</p>
         <p class="kit-fine">Розрахунок орієнтовний. Точну цифру називаємо до початку роботи, і далі вона не змінюється.</p>
         <button type="button" class="kit-unsure" data-lead="unsure">Не знаєте, що обрати? Опишіть задачу словами</button>
       </aside>
@@ -1533,6 +1549,7 @@
       <p class="lead" style="font-size:16px;margin-top:16px;">У кожного діапазону є нижня і верхня межа. Точну цифру називаємо протягом доби після заявки, і після старту роботи вона не змінюється.</p>
     </div>
 
+    <p class="promo-note" data-promo>Ціни запуску діють до 1 листопада 2026. Далі повертаються звичайні, вони закреслені поруч.</p>
     <div class="price-tables three">
       <div class="price-block bloom">
         <div class="price-block-head">
@@ -1542,15 +1559,15 @@
         <div class="price-rows">
           <div class="price-row">
             <div><div class="tier">Базовий бот</div><div class="desc">Сценарій, FAQ, прайс, збір заявок</div></div>
-            <div class="amount">$100–200<span class="retainer">+ від $10/міс</span></div>
+            <div class="amount"><b class="pr" data-full="$100–200"><s>$100–200</s>$70–140</b><span class="retainer">+ від $10/міс</span></div>
           </div>
           <div class="price-row">
             <div><div class="tier">Telegram-бот</div><div class="desc">Окремо або другим каналом до наявного</div></div>
-            <div class="amount">$100–180<span class="retainer">+$50–80 до бота</span></div>
+            <div class="amount"><b class="pr" data-full="$100–180"><s>$100–180</s>$70–130</b><span class="retainer"><b class="pr" data-full="+$50–80">+$40–60</b> до бота</span></div>
           </div>
           <div class="price-row">
             <div><div class="tier">AI-агент</div><div class="desc">Розуміє довільні питання, а не лише кнопки</div></div>
-            <div class="amount">$250–400<span class="retainer">+ $40/міс</span></div>
+            <div class="amount"><b class="pr" data-full="$250–400"><s>$250–400</s>$180–280</b><span class="retainer">+ $40/міс</span></div>
           </div>
         </div>
       </div>
@@ -1563,11 +1580,11 @@
         <div class="price-rows">
           <div class="price-row">
             <div><div class="tier">Візитка</div><div class="desc">До 5 секцій, форма заявки, адаптив</div></div>
-            <div class="amount">$100–200<span class="retainer">+ від $10/міс</span></div>
+            <div class="amount"><b class="pr" data-full="$100–200"><s>$100–200</s>$70–140</b><span class="retainer">+ від $10/міс</span></div>
           </div>
           <div class="price-row">
             <div><div class="tier">Розширений</div><div class="desc">Каталог, кілька форм, запис, SEO-мінімум</div></div>
-            <div class="amount">$200–350<span class="retainer">+ від $20/міс</span></div>
+            <div class="amount"><b class="pr" data-full="$200–350"><s>$200–350</s>$140–250</b><span class="retainer">+ від $20/міс</span></div>
           </div>
           <div class="price-row">
             <div><div class="tier">Свій домен</div><div class="desc">Платите реєстратору напряму, не нам</div></div>
@@ -1584,15 +1601,15 @@
         <div class="price-rows">
           <div class="price-row">
             <div><div class="tier">Типовий сценарій</div><div class="desc">Заявка → таблиця або CRM → сповіщення вам</div></div>
-            <div class="amount">$100–200<span class="retainer">+ від $10/міс</span></div>
+            <div class="amount"><b class="pr" data-full="$100–200"><s>$100–200</s>$70–140</b><span class="retainer">+ від $10/міс</span></div>
           </div>
           <div class="price-row">
             <div><div class="tier">Індивідуальний сценарій</div><div class="desc">Ваш процес: кілька сервісів, умови, розклад</div></div>
-            <div class="amount">$200–300<span class="retainer">рахуємо після брифу</span></div>
+            <div class="amount"><b class="pr" data-full="$200–300"><s>$200–300</s>$140–210</b><span class="retainer">рахуємо після брифу</span></div>
           </div>
           <div class="price-row">
             <div><div class="tier">Нагадування про запис</div><div class="desc">Нагадування клієнту за добу + дошка заявок зі статусами</div></div>
-            <div class="amount">$50–100<span class="retainer">+ $10/міс</span></div>
+            <div class="amount"><b class="pr" data-full="$50–100"><s>$50–100</s>$40–70</b><span class="retainer">+ $10/міс</span></div>
           </div>
         </div>
       </div>
@@ -1666,7 +1683,7 @@
     <div class="faq bloom">
       <details>
         <summary>Скільки це коштує і від чого залежить ціна?</summary>
-        <div class="ans"><p>Базовий бот — $100–200, AI-агент — $250–400, сайт — $100–350 залежно від обсягу, сценарій автоматизації — $100–300. У діапазоні цифра залежить від кількості гілок сценарію, потрібних інтеграцій і того, чи є готові тексти й фото. Точну суму називаємо протягом доби після заявки, до початку роботи.</p></div>
+        <div class="ans"><p data-promo>До 1 листопада 2026 діють ціни запуску: базовий бот — $70–140, AI-агент — $180–280, сайт — $70–250 залежно від обсягу, сценарій автоматизації — $70–200. Після цієї дати повертаються звичайні ціни: $100–200, $250–400, $100–350 і $100–300.</p><p data-after hidden>Базовий бот — $100–200, AI-агент — $250–400, сайт — $100–350 залежно від обсягу, сценарій автоматизації — $100–300.</p><p>У діапазоні цифра залежить від кількості гілок сценарію, потрібних інтеграцій і того, чи є готові тексти й фото. Точну суму називаємо протягом доби після заявки, до початку роботи.</p></div>
       </details>
       <details>
         <summary>Скільки часу займає запуск?</summary>
@@ -2987,12 +3004,12 @@
   "areaServed":{"@type":"Country","name":"UA"},
   "sameAs":["https://www.instagram.com/intromax.tech/","https://t.me/Intromax_tech"],
   "makesOffer":[
-    {"@type":"Offer","name":"Бот у Instagram Direct","priceSpecification":{"@type":"PriceSpecification","priceCurrency":"USD","minPrice":100,"maxPrice":200}},
-    {"@type":"Offer","name":"Telegram-бот","priceSpecification":{"@type":"PriceSpecification","priceCurrency":"USD","minPrice":100,"maxPrice":180}},
-    {"@type":"Offer","name":"AI-агент","priceSpecification":{"@type":"PriceSpecification","priceCurrency":"USD","minPrice":250,"maxPrice":400}},
-    {"@type":"Offer","name":"Сайт-візитка","priceSpecification":{"@type":"PriceSpecification","priceCurrency":"USD","minPrice":100,"maxPrice":200}},
-    {"@type":"Offer","name":"Розширений сайт","priceSpecification":{"@type":"PriceSpecification","priceCurrency":"USD","minPrice":200,"maxPrice":350}},
-    {"@type":"Offer","name":"Автоматизація процесів на n8n","priceSpecification":{"@type":"PriceSpecification","priceCurrency":"USD","minPrice":100,"maxPrice":300}}
+    {"@type":"Offer","name":"Бот у Instagram Direct","priceSpecification":{"@type":"PriceSpecification","priceCurrency":"USD","minPrice":70,"maxPrice":140,"validThrough":"2026-10-31T23:59:59+02:00"}},
+    {"@type":"Offer","name":"Telegram-бот","priceSpecification":{"@type":"PriceSpecification","priceCurrency":"USD","minPrice":70,"maxPrice":130,"validThrough":"2026-10-31T23:59:59+02:00"}},
+    {"@type":"Offer","name":"AI-агент","priceSpecification":{"@type":"PriceSpecification","priceCurrency":"USD","minPrice":180,"maxPrice":280,"validThrough":"2026-10-31T23:59:59+02:00"}},
+    {"@type":"Offer","name":"Сайт-візитка","priceSpecification":{"@type":"PriceSpecification","priceCurrency":"USD","minPrice":70,"maxPrice":140,"validThrough":"2026-10-31T23:59:59+02:00"}},
+    {"@type":"Offer","name":"Розширений сайт","priceSpecification":{"@type":"PriceSpecification","priceCurrency":"USD","minPrice":140,"maxPrice":250,"validThrough":"2026-10-31T23:59:59+02:00"}},
+    {"@type":"Offer","name":"Автоматизація процесів на n8n","priceSpecification":{"@type":"PriceSpecification","priceCurrency":"USD","minPrice":70,"maxPrice":200,"validThrough":"2026-10-31T23:59:59+02:00"}}
   ]
 }
 </script>
@@ -3001,13 +3018,26 @@
   "@context":"https://schema.org",
   "@type":"FAQPage",
   "mainEntity":[
-    {"@type":"Question","name":"Скільки це коштує і від чого залежить ціна?","acceptedAnswer":{"@type":"Answer","text":"Базовий бот — $100–200, AI-агент — $250–400, сайт — $100–350, сценарій автоматизації — $100–300. Точну ціну називаємо протягом доби після заявки, до початку роботи."}},
+    {"@type":"Question","name":"Скільки це коштує і від чого залежить ціна?","acceptedAnswer":{"@type":"Answer","text":"До 1 листопада 2026 діють ціни запуску: базовий бот — $70–140, AI-агент — $180–280, сайт — $70–250, сценарій автоматизації — $70–200. Звичайні ціни: $100–200, $250–400, $100–350 і $100–300. Точну ціну називаємо протягом доби після заявки, до початку роботи."}},
     {"@type":"Question","name":"Скільки часу займає запуск?","acceptedAnswer":{"@type":"Answer","text":"Базовий бот — 2–3 дні, сайт-візитка — до тижня, AI-агент або розширений сайт — 1–2 тижні. Від вас потрібно 10 хвилин на бриф."}},
     {"@type":"Question","name":"Чи потрібен вам пароль від мого Instagram?","acceptedAnswer":{"@type":"Answer","text":"Ні. Підключення офіційне, через кнопку Instagram у самому сервісі: ви заходите під собою і тиснете «дозволити». Пароль ми не бачимо, і відключити доступ можна в будь-який момент однією кнопкою."}},
     {"@type":"Question","name":"Що буде, якщо бот не зрозуміє клієнта?","acceptedAnswer":{"@type":"Answer","text":"Бот не вигадує відповідь: він каже, що передасть питання людині, і лишає повідомлення власнику. У кожному боті є кнопка «покликати людину»."}},
     {"@type":"Question","name":"Що таке автоматизація на n8n простими словами?","acceptedAnswer":{"@type":"Answer","text":"Це коли сервіси передають дані один одному без вас: заявка з сайту потрапляє в CRM або таблицю, вам приходить сповіщення, а клієнту — нагадування за добу до візиту."}}
   ]
 }
+</script>
+
+<script>
+/* Ціни запуску діють до 1 листопада 2026 (за Києвом). Після цієї дати сторінка сама показує звичайні ціни:
+   підставляє data-full, прибирає блоки data-promo і відкриває data-after. Перевірити вигляд «після»: ?promo=off */
+(function(){
+  var END = Date.parse('2026-11-01T00:00:00+02:00');
+  window.IMX_PROMO = Date.now() < END && !/[?&]promo=off/.test(location.search);
+  if(window.IMX_PROMO) return;
+  [].forEach.call(document.querySelectorAll('[data-full]'), function(el){ el.textContent = el.getAttribute('data-full'); });
+  [].forEach.call(document.querySelectorAll('[data-promo]'), function(el){ el.remove(); });
+  [].forEach.call(document.querySelectorAll('[data-after]'), function(el){ el.hidden = false; });
+})();
 </script>
 
 <script>
@@ -3266,28 +3296,34 @@ window.IMX3D = {
 
   /* ціни — ті самі, що в секціях «Послуги» та «Ціни» */
   var ITEMS = [
-    {k:'ig-bot', n:'Бот у Direct', lo:100, hi:200, term:'2–3 дні', extra:'+ від $10/міс',
+    {k:'ig-bot', n:'Бот у Direct', lo:70, hi:140, flo:100, fhi:200, term:'2–3 дні', extra:'+ від $10/міс',
       d:'Відповідає на часті питання, показує ціни й забирає контакт, поки у вас зайняті руки.',
       ico:'<rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/>'},
-    {k:'tg-bot', n:'Telegram-бот', lo:100, hi:180, term:'2–3 дні', extra:'або +$50–80 до бота в Direct',
+    {k:'tg-bot', n:'Telegram-бот', lo:70, hi:130, flo:100, fhi:180, term:'2–3 дні', extra:'або +$40–60 до бота в Direct', fextra:'або +$50–80 до бота в Direct',
       d:'Меню, прайс, запис і розсилка по вашій базі без ризику блокування. Заявки приходять у робочий чат.',
       ico:'<path d="M21 4.5 3.5 11l5 1.8L19 6.8l-7.8 7.3.4 5 2.6-3.3 4.2 3.1z"/>'},
-    {k:'ai-agent', n:'AI-агент', lo:250, hi:400, term:'1–2 тижні', extra:'+ $40/міс',
+    {k:'ai-agent', n:'AI-агент', lo:180, hi:280, flo:250, fhi:400, term:'1–2 тижні', extra:'+ $40/міс',
       d:'Розуміє живу мову і голосові з помилками. Відповідає за вашим прайсом, а чого не знає, передає вам.',
       ico:'<rect x="4" y="7" width="16" height="12" rx="4"/><path d="M12 3v4M9 13h.01M15 13h.01M9.5 16.5h5"/>'},
-    {k:'site', n:'Сайт-візитка', lo:100, hi:200, term:'до тижня', extra:'+ від $10/міс',
+    {k:'site', n:'Сайт-візитка', lo:70, hi:140, flo:100, fhi:200, term:'до тижня', extra:'+ від $10/міс',
       d:'Послуги, ціни, відповіді на питання і форма заявки, яка приходить вам у Telegram.',
       ico:'<rect x="3" y="4" width="18" height="16" rx="3"/><path d="M3 9h18M7 6.5h.01M10 6.5h.01"/>'},
-    {k:'site-pro', n:'Розширений сайт', lo:200, hi:350, term:'1–2 тижні', extra:'+ від $20/міс',
+    {k:'site-pro', n:'Розширений сайт', lo:140, hi:250, flo:200, fhi:350, term:'1–2 тижні', extra:'+ від $20/міс',
       d:'Каталог із фото й цінами, окремі форми під кожну послугу, запис із підтвердженням і базове SEO.',
       ico:'<rect x="3" y="4" width="18" height="16" rx="3"/><path d="M3 9h18M7.5 13h4M7.5 16.5h9M14.5 13h2"/>'},
-    {k:'automation', n:'Автоматизація процесів', lo:100, hi:300, term:'від 1 дня', extra:'за сценарій',
+    {k:'automation', n:'Автоматизація процесів', lo:70, hi:200, flo:100, fhi:300, term:'від 1 дня', extra:'за сценарій',
       d:'Заявка сама потрапляє в CRM або таблицю, вам приходить сповіщення, клієнту йде нагадування за добу.',
       ico:'<circle cx="6" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><circle cx="6" cy="18" r="2.5"/><path d="M8.5 6h5a4 4 0 0 1 4 4v5.5M6 8.5v7"/>'},
     {k:'support', n:'Підтримка вже готового', direct:true, price:'$10–50 / міс', term:'щомісяця, за бажанням',
       d:'Правки в сценаріях і текстах, нагляд за оновленнями платформ і відповідь від нас протягом доби.',
       ico:'<circle cx="12" cy="12" r="3.2"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/>'}
   ];
+  /* lo/hi — ціни запуску, flo/fhi — звичайні. Після завершення акції конструктор рахує за звичайними */
+  var PROMO = !!window.IMX_PROMO;
+  if(!PROMO) ITEMS.forEach(function(it){
+    if(it.flo){ it.lo = it.flo; it.hi = it.fhi; }
+    if(it.fextra) it.extra = it.fextra;
+  });
   var N = ITEMS.length, cur = 0, picked = {};
 
   var $ = function(id){ return document.getElementById(id); };
@@ -3312,22 +3348,33 @@ window.IMX3D = {
   function calc(){
     var sel = keys(), n = sel.length;
     if(!n) return null;
-    var lo = 0, hi = 0;
-    sel.forEach(function(it){ lo += it.lo; hi += it.hi; });
-    var r = {n:n, lo:lo, hi:hi, wasLo:lo, wasHi:hi, pct:0, term:sel[0].term};
+    var lo = 0, hi = 0, flo = 0, fhi = 0;
+    sel.forEach(function(it){ lo += it.lo; hi += it.hi; flo += it.flo || it.lo; fhi += it.fhi || it.hi; });
+    var r = {n:n, lo:lo, hi:hi, wasLo:PROMO ? flo : lo, wasHi:PROMO ? fhi : hi, pct:0, term:sel[0].term};
     if(n === 1) return r;
     var has = function(k){ return !!picked[k]; };
+    var heavy = has('ai-agent') || has('site-pro');
+    r.term = heavy ? '2–3 тижні' : (n === 2 ? '4–6 днів' : '1–2 тижні');
     if(n === 2 && has('ig-bot') && has('tg-bot')){
       /* Telegram як доповнення до бота в Direct — окрема ціна, без відсотка */
-      r.lo = 150; r.hi = 280; r.term = '3–5 днів'; r.note = 'Telegram-бот до бота в Direct: +$50–80';
+      r.term = '3–5 днів';
+      if(PROMO){ r.lo = 110; r.hi = 200; r.note = 'Telegram до бота в Direct: +$40–60'; }
+      else { r.lo = 150; r.hi = 280; r.note = 'Telegram-бот до бота в Direct: +$50–80'; }
+      return r;
+    }
+    if(PROMO){
+      /* до 1 листопада: ціни запуску на кожну послугу і ще 10% за дві й більше.
+         Комплекти, що збігаються з пакетами «Старт» і «Система», коштують як ці пакети */
+      r.pct = 10;
+      r.lo = round10(lo * 0.9); r.hi = round10(hi * 0.9);
+      if(n === 2 && has('ig-bot') && has('site')){ r.lo = 120; r.hi = 240; r.pack = 'Старт'; }
+      if(n === 3 && has('ai-agent') && has('site-pro') && has('automation')){ r.lo = 310; r.hi = 580; r.pack = 'Система'; }
       return r;
     }
     r.pct = Math.min(30, 15 + (n - 2) * 5);
     r.lo = round10(lo * (1 - r.pct / 100));
     r.hi = round10(hi * (1 - r.pct / 100));
     if(n === 2 && has('ig-bot') && has('site')){ r.lo = 170; r.hi = 330; }
-    var heavy = has('ai-agent') || has('site-pro');
-    r.term = heavy ? '2–3 тижні' : (n === 2 ? '4–6 днів' : '1–2 тижні');
     return r;
   }
 
@@ -3351,7 +3398,12 @@ window.IMX3D = {
       return;
     }
     elTotal.textContent = '$' + r.lo + '–' + r.hi;
-    if(r.pct){
+    if(PROMO){
+      elWas.innerHTML = 'звичайна ціна <s>$' + r.wasLo + '–' + r.wasHi + '</s> · запуск ' + r.term;
+      elSave.textContent = r.note || (r.pack ? 'ціна пакета «' + r.pack + '» до 1 листопада'
+        : (r.pct ? 'ціна запуску та ще −' + r.pct + '% за комплект' : 'ціна запуску до 1 листопада'));
+      elSave.hidden = false;
+    } else if(r.pct){
       elWas.innerHTML = 'окремо вийшло б <s>$' + r.wasLo + '–' + r.wasHi + '</s> · запуск ' + r.term;
       elSave.textContent = 'економія до ' + r.pct + '%'; elSave.hidden = false;
     } else {
@@ -3371,7 +3423,9 @@ window.IMX3D = {
     var it = ITEMS[cur];
     elTitle.textContent = it.n;
     elDesc.textContent = it.d;
-    elPrice.textContent = it.direct ? it.price : '$' + it.lo + '–' + it.hi;
+    if(it.direct) elPrice.textContent = it.price;
+    else if(PROMO) elPrice.innerHTML = '<s>$' + it.flo + '–' + it.fhi + '</s>$' + it.lo + '–' + it.hi;
+    else elPrice.textContent = '$' + it.lo + '–' + it.hi;
     elTerm.textContent = (it.extra ? it.extra + ' · ' : '') + (it.direct ? it.term : 'запуск ' + it.term);
     fallback.innerHTML = '<svg viewBox="0 0 24 24">' + it.ico + '</svg>';
     if(it.direct){
