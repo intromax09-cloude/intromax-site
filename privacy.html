@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Політика приватності — Intromax</title>
-<meta name="description" content="Які дані збирає сайт Intromax, навіщо, де вони зберігаються і як їх видалити.">
+<title>Політика конфіденційності — Intromax</title>
+<meta name="description" content="Як Intromax збирає, використовує, зберігає та захищає персональні дані відвідувачів сайту intromax.com.ua.">
 <link rel="canonical" href="https://intromax.com.ua/privacy.html">
 <link rel="icon" href="/favicon-180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,25 +13,39 @@
 <style>
   :root{--ink:#13141c;--ink-2:#1b1d29;--text:#eee9db;--text-dim:#9997ab;--amber:#f2a93c;--line:#2a2c3c;--line-strong:#4b4e66;}
   *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
   body{background:var(--ink);color:var(--text);font-family:'Manrope',sans-serif;font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased;}
   a{color:var(--amber);text-underline-offset:3px;}
-  .wrap{max-width:720px;margin:0 auto;padding:0 24px;}
+  .wrap{max-width:760px;margin:0 auto;padding:0 24px;}
   header{border-bottom:1px solid var(--line);padding:20px 0;}
   header .wrap{display:flex;justify-content:space-between;align-items:center;gap:16px;}
   .logo{font-family:'Unbounded',sans-serif;font-weight:700;font-size:17px;color:var(--text);text-decoration:none;display:inline-flex;align-items:center;gap:10px;}
   .logo::before{content:'';width:8px;height:8px;border-radius:50%;background:var(--amber);box-shadow:0 0 12px var(--amber);}
-  .back{font-size:14px;color:var(--text-dim);text-decoration:none;border:1px solid var(--line-strong);border-radius:100px;padding:9px 16px;}
+  .back{font-size:14px;color:var(--text-dim);text-decoration:none;border:1px solid var(--line-strong);border-radius:100px;padding:9px 16px;white-space:nowrap;}
   .back:hover{color:var(--text);border-color:var(--text);}
   main{padding:56px 0 72px;}
   .kicker{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--text-dim);letter-spacing:.06em;text-transform:uppercase;margin-bottom:14px;}
   h1{font-family:'Unbounded',sans-serif;font-size:clamp(26px,5vw,36px);line-height:1.15;margin-bottom:14px;}
-  .upd{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--text-dim);margin-bottom:40px;}
-  h2{font-family:'Unbounded',sans-serif;font-size:18px;margin:36px 0 12px;}
+  .upd{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--text-dim);margin-bottom:32px;}
+  .toc{border:1px solid var(--line);border-radius:18px;background:var(--ink-2);padding:22px 24px;margin:32px 0 8px;}
+  .toc .t{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim);margin-bottom:12px;}
+  .toc ol{columns:2;column-gap:28px;padding-left:20px;}
+  .toc li{font-size:14px;margin-bottom:7px;break-inside:avoid;}
+  .toc a{color:var(--text);text-decoration:none;}
+  .toc a:hover{color:var(--amber);}
+  @media (max-width:560px){ .toc ol{columns:1;} }
+  h2{font-family:'Unbounded',sans-serif;font-size:18px;line-height:1.3;margin:44px 0 14px;scroll-margin-top:24px;}
+  h2 span{font-family:'JetBrains Mono',monospace;font-weight:500;font-size:13px;color:var(--amber);margin-right:10px;}
   p,li{color:var(--text-dim);font-size:15.5px;}
   p{margin-bottom:12px;}
   ul{padding-left:20px;margin-bottom:12px;}
-  li{margin-bottom:6px;}
+  li{margin-bottom:7px;}
   b{color:var(--text);font-weight:600;}
+  .tbl{border:1px solid var(--line);border-radius:14px;overflow:hidden;margin:6px 0 14px;}
+  .tbl div{display:grid;grid-template-columns:150px 1fr;gap:14px;padding:13px 18px;border-top:1px solid var(--line);font-size:14.5px;color:var(--text-dim);}
+  .tbl div:first-child{border-top:none;}
+  .tbl b{font-size:14.5px;}
+  @media (max-width:560px){ .tbl div{grid-template-columns:1fr;gap:3px;} }
   footer{border-top:1px solid var(--line);padding:28px 0;color:var(--text-dim);font-size:13px;}
 </style>
 </head>
@@ -44,41 +58,119 @@
 </header>
 <main>
   <div class="wrap">
-    <div class="kicker">Документ</div>
-    <h1>Політика приватності</h1>
-    <div class="upd">оновлено 4 жовтня 2026</div>
+    <div class="kicker">Юридична інформація</div>
+    <h1>Політика конфіденційності</h1>
+    <div class="upd">редакція від 4 жовтня 2026 року</div>
 
-    <p>Ця сторінка пояснює, які дані ви передаєте нам через сайт intromax.com.ua, навіщо вони нам і як їх видалити.</p>
+    <p>Ця Політика описує, як Intromax збирає, використовує, зберігає та захищає персональні дані людей, які відвідують сайт intromax.com.ua або звертаються до нас через форми на ньому. Політику складено відповідно до Закону України «Про захист персональних даних» № 2297-VI.</p>
+    <p>Залишаючи заявку або відгук на сайті, ви підтверджуєте, що ознайомились із цією Політикою та погоджуєтесь з її умовами.</p>
 
-    <h2>Які дані ми отримуємо</h2>
+    <nav class="toc" aria-label="Зміст">
+      <div class="t">Зміст</div>
+      <ol>
+        <li><a href="#s1">Терміни</a></li>
+        <li><a href="#s2">Хто відповідає за обробку даних</a></li>
+        <li><a href="#s3">Які дані ми збираємо</a></li>
+        <li><a href="#s4">Мета та підстави обробки</a></li>
+        <li><a href="#s5">Передача даних третім особам</a></li>
+        <li><a href="#s6">Строки зберігання</a></li>
+        <li><a href="#s7">Захист даних</a></li>
+        <li><a href="#s8">Ваші права</a></li>
+        <li><a href="#s9">Файли cookie та аналітика</a></li>
+        <li><a href="#s10">Дані клієнтів наших клієнтів</a></li>
+        <li><a href="#s11">Зміни до Політики</a></li>
+        <li><a href="#s12">Контакти</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="s1"><span>01</span>Терміни</h2>
     <ul>
-      <li><b>Форма заявки.</b> Ваш контакт (Telegram, Instagram або телефон), сфера бізнесу та відповіді на питання форми.</li>
-      <li><b>Форма відгуку.</b> Імʼя, ваш Instagram або Telegram, назва послуги, строк запуску і текст відгуку.</li>
+      <li><b>Сайт</b> — вебсайт за адресою intromax.com.ua разом із піддоменами.</li>
+      <li><b>Intromax, ми</b> — команда, яка надає послуги з розробки ботів, сайтів і автоматизації процесів та керує Сайтом.</li>
+      <li><b>Користувач, ви</b> — людина, яка відвідує Сайт або надсилає через нього заявку чи відгук.</li>
+      <li><b>Персональні дані</b> — відомості, за якими людину можна ідентифікувати: імʼя, контакт у месенджері, номер телефону тощо.</li>
+      <li><b>Обробка</b> — будь-яка дія з персональними даними: збирання, зберігання, використання, передача, видалення.</li>
     </ul>
-    <p>Ми отримуємо лише те, що ви самі ввели у форму. Паролі, платіжні дані та документи ми не просимо.</p>
 
-    <h2>Навіщо вони нам</h2>
+    <h2 id="s2"><span>02</span>Хто відповідає за обробку даних</h2>
+    <p>Володільцем персональних даних, зібраних через Сайт, є Intromax. Ми самостійно визначаємо мету обробки й відповідаємо за те, щоб дані використовувались лише так, як описано в цій Політиці.</p>
+    <p>З усіх питань щодо персональних даних звертайтесь за контактами з розділу <a href="#s12">«Контакти»</a>.</p>
+
+    <h2 id="s3"><span>03</span>Які дані ми збираємо</h2>
+    <p>Ми збираємо лише ті дані, які ви самі вводите у форми на Сайті.</p>
+    <div class="tbl">
+      <div><b>Форма заявки</b><span>Контакт для звʼязку (Telegram, Instagram або номер телефону), сфера бізнесу, опис задачі та відповіді на питання форми.</span></div>
+      <div><b>Форма відгуку</b><span>Імʼя, ваш Instagram або Telegram, назва послуги, строк запуску, текст відгуку та згода на публікацію.</span></div>
+      <div><b>Технічні дані</b><span>IP-адреса, тип браузера та пристрою. Їх автоматично обробляють сервіси, на яких працює Сайт, щоб сторінки відкривались і були захищені від зловживань.</span></div>
+    </div>
+    <p>Ми не збираємо паролі, платіжні реквізити, копії документів і дані особливих категорій (про здоровʼя, переконання тощо). Просимо не вказувати такі відомості у вільних полях форм.</p>
+
+    <h2 id="s4"><span>04</span>Мета та підстави обробки</h2>
+    <p>Ми обробляємо персональні дані з такою метою:</p>
     <ul>
-      <li>Відповісти на заявку, назвати ціну та строк, підготувати демо.</li>
-      <li>Опублікувати відгук на сайті, якщо ви дали на це згоду у формі.</li>
+      <li>відповісти на заявку, уточнити задачу, назвати вартість і строк;</li>
+      <li>підготувати демо та комерційну пропозицію;</li>
+      <li>укласти й виконати договір про надання послуг, надавати підтримку після запуску;</li>
+      <li>опублікувати відгук на Сайті;</li>
+      <li>забезпечити роботу й безпеку Сайту.</li>
     </ul>
-    <p>Ми не надсилаємо рекламних розсилок і не передаємо ваші дані для реклами.</p>
+    <p>Правовими підставами обробки є ваша згода, яку ви надаєте під час надсилання форми, а також необхідність вжити заходів на ваше прохання до укладення договору та виконати укладений договір.</p>
+    <p>Ми не використовуємо ваші дані для рекламних розсилок і не продаємо їх.</p>
 
-    <h2>Куди потрапляють дані</h2>
-    <p>Форма надсилає повідомлення в наш робочий чат у Telegram. Дорогою дані проходять через сервери Cloudflare, де розміщено сайт. Окремої бази заявок на сайті немає.</p>
-    <p>Сайт також завантажує шрифти з Google Fonts і бібліотеку з jsDelivr. Ці сервіси бачать вашу IP-адресу, як і будь-який сайт, який ви відкриваєте.</p>
+    <h2 id="s5"><span>05</span>Передача даних третім особам</h2>
+    <p>Ми передаємо дані лише сервісам, без яких Сайт і звʼязок із вами не працюють:</p>
+    <div class="tbl">
+      <div><b>Cloudflare</b><span>Розміщення Сайту та обробка надісланих форм.</span></div>
+      <div><b>Telegram</b><span>Доставка заявок і відгуків у робочий чат команди, листування з вами.</span></div>
+      <div><b>Instagram (Meta)</b><span>Листування, якщо ви обрали цей канал звʼязку.</span></div>
+      <div><b>Google Fonts, jsDelivr</b><span>Завантаження шрифтів і програмної бібліотеки. Ці сервіси отримують лише технічні дані вашого браузера.</span></div>
+    </div>
+    <p>Сервери цих компаній можуть розташовуватись за межами України, тому надсилання форми означає згоду на таку транскордонну передачу. Кожен із сервісів обробляє дані за власною політикою конфіденційності.</p>
+    <p>Іншим особам ми розкриваємо персональні дані тільки на законну вимогу державних органів або за вашою окремою згодою.</p>
 
-    <h2>Файли cookie та аналітика</h2>
-    <p>Сайт не ставить рекламних cookie і не використовує лічильників аналітики.</p>
+    <h2 id="s6"><span>06</span>Строки зберігання</h2>
+    <ul>
+      <li><b>Заявки, за якими почалась співпраця</b> — протягом дії договору та гарантійної підтримки, а далі стільки, скільки вимагає законодавство для зберігання документів.</li>
+      <li><b>Заявки без співпраці</b> — до 12 місяців з дати звернення або до вашого запиту на видалення.</li>
+      <li><b>Відгуки</b> — доки опубліковані на Сайті або до відкликання згоди.</li>
+    </ul>
 
-    <h2>Скільки зберігаємо</h2>
-    <p>Листування щодо заявки зберігаємо, доки триває робота над проєктом і гарантійна підтримка. Якщо співпраця не почалась, видаляємо заявку на ваше прохання.</p>
+    <h2 id="s7"><span>07</span>Захист даних</h2>
+    <ul>
+      <li>Сайт працює через захищене зʼєднання HTTPS.</li>
+      <li>Форми надсилають дані напряму в закритий робочий чат; окремої бази заявок на Сайті немає.</li>
+      <li>Доступ до заявок мають лише учасники команди, які з ними працюють.</li>
+      <li>Доступи до акаунтів і сервісів клієнтів ми отримуємо через офіційні підключення, без передачі паролів.</li>
+    </ul>
+    <p>Жоден спосіб передачі даних через інтернет не гарантує абсолютної безпеки. Якщо станеться інцидент, який зачіпає ваші дані, ми повідомимо вас за контактом із заявки.</p>
 
-    <h2>Як видалити або виправити дані</h2>
-    <p>Напишіть нам у <a href="https://t.me/Intromax_tech">Telegram</a> або в <a href="https://www.instagram.com/intromax.tech/">Instagram</a>. Видалимо заявку чи відгук або виправимо їх протягом трьох робочих днів.</p>
+    <h2 id="s8"><span>08</span>Ваші права</h2>
+    <p>Відповідно до статті 8 Закону України «Про захист персональних даних» ви маєте право:</p>
+    <ul>
+      <li>знати, які ваші дані ми обробляємо, з якою метою і кому їх передаємо;</li>
+      <li>отримати доступ до своїх даних;</li>
+      <li>вимагати виправити неточні дані або видалити їх;</li>
+      <li>заперечити проти обробки й відкликати згоду в будь-який момент;</li>
+      <li>звернутись зі скаргою до Уповноваженого Верховної Ради України з прав людини або до суду.</li>
+    </ul>
+    <p>Щоб скористатись правом, напишіть нам за контактами з розділу <a href="#s12">«Контакти»</a>. Ми відповідаємо у строк, визначений законодавством, зазвичай протягом трьох робочих днів.</p>
 
-    <h2>Зміни в політиці</h2>
-    <p>Якщо ми почнемо збирати інші дані або підключимо аналітику, оновимо цю сторінку й дату вгорі.</p>
+    <h2 id="s9"><span>09</span>Файли cookie та аналітика</h2>
+    <p>Сайт не встановлює рекламних і аналітичних файлів cookie та не використовує лічильників відвідуваності. Сервіси з розділу 5 можуть застосовувати технічні cookie, потрібні для захисту й стабільної роботи Сайту.</p>
+    <p>Якщо ми підключимо аналітику, то опишемо її в цій Політиці до початку збирання даних.</p>
+
+    <h2 id="s10"><span>10</span>Дані клієнтів наших клієнтів</h2>
+    <p>Боти, сайти та автоматизації, які ми створюємо, обробляють дані відвідувачів і покупців наших клієнтів. Володільцем таких даних є клієнт, а Intromax діє за його дорученням і в межах договору. Заявки з таких продуктів надходять на акаунти клієнта, і правила їх обробки визначає він.</p>
+
+    <h2 id="s11"><span>11</span>Зміни до Політики</h2>
+    <p>Ми можемо оновлювати Політику, коли змінюються наші послуги або законодавство. Чинна редакція завжди опублікована на цій сторінці, а дата редакції вказана вгорі. Якщо зміни істотні, повідомимо про це на головній сторінці Сайту.</p>
+
+    <h2 id="s12"><span>12</span>Контакти</h2>
+    <div class="tbl">
+      <div><b>Telegram</b><span><a href="https://t.me/Intromax_tech">@Intromax_tech</a></span></div>
+      <div><b>Instagram</b><span><a href="https://www.instagram.com/intromax.tech/">@intromax.tech</a></span></div>
+      <div><b>Сайт</b><span><a href="/">intromax.com.ua</a></span></div>
+    </div>
   </div>
 </main>
 <footer>
