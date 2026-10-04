@@ -753,6 +753,34 @@
   }
   .kit-unsure:hover{color:var(--amber);}
 
+  /* ---------- ДВА СЦЕНАРІЇ ОДНІЄЇ ЗАЯВКИ ---------- */
+  .duo{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+  @media (max-width:760px){ .duo{grid-template-columns:1fr;} }
+  .duo-col{border:1px solid var(--line);border-radius:var(--radius);padding:26px;background:var(--ink-2);}
+  .duo-col.on{background:linear-gradient(155deg,rgba(242,169,60,.08),rgba(123,201,154,.06));border-color:rgba(242,169,60,.28);}
+  .duo-head{font-family:'Unbounded',sans-serif;font-weight:700;font-size:18px;margin-bottom:22px;}
+  .duo-col.off .duo-head{color:var(--text-dim);}
+  .duo-line{list-style:none;position:relative;display:flex;flex-direction:column;gap:18px;margin-bottom:24px;}
+  .duo-line::before{content:'';position:absolute;left:4px;top:8px;bottom:8px;width:1px;background:var(--line-strong);}
+  .duo-line li{position:relative;padding-left:26px;}
+  .duo-line li::before{
+    content:'';position:absolute;left:0;top:6px;width:9px;height:9px;border-radius:50%;
+    background:var(--ink-2);border:1.5px solid var(--line-strong);
+  }
+  .duo-col.on .duo-line li::before{border-color:var(--amber);background:var(--amber);}
+  .duo-line time{display:block;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text-dim);margin-bottom:3px;}
+  .duo-col.on .duo-line time{color:var(--amber);}
+  .duo-line p{font-size:14.5px;line-height:1.5;}
+  .duo-col.off .duo-line p{color:var(--text-dim);}
+  .duo-res{
+    display:inline-block;font-family:'JetBrains Mono',monospace;font-size:12px;padding:7px 14px;border-radius:100px;
+    color:#e58a7a;background:rgba(229,138,122,.08);border:1px solid rgba(229,138,122,.3);
+  }
+  .duo-col.on .duo-res{color:var(--green);background:rgba(123,201,154,.10);border-color:rgba(123,201,154,.32);}
+  .foot-row a{text-decoration:underline;text-underline-offset:3px;}
+  .foot-row a:hover{color:var(--amber);}
+  .lead-legal a{text-decoration:underline;}
+
   /* ---------- КЕЙСИ ---------- */
   .cases{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
   @media (max-width:980px){ .cases{grid-template-columns:1fr 1fr;} }
@@ -1027,6 +1055,38 @@
       <div>
         <div class="n">6 <small>напрямків</small></div>
         <p>від бота в Direct до звʼязки систем на n8n</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="night" class="tint-line">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="kicker">Одна заявка, два ранки</div>
+      <h2>О 23:40 вам пишуть у Direct. Далі два сценарії</h2>
+      <p class="lead" style="font-size:16px;margin-top:16px;">Умовний приклад для салону краси. Повідомлення те саме, різниця лише в тому, хто відповів першим.</p>
+    </div>
+    <div class="duo">
+      <div class="duo-col off bloom">
+        <div class="duo-head">Без бота</div>
+        <ol class="duo-line">
+          <li><time>23:40</time><p>«Добрий вечір, скільки коштує манікюр із покриттям?»</p></li>
+          <li><time>23:41</time><p>Ви спите. Повідомлення висить непрочитаним.</p></li>
+          <li><time>23:55</time><p>Клієнтка пише ще у два салони поруч.</p></li>
+          <li><time>08:30</time><p>Ви відповідаєте. Вона вже записалась туди, де відповіли вночі.</p></li>
+        </ol>
+        <div class="duo-res">заявку втрачено</div>
+      </div>
+      <div class="duo-col on bloom">
+        <div class="duo-head">З ботом</div>
+        <ol class="duo-line">
+          <li><time>23:40</time><p>«Добрий вечір, скільки коштує манікюр із покриттям?»</p></li>
+          <li><time>23:40</time><p>Бот надсилає прайс і вільні вікна на завтра.</p></li>
+          <li><time>23:42</time><p>Клієнтка обирає 11:00 і лишає номер телефону.</p></li>
+          <li><time>08:30</time><p>У вашому Telegram уже чекає готовий запис.</p></li>
+        </ol>
+        <div class="duo-res">запис на 11:00</div>
       </div>
     </div>
   </div>
@@ -1697,7 +1757,7 @@
       </div>
     </div>
     <div class="foot-row">
-      <div>© 2026 Intromax</div>
+      <div>© 2026 Intromax · <a href="/privacy.html">Політика приватності</a></div>
       <div class="mono">власна розробка, без конструкторів</div>
     </div>
   </div>
@@ -2575,6 +2635,7 @@
     html +=
         '<button type="submit" class="btn btn-primary lead-submit" id="lead-submit">Надіслати заявку →</button>' +
         '<div id="lead-status" role="status" aria-live="polite"></div>' +
+        '<p class="lead-legal">Надсилаючи форму, ви погоджуєтесь із <a href="/privacy.html" target="_blank" rel="noopener">політикою приватності</a>.</p>' +
       '</form>';
     pane.innerHTML = html;
     if(cfg.plum){
