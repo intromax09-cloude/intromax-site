@@ -1067,6 +1067,45 @@
     .svc:hover,.niche:hover,.chip:hover{transform:none;}
   }
 
+
+  /* ---------- ТЕЛЕФОН: КОМПАКТНА ВЕРСІЯ ----------
+     Довгі стовпці карток стають горизонтальними стрічками зі свайпом,
+     відступи між розділами менші. Зміст той самий, сторінка коротша на третину. */
+  .m-dots{display:none;}
+  @media (max-width:700px){
+    section{padding:46px 0;}
+    .section-head{margin-bottom:28px;}
+    .svc-top{margin-bottom:22px;}
+    .orbit{height:280px;}
+
+    .svc-grid,.packs,.price-tables.three,.cases,.duo,.niches,.terms-grid,.support-grid{
+      display:flex;grid-template-columns:none;gap:14px;align-items:stretch;
+      overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;
+      scrollbar-width:none;overscroll-behavior-x:contain;
+      margin-left:-24px;margin-right:-24px;padding:4px 24px 6px;scroll-padding:0 24px;
+    }
+    .svc-grid::-webkit-scrollbar,.packs::-webkit-scrollbar,.price-tables.three::-webkit-scrollbar,.cases::-webkit-scrollbar,
+    .duo::-webkit-scrollbar,.niches::-webkit-scrollbar,.terms-grid::-webkit-scrollbar,.support-grid::-webkit-scrollbar{display:none;}
+    .svc-grid > *,.packs > *,.price-tables.three > *,.cases > *,.duo > *,.support-grid > *{
+      flex:0 0 86%;min-width:0;scroll-snap-align:start;
+    }
+    .niches > *,.terms-grid > *{flex:0 0 70%;min-width:0;scroll-snap-align:start;}
+    .support-grid{margin-left:0;margin-right:0;padding-left:0;padding-right:0;scroll-padding:0;}
+    .support-grid > *{flex-basis:82%;}
+    /* картки у стрічці видно одразу: анімація появи спрацьовувала б лише після свайпу */
+    .svc-grid > .bloom,.packs > .bloom,.price-tables.three > .bloom,.cases > .bloom,.duo > .bloom,
+    .niches > .bloom,.terms-grid > .bloom,.support-grid > .bloom{opacity:1;transform:none;animation:none;}
+    .case:hover,.svc:hover,.niche:hover{transform:none;}
+
+    .m-dots{display:flex;justify-content:center;gap:6px;margin-top:12px;}
+    .m-dots i{width:6px;height:6px;border-radius:100px;background:var(--line-strong);transition:width .25s ease,background .25s ease;}
+    .m-dots i.on{width:18px;background:var(--amber);}
+
+    .hero-stats div{padding:14px 14px;}
+    .hero-stats p{font-size:12px;}
+    .price-note{margin-top:16px;}
+    .kit-info p{min-height:0;}
+  }
 </style>
 <noscript><style>#intro{display:none}.bloom,.navlinks a,.nav-cta{opacity:1;transform:none}</style></noscript>
 </head>
@@ -3702,5 +3741,30 @@ window.IMX3D = {
 })();
 </script>
 
+<script>
+/* Стрічки на телефоні: крапки під кожною показують, скільки карток і де ви зараз */
+(function(){
+  var SEL = '.svc-grid,.packs,.price-tables.three,.cases,.duo,.niches,.terms-grid,.support-grid';
+  [].forEach.call(document.querySelectorAll(SEL), function(row){
+    var n = row.children.length;
+    if(n < 2) return;
+    var dots = document.createElement('div');
+    dots.className = 'm-dots'; dots.setAttribute('aria-hidden', 'true');
+    for(var k = 0; k < n; k++) dots.appendChild(document.createElement('i'));
+    row.parentNode.insertBefore(dots, row.nextSibling);
+    var cur = -1, tick = false;
+    function upd(){
+      tick = false;
+      var max = row.scrollWidth - row.clientWidth;
+      var idx = max > 4 ? Math.round(row.scrollLeft / max * (n - 1)) : 0;
+      if(idx === cur) return;
+      cur = idx;
+      [].forEach.call(dots.children, function(d, j){ d.classList.toggle('on', j === idx); });
+    }
+    row.addEventListener('scroll', function(){ if(!tick){ tick = true; requestAnimationFrame(upd); } }, {passive:true});
+    upd();
+  });
+})();
+</script>
 </body>
 </html>
