@@ -2411,7 +2411,16 @@
     if(document.getElementById('intro')) finishIntro();
   }, 4500);
 
-  typeNext();
+  // друкуємо лише коли шрифт напису вже завантажено: інакше він підміняється посеред
+  // анімації, слово стає ширшим і центрований напис стрибає
+  var started = false;
+  function begin(){ if(started) return; started = true; typeNext(); }
+  if(document.fonts && document.fonts.load){
+    document.fonts.load("700 40px 'Unbounded'", word).then(begin, begin);
+    setTimeout(begin, 1500);
+  } else {
+    begin();
+  }
 })();
 </script>
 <script>
