@@ -6,3 +6,9 @@
 
 /index.html
   Cache-Control: public, max-age=0, must-revalidate
+
+/en/index.html
+  Cache-Control: public, max-age=0, must-revalidate
+
+/ru/index.html
+  Cache-Control: public, max-age=0, must-revalidate
