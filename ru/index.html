@@ -217,6 +217,11 @@
     transition:border-color .15s ease,background .15s ease;
   }
   .kb .wide{grid-column:1/-1;}
+  .kb button.on{border-color:var(--amber);background:rgba(242,169,60,.12);color:var(--amber);}
+  /* демо «побудьте клієнтом»: позначка умовного прикладу і картка-сповіщення, яке бачить власник */
+  .bubble.demo-tag{font-size:11.5px;color:var(--text-dim);background:transparent;border:1px dashed var(--line-strong);}
+  .bubble.note{align-self:stretch;max-width:none;background:rgba(242,169,60,.05);border:1px solid var(--line-strong);border-left:3px solid var(--amber);border-radius:12px;font-size:12.5px;}
+  .bubble.note b{display:block;margin-bottom:4px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;letter-spacing:.04em;text-transform:uppercase;color:var(--text-dim);white-space:normal;}
   .kb button:hover,.kb a:hover{border-color:var(--amber);background:rgba(242,169,60,.08);}
   .kb button:focus-visible,.kb a:focus-visible{outline:2px solid var(--amber);outline-offset:2px;}
   .chat-input{
@@ -2932,11 +2937,17 @@
 </script>
 <script>
 /* ===========================================================================
-   ЖИВИЙ ЧАТ У ПЕРШОМУ ЕКРАНІ. Бот на кнопках, як базовий бот у Direct:
-   розповідає про шість послуг, показує ціни з карток «Послуг» (тому вони
-   завжди збігаються з прайсом і акцією) і збирає заявку: завдання + контакт.
-   Заявка йде на /api/lead — ту саму функцію, що й у форм. Без JS у вікні
-   лишається статичний приклад листування.
+   ЖИВИЙ ЧАТ У ПЕРШОМУ ЕКРАНІ. Базовий бот без AI: кнопки плюс ключові слова.
+   Він сам по собі вітрина того, що вміє наш бот за $70–140:
+   — розуміє вільний текст за ключовими словами (UA / RU / EN, з помилками);
+   — підбирає рішення за три питання і рахує ціну формулою конструктора;
+   — дає «побути клієнтом»: запис або замовлення в умовному бізнесі
+     і повідомлення, яке в цю мить отримав би власник;
+   — рахує набір послуг просто в чаті й передає його в конструктор;
+   — відповідає на часті питання, показує кейси, кличе людину;
+   — збирає заявку з перевіркою контакту й підтвердженням, знає київський час.
+   Ціни читає з карток «Послуг», тож вони завжди збігаються з прайсом і акцією.
+   Заявка йде на /api/lead — ту саму функцію, що й у форм.
    =========================================================================== */
 (function(){
   var phone = document.querySelector('.hero .phone');
@@ -2946,7 +2957,7 @@
   var statusEl = phone.querySelector('.chat-head .status');
   var DIRECT = 'https://ig.me/m/intromax.tech';
   var CALM = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var PH = 'Написать сообщение…';
+  var PH = 'Напишите своими словами…';
 
   phone.querySelector('.chat-head .name').textContent = 'Intromax';
   body.innerHTML = '';
@@ -2963,27 +2974,60 @@
   var input = form.querySelector('input');
   input.placeholder = PH;
 
+  function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+  function fmt(s, o){ return s.replace(/\{(\w+)\}/g, function(m, k){ return o[k] != null ? o[k] : m; }); }
+  function pad(n){ n = +n; return (n < 10 ? '0' : '') + n; }
+
   /* ціни беремо з карток на сторінці: після 1 листопада там уже звичайні */
   function pr(sel){ var b = document.querySelector(sel); return b ? b.lastChild.textContent.trim() : ''; }
   function svc(key){ return pr('[data-svc="' + key + '"] .svc-cost .pr'); }
   function packStart(){ return pr('.packs .pack .cost .pr'); }
 
+  /* київський час: уночі бот чесно каже, що людина відповість зранку */
+  function kyiv(add){
+    var d = new Date(Date.now() + (add || 0) * 864e5), p = {};
+    try{
+      new Intl.DateTimeFormat('en-GB', {timeZone:'Europe/Kyiv', year:'numeric', month:'2-digit', day:'2-digit',
+        weekday:'short', hour:'2-digit', minute:'2-digit', hourCycle:'h23'})
+        .formatToParts(d).forEach(function(x){ p[x.type] = x.value; });
+    }catch(_){ p = {hour:d.getHours(), minute:pad(d.getMinutes()), day:pad(d.getDate()), month:pad(d.getMonth() + 1), weekday:['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][d.getDay()]}; }
+    return {h:+p.hour, hm:pad(p.hour) + ':' + p.minute, dm:p.day + '.' + p.month,
+      wd:['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].indexOf(p.weekday)};
+  }
+  function night(){ var h = kyiv().h; return h >= 21 || h < 8; }
+
+  var store = {
+    get:function(k){ try{ return localStorage.getItem(k); }catch(_){ return null; } },
+    set:function(k, v){ try{ localStorage.setItem(k, v); }catch(_){} }
+  };
+
+  /* ---------- меню й гілки ---------- */
   var BACK = {t:'↩️ Меню', go:'menu'};
   var MENU = [
-    {t:'💬 Бот для Direct или Telegram', go:'bots', wide:true},
-    {t:'🌐 Сайт', go:'site'},
-    {t:'🧠 AI-агент', go:'ai'},
-    {t:'⚙️ Автоматизация', go:'auto'},
-    {t:'📱 Telegram Mini App', go:'tma'},
-    {t:'💰 Цены', go:'price', wide:true},
-    {t:'✍️ Оставить заявку', go:'lead', wide:true}
+    {t:'🎯 Подобрать решение за 3 вопроса', go:'quiz', wide:true},
+    {t:'👆 Попробовать бота как клиент', go:'demo', wide:true},
+    {t:'🧩 Услуги', go:'services'},
+    {t:'💰 Цены', go:'price'},
+    {t:'📂 Кейсы', go:'cases'},
+    {t:'❓ Вопросы', go:'faq'},
+    {t:'✍️ Заявка', go:'lead'},
+    {t:'🙋 Позвать человека', go:'human'}
   ];
+  var MORE_FAQ = {t:'❓ Другие вопросы', go:'faq'};
+  var LEAD = {t:'✍️ Оставить заявку', go:'lead'};
 
   var SCRIPT = {
+    services: function(){ return [['Семь услуг. О какой рассказать?'], [
+      {t:'💬 Бот в Direct или Telegram', go:'bots', wide:true},
+      {t:'🌐 Сайт', go:'site'}, {t:'🧠 AI-агент', go:'ai'},
+      {t:'⚙️ Автоматизация', go:'auto'}, {t:'📱 Mini App', go:'tma'},
+      {t:'🧮 Посчитать набор', go:'calc'}, BACK
+    ]]; },
     bots: function(){ return [[
       'Бот отвечает клиентам по сценарию: цены, график, запись. Заявку с контактом отправляет вам одним сообщением. Клиент хочет поговорить с человеком? Нажимает «позвать человека», и бот замолкает.',
-      'Бот в Direct: ' + svc('ig-bot') + ', запуск за 2–3 дня.\nTelegram-бот: ' + svc('tg-bot') + '.'
+      'Бот в Direct: ' + svc('ig-bot') + ', запуск за 2–3 дня.\nTelegram-бот: ' + svc('tg-bot') + '.\nЭтот чат тоже базовый бот: всё, что он умеет, можно собрать и для вас.'
     ], [
+      {t:'👆 Попробовать как клиент', go:'demo'},
       {t:'✍️ Заказать бота', go:'lead', topic:'Бот для Direct / Telegram'},
       {t:'🧠 А если пишут голосовыми?', go:'ai', wide:true},
       BACK
@@ -2994,20 +3038,22 @@
     ], [
       {t:'✍️ Заказать сайт', go:'lead', topic:'Сайт'},
       {t:'🔗 Сайт вместе с ботом', go:'pack'},
+      {t:'📂 Сайты, которые мы сделали', go:'cases', wide:true},
       BACK
     ]]; },
     pack: function(){ return [[
       'Пакет «Старт»: бот в Direct, сайт-визитка с формой и заявки вам в Telegram. ' + packStart() + ', запуск 4–6 дней. По отдельности эти услуги стоят дороже.'
     ], [
       {t:'✍️ Заказать «Старт»', go:'lead', topic:'Пакет «Старт»'},
-      {t:'🧮 Собрать свой набор', go:'order'},
+      {t:'🧮 Собрать свой набор', go:'calc'},
       BACK
     ]]; },
     ai: function(){ return [[
       'AI-агент понимает живую речь: «скока стоит», «а есть что-то на субботу», голосовые с ошибками. Отвечает по вашему прайсу. Чего не знает, передаёт вам.',
-      svc('ai-agent') + ' + $40/мес, запуск 1–2 недели.'
+      svc('ai-agent') + ' + $40/мес, запуск 1–2 недели.\nЯ, для сравнения, базовый бот: понимаю кнопки и ключевые слова. Большинству малых бизнесов этого хватает.'
     ], [
       {t:'✍️ Заказать AI-агента', go:'lead', topic:'AI-агент', wide:true},
+      {t:'🎯 Что подойдёт именно мне?', go:'quiz', wide:true},
       BACK
     ]]; },
     auto: function(){ return [[
@@ -3015,6 +3061,7 @@
       svc('automation') + ' за один сценарий.'
     ], [
       {t:'✍️ Заказать автоматизацию', go:'lead', topic:'Автоматизация', wide:true},
+      {t:'👆 Увидеть уведомление владельцу', go:'demo', wide:true},
       BACK
     ]]; },
     tma: function(){ return [[
@@ -3034,15 +3081,39 @@
       '\nРасширенный сайт / магазин: ' + svc('site-pro') +
       '\nАвтоматизация: ' + svc('automation') + ' за сценарий' +
       '\nПакет «Старт»: ' + packStart(),
-      'Оплата этапами: часть на старте, остальное после рабочего результата. Сумму за свой набор со скидкой посчитает конструктор на странице.'
+      'Оплата этапами: часть на старте, остальное после рабочего результата. Отметьте нужные услуги, и я посчитаю цену набора со скидкой.'
     ], [
-      {t:'🧮 Открыть конструктор', go:'order'},
-      {t:'✍️ Оставить заявку', go:'lead'},
+      {t:'🧮 Посчитать набор', go:'calc'},
+      {t:'🎯 Подобрать за 3 вопроса', go:'quiz'},
+      LEAD, BACK
+    ]]; },
+    cases: function(){ return [[
+      'Два сданных проекта, оба работают.',
+      'PhytoAnalyzer AI: человек загружает фото растения и получает его название. Заказчик видит журнал запросов, выгружает его в Excel и ежедневно получает резервную копию. Сдано за 6 дней.',
+      'DOM Risto Lounge Bar: сайт ресторана в Италии. Меню и цены владелица меняет сама, бронирования приходят в WhatsApp.'
+    ], [
+      {t:'🌿 fotoanalyzer.com', href:'https://fotoanalyzer.com'},
+      {t:'🍷 domlounge.it', href:'https://domlounge.it'},
+      {t:'📂 Кейсы на странице', go:'scroll', to:'cases'},
       BACK
-    ]]; }
+    ]]; },
+    faq: function(){ return [['Что нас чаще всего спрашивают:'], [
+      {t:'🔑 Пароль от Instagram', go:'f_pass'}, {t:'🚫 Блокировка', go:'f_ban'},
+      {t:'🤷 Бот не поймёт', go:'f_miss'}, {t:'👀 Демо до оплаты', go:'f_demo'},
+      {t:'💳 Оплата', go:'f_pay'}, {t:'⏱ Сроки', go:'f_time'},
+      {t:'🛠 Поддержка', go:'f_support'}, BACK
+    ]]; },
+    f_pass: function(){ return [['Нет, пароль не нужен. Подключение официальное: вы входите в свой аккаунт и нажимаете «разрешить». Пароль мы не видим, а отключить доступ можно в любой момент одной кнопкой.'], [MORE_FAQ, LEAD, BACK]]; },
+    f_ban: function(){ return [['Блокируют за массовые рассылки незнакомым людям. Бот отвечает только тем, кто написал вам сам, и работает через официальное подключение Meta. Это разрешённый сценарий.'], [MORE_FAQ, LEAD, BACK]]; },
+    f_miss: function(){ return [['Он не выдумывает ответ. Вопросы вне сценария бот передаёт вам, а после кнопки «позвать человека» замолкает в этом диалоге. Можете проверить прямо здесь: напишите что-то необычное или нажмите «🙋 Позвать человека».'], [{t:'🙋 Позвать человека', go:'human'}, MORE_FAQ, BACK]]; },
+    f_demo: function(){ return [['Да. После заявки собираем демо под вашу задачу: бот с вашими услугами и ценами, макет страницы или схему автоматизации. Вы получаете ссылку и пробуете сами. Это бесплатно и ни к чему не обязывает.'], [{t:'👆 Попробовать бота как клиент', go:'demo', wide:true}, LEAD, BACK]]; },
+    f_pay: function(){ return [['Оплата этапами: часть на старте, остальное после рабочего результата. Точную цену называем в течение суток после заявки и фиксируем до начала работы.'], [MORE_FAQ, LEAD, BACK]]; },
+    f_time: function(){ return [['Базовый бот — 2–3 дня. Сайт-визитка — до недели. AI-агент или расширенный сайт — 1–2 недели. Telegram Mini App — 2–3 недели. Сценарий автоматизации — от одного дня, если доступы уже есть.'], [MORE_FAQ, LEAD, BACK]]; },
+    f_support: function(){ return [['Поддержка не обязательна: бот и сайт работают без неё. Она включает правки в сценариях и текстах, присмотр за обновлениями платформ и ответ от нас в течение суток. Стоит $10–50 в месяц.'], [MORE_FAQ, LEAD, BACK]]; }
   };
 
-  var st = {step:null, topic:'', task:'', contact:'', pending:'', sending:false};
+  /* ---------- стан ---------- */
+  var st = {step:null, topic:'', task:'', contact:'', pending:'', sending:false, quiz:{}, calc:{}, demo:null};
   var q = Promise.resolve();
 
   function down(){ body.scrollTop = body.scrollHeight; }
@@ -3083,10 +3154,16 @@
       } else {
         el = document.createElement('button');
         el.type = 'button';
-        el.addEventListener('click', function(){ pick(b); });
+        if(b.toggle){
+          el.setAttribute('aria-pressed', b.on ? 'true' : 'false');
+          el.addEventListener('click', function(){ b.toggle(el); });
+        } else el.addEventListener('click', function(){ pick(b); });
       }
       el.textContent = b.t;
-      if(b.wide || (i === btns.length - 1 && btns.length % 2)) el.className = 'wide';
+      if(b.wide || (i === btns.length - 1 && btns.length % 2)) el.classList.add('wide');
+      if(b.on) el.classList.add('on');
+      if(b.k && b.toggle) el.setAttribute('data-k', b.k);
+      if(b.sum) el.setAttribute('data-sum', '');
       kb.appendChild(el);
     });
     body.appendChild(kb);
@@ -3095,54 +3172,332 @@
 
   /* бот «друкує» кожну репліку, черга не дає реплікам переплутатись */
   var gen = 0; /* покоління діалогу: після перезапуску старі репліки з черги не доходять */
+  function say(text, cls){
+    var g = gen;
+    q = q.then(function(){
+      if(g !== gen) return;
+      var t = showTyping();
+      return wait(Math.min(1400, 450 + text.length * 6)).then(function(){ hideTyping(t); if(g === gen) bubble('in' + (cls ? ' ' + cls : ''), text); });
+    });
+    return q;
+  }
   function bot(texts, btns){
     var g = gen;
-    texts.forEach(function(text){
-      q = q.then(function(){
-        if(g !== gen) return;
-        var t = showTyping();
-        return wait(Math.min(1400, 500 + text.length * 7)).then(function(){ hideTyping(t); if(g === gen) bubble('in', text); });
-      });
-    });
+    texts.forEach(function(text){ say(text); });
     if(btns) q = q.then(function(){ if(g === gen) keyboard(btns); });
     return q;
   }
 
   function setPh(text){ input.placeholder = text || PH; }
 
+  /* у репліці гостя кнопка без емодзі на початку */
+  function clean(t){ return t.replace(/^[^0-9A-Za-zЀ-ӿ«$]+\s/, ''); }
   function pick(b){
     dropKb();
-    bubble('out', b.t.replace(/^\S+\s/, ''), true);
+    bubble('out', clean(b.t), true);
     go(b.go, b);
+  }
+
+  function scrollToId(id){
+    var o = document.getElementById(id);
+    if(o) o.scrollIntoView({behavior: CALM ? 'auto' : 'smooth', block:'start'});
   }
 
   function go(key, b){
     if(key === 'menu'){ st.step = null; setPh(); return bot(['Что вам нужно?'], MENU); }
     if(SCRIPT[key]){ var r = SCRIPT[key](); return bot(r[0], r[1]); }
+    if(key === 'quiz') return quiz(0);
+    if(key === 'q') { st.quiz[b.f] = b.v; return quiz(b.n); }
+    if(key === 'calc') return calcStart(b && b.keys);
+    if(key === 'calc-done') return calcDone();
+    if(key === 'kit') return toKit(b.keys);
+    if(key === 'demo') return demoPick();
+    if(key === 'demo-other') return bot(['Выберите бизнес:'], DEMO_ORDER.map(function(k){ return {t:DEMO[k].n, go:'demo-go', k:k}; }).concat([BACK]));
+    if(key === 'demo-go') return demoStart(b.k);
+    if(key === 'demo-svc') return demoDay(b.i);
+    if(key === 'demo-day') return demoTime(b.i);
+    if(key === 'demo-time') return demoName(b.v);
+    if(key === 'demo-opt') return demoOpt(b.v);
+    if(key === 'demo-noname') return demoDone('');
+    if(key === 'human') return human();
     if(key === 'lead'){
       st.topic = (b && b.topic) || '';
       st.step = 'task';
       setPh('Например: салон красоты, нужен бот в Direct');
       return bot(['Расскажите одним сообщением, какой у вас бизнес и что нужно сделать.'], [BACK]);
     }
-    if(key === 'pass'){ st.task = st.pending; return askContact(); }
-    if(key === 'order'){
-      var o = document.getElementById('order');
-      if(o) o.scrollIntoView({behavior: CALM ? 'auto' : 'smooth', block:'start'});
-      return bot(['Конструктор ниже на странице. Возвращайтесь, если останутся вопросы.'], [BACK]);
+    if(key === 'pass'){ st.task = st.pending; st.topic = st.topic || 'Сообщение в чате'; return st.contact ? summary() : askContact(); }
+    if(key === 'contact') return askContact();
+    if(key === 'resend' || key === 'send') return send();
+    if(key === 'scroll'){
+      scrollToId(b.to);
+      return bot(['Открыл на странице. Возвращайтесь, если останутся вопросы.'], [BACK]);
     }
-    if(key === 'resend') return send();
   }
 
+  /* ---------- підбір рішення: три питання ---------- */
+  var QUIZ = [
+    {f:'ch', t:'Вопрос 1 из 3. Где вам чаще всего пишут клиенты?', a:[
+      ['📸 Instagram', 'ig'], ['✈️ Telegram', 'tg'], ['📞 Звонят или на сайт', 'call'], ['🌱 Клиентов онлайн пока мало', 'none']]},
+    {f:'pain', t:'Вопрос 2 из 3. Что забирает больше всего времени?', a:[
+      ['🔁 Одни и те же вопросы', 'faq'], ['📅 Запись и напоминания', 'book'], ['🛒 Заказы и оплата', 'order'], ['📉 Заявки теряются', 'lost']]},
+    {f:'web', t:'Вопрос 3 из 3. Сайт у вас уже есть?', a:[['✅ Да, есть', 'yes'], ['❌ Нет', 'no']]}
+  ];
+  var WHY = {
+    'ig-bot':'Бот в Direct будет отвечать на вопросы и собирать заявки, пока вы заняты.',
+    'tg-bot':'Telegram-бот: меню, прайс, запись и заявки в ваш рабочий чат.',
+    'site':'Сайт-визитка с формой: клиент находит вас в поиске и оставляет заявку без звонка.',
+    'site-pro':'Расширенный сайт или магазин: каталог с корзиной и оплатой, заказы без переписки.',
+    'tma':'Telegram Mini App: запись с календарём или каталог с оплатой прямо в Telegram.',
+    'automation':'Автоматизация: каждая заявка попадает в CRM или таблицу со статусом, клиент получает напоминание за сутки.'
+  };
+  function quiz(n){
+    if(n === 0) st.quiz = {};
+    if(n < QUIZ.length){
+      var Q = QUIZ[n];
+      return bot([Q.t], Q.a.map(function(x){ return {t:x[0], go:'q', f:Q.f, v:x[1], n:n + 1, wide:Q.a.length === 4}; }).concat(n ? [] : [BACK]));
+    }
+    var a = st.quiz, set = [];
+    function add(k){ if(set.indexOf(k) < 0) set.push(k); }
+    if(a.ch === 'ig') add('ig-bot');
+    if(a.ch === 'tg') add('tg-bot');
+    if(a.pain === 'faq' && !set.length) add(a.ch === 'none' ? 'ig-bot' : 'site');
+    if(a.pain === 'book') add(a.ch === 'tg' ? 'tma' : 'automation');
+    if(a.pain === 'order') add(a.ch === 'tg' ? 'tma' : 'site-pro');
+    if(a.pain === 'lost') add('automation');
+    if(a.web === 'no' && set.indexOf('site-pro') < 0 && set.indexOf('tma') < 0) add('site');
+    if(!set.length) add('ig-bot');
+    var lines = set.map(function(k){ return '• ' + WHY[k]; }).join('\n');
+    var texts = ['Вот что вам подойдёт:\n' + lines];
+    var r = quote(set);
+    if(r) texts.push(fmt('Итого: ${lo}–{hi}, запуск {term}.', r) + priceNote(r));
+    texts.push('Это первый взгляд. Точный состав и цену назовём после короткого брифа, вместе с бесплатным демо.');
+    return bot(texts, [
+      {t:'✍️ Заказать этот набор', go:'lead', topic:'Подбор: ' + names(set).join(', '), wide:true},
+      {t:'🧮 Открыть в конструкторе', go:'kit', keys:set},
+      {t:'🔁 Пройти ещё раз', go:'quiz'},
+      BACK
+    ]);
+  }
+
+  /* ---------- калькулятор набору: формула та сама, що в конструкторі ---------- */
+  function kit(){ return window.IMX_KIT || null; }
+  function quote(keys){ var K = kit(); return K && keys.length ? K.quote(keys) : null; }
+  function names(keys){
+    var K = kit(), all = K ? K.items() : [];
+    return keys.map(function(k){ var n = k; all.forEach(function(it){ if(it.k === k) n = it.n; }); return n; });
+  }
+  function priceNote(r){
+    if(window.IMX_PROMO) return r.pack ? fmt(' Это цена пакета «{pack}» до 1 ноября.', r)
+      : fmt(' Обычная цена ${wasLo}–{wasHi}, цена запуска действует до 1 ноября.', r);
+    return r.pct ? fmt(' Отдельно вышло бы ${wasLo}–{wasHi}, экономия до {pct}%.', r) : '';
+  }
+  function calcStart(pre){
+    var K = kit();
+    if(!K) return go('scroll', {to:'order'});
+    st.calc = {};
+    (pre || []).forEach(function(k){ st.calc[k] = true; });
+    var btns = K.items().map(function(it){
+      return {t:it.n, on:!!st.calc[it.k], toggle:function(el){
+        st.calc[it.k] = !st.calc[it.k];
+        /* візитка і розширений сайт — один сайт, як і в конструкторі */
+        var other = it.k === 'site' ? 'site-pro' : (it.k === 'site-pro' ? 'site' : '');
+        if(st.calc[it.k] && other && st.calc[other]){
+          st.calc[other] = false;
+          [].forEach.call(el.parentNode.children, function(x){ if(x.getAttribute('data-k') === other){ x.classList.remove('on'); x.setAttribute('aria-pressed', 'false'); } });
+        }
+        el.classList.toggle('on', st.calc[it.k]);
+        el.setAttribute('aria-pressed', st.calc[it.k] ? 'true' : 'false');
+        var sum = el.parentNode.querySelector('[data-sum]'), r = quote(chosen());
+        if(sum) sum.textContent = r ? fmt('✅ Посчитать: ${lo}–{hi}', r) : '✅ Посчитать';
+      }, k:it.k};
+    });
+    var r0 = quote(chosen());
+    btns.push({t: r0 ? fmt('✅ Посчитать: ${lo}–{hi}', r0) : '✅ Посчитать', go:'calc-done', wide:true, sum:true});
+    btns.push(BACK);
+    return bot(['Отметьте нужные услуги, и я посчитаю цену набора с учётом скидки.'], btns);
+  }
+  function chosen(){ return Object.keys(st.calc).filter(function(k){ return st.calc[k]; }); }
+  function calcDone(){
+    var set = chosen(), r = quote(set);
+    if(!r) return bot(['Отметьте хотя бы одну услугу.'], null).then(function(){ return calcStart(); });
+    return bot([fmt('Набор: {list}.\nИтого: ${lo}–{hi}, запуск {term}.', {list:names(set).join(', '), lo:r.lo, hi:r.hi, term:r.term}) + priceNote(r)], [
+      {t:'✍️ Заказать этот набор', go:'lead', topic:'Набор: ' + names(set).join(', '), wide:true},
+      {t:'🧮 Открыть в конструкторе', go:'kit', keys:set},
+      {t:'✏️ Изменить набор', go:'calc', keys:set},
+      BACK
+    ]);
+  }
+  function toKit(keys){
+    var K = kit();
+    if(K) K.set(keys);
+    scrollToId('order');
+    return bot(['Набор уже в конструкторе ниже: можно добавить или убрать услуги, цена пересчитается.'], [BACK]);
+  }
+
+  /* ---------- «побудьте клієнтом»: умовний бізнес, запис чи замовлення, сповіщення власнику ---------- */
+  var DEMO = {
+    dent:{n:'Стоматология', who:'стоматологии', kind:'book', hi:'Здравствуйте! Я бот стоматологии. На что вас записать?',
+      items:[['Консультация', '300 ₴'], ['Профессиональная чистка', '1 200 ₴'], ['Лечение кариеса', 'от 1 500 ₴'], ['Отбеливание', '4 500 ₴']]},
+    beauty:{n:'Салон красоты', who:'салона красоты', kind:'book', hi:'Здравствуйте! Я бот салона красоты. Выберите услугу:',
+      items:[['Маникюр с покрытием', '650 ₴'], ['Стрижка', '500 ₴'], ['Окрашивание', 'от 1 400 ₴'], ['Коррекция бровей', '350 ₴']]},
+    edu:{n:'Курсы и репетиторы', who:'школы английского', kind:'book', hi:'Здравствуйте! Я бот школы английского. Что вас интересует?',
+      items:[['Пробный урок', 'бесплатно'], ['Группа A1, 8 занятий', '2 400 ₴'], ['Индивидуальный урок', '450 ₴']]},
+    food:{n:'Ресторан и доставка', who:'кофейни', kind:'order', hi:'Здравствуйте! Я бот кофейни. Что закажете? Можно несколько позиций.',
+      items:[['Капучино', '75 ₴', 75], ['Чизкейк', '120 ₴', 120], ['Круассан', '65 ₴', 65], ['Тирамису', '130 ₴', 130]],
+      opts:['🛵 Доставка, 40–60 мин', '🏃 Заберу сам']},
+    shop:{n:'Магазин', who:'магазина одежды', kind:'order', hi:'Здравствуйте! Я бот магазина одежды. Что добавить в корзину?',
+      items:[['Льняное платье', '1 450 ₴', 1450], ['Рубашка', '990 ₴', 990], ['Джинсы', '1 300 ₴', 1300], ['Шёлковый платок', '450 ₴', 450]],
+      opts:['📦 Новая почта', '🏬 Заберу в магазине']}
+  };
+  var DEMO_ORDER = ['dent', 'beauty', 'food', 'shop', 'edu'];
+  var WD = ['вс', 'пн', 'вт', 'ср', 'чт', 'пт', 'сб'];
+
+  function demoPick(){
+    var n = window.IMX_NICHE;
+    if(n && DEMO[n.k]) return demoStart(n.k);
+    return bot(['Выберите бизнес, и я покажу, как работает его бот. Клиентом будете вы.'],
+      DEMO_ORDER.map(function(k){ return {t:DEMO[k].n, go:'demo-go', k:k}; }).concat([BACK]));
+  }
+  function demoStart(k){
+    var D = DEMO[k];
+    st.demo = {k:k, cart:{}};
+    say('Демо: условный бот ' + D.who + '. Ничего никуда не отправляется, цены условные. Теперь вы клиент 👇', 'demo-tag');
+    if(D.kind === 'book'){
+      return bot([D.hi], D.items.map(function(it, i){ return {t:it[0] + ' · ' + it[1], go:'demo-svc', i:i, wide:true}; }));
+    }
+    return bot([D.hi], cartBtns());
+  }
+  function cartSum(){
+    var D = DEMO[st.demo.k], sum = 0, cnt = 0;
+    D.items.forEach(function(it, i){ var c = st.demo.cart[i] || 0; sum += c * it[2]; cnt += c; });
+    return {sum:sum, cnt:cnt};
+  }
+  function money(x){ return String(x).replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' ₴'; }
+  function cartBtns(){
+    var D = DEMO[st.demo.k];
+    var btns = D.items.map(function(it, i){
+      return {t:'＋ ' + it[0] + ' · ' + it[1], wide:true, toggle:function(el){
+        st.demo.cart[i] = (st.demo.cart[i] || 0) + 1;
+        el.classList.add('on');
+        el.textContent = '＋ ' + it[0] + ' · ' + it[1] + '  ×' + st.demo.cart[i];
+        var c = cartSum(), done = el.parentNode.querySelector('[data-sum]');
+        done.textContent = fmt('🧾 Оформить · {sum}', {sum:money(c.sum)});
+        done.disabled = false;
+      }};
+    });
+    btns.push({t:'🧾 Оформить', wide:true, sum:true, toggle:function(el){
+      if(!cartSum().cnt) return;
+      dropKb();
+      bubble('out', clean(el.textContent), true);
+      var D2 = DEMO[st.demo.k];
+      bot([fmt('В корзине {n} поз. на {sum}. Как получите?', {n:cartSum().cnt, sum:money(cartSum().sum)})],
+        D2.opts.map(function(o){ return {t:o, go:'demo-opt', v:clean(o), wide:true}; }));
+    }});
+    btns.push(BACK);
+    return btns;
+  }
+  function days(){
+    var out = [], now = kyiv(), add = now.h < 17 ? 0 : 1;
+    while(out.length < 3){
+      var d = kyiv(add);
+      if(d.wd !== 0) out.push({label: add === 0 ? 'Сегодня' : (add === 1 ? 'Завтра' : WD[d.wd]) + ', ' + d.dm, add:add, wd:d.wd});
+      add++;
+    }
+    return out;
+  }
+  function demoDay(i){
+    st.demo.svc = DEMO[st.demo.k].items[i];
+    st.demo.days = days();
+    return bot([fmt('{svc}, {price}. На какой день?', {svc:st.demo.svc[0], price:st.demo.svc[1]})],
+      st.demo.days.map(function(d, j){ return {t:'📅 ' + d.label, go:'demo-day', i:j, wide:j === 2}; }));
+  }
+  function demoTime(j){
+    var d = st.demo.days[j], all = ['10:00', '11:30', '13:00', '15:30', '17:00', '18:30'], now = kyiv();
+    st.demo.day = d.label;
+    /* кілька вікон «зайняті», щоб розклад виглядав живим; сьогодні — лише ті, що ще попереду */
+    var free = all.filter(function(t, i){
+      if(d.add === 0 && +t.slice(0, 2) <= now.h + 1) return false;
+      return (i + d.wd) % 3 !== 0;
+    }).slice(0, 4);
+    if(!free.length) free = ['18:30'];
+    return bot(['Свободные окна:'], free.map(function(t){ return {t:'🕐 ' + t, go:'demo-time', v:t}; }));
+  }
+  function demoName(t){
+    st.demo.time = t;
+    st.step = 'demo-name';
+    setPh('Ваше имя');
+    return bot(['Как вас записать? Напишите имя.'], [{t:'⏭ Без имени', go:'demo-noname', wide:true}]);
+  }
+  function demoOpt(v){
+    st.demo.opt = v;
+    st.step = 'demo-name';
+    setPh('Ваше имя');
+    return bot(['На какое имя оформить?'], [{t:'⏭ Без имени', go:'demo-noname', wide:true}]);
+  }
+  function demoDone(name){
+    st.step = null;
+    setPh();
+    var D = DEMO[st.demo.k], who = name ? esc(name) : 'Гость', note;
+    if(D.kind === 'book'){
+      var o = {name:esc(name), svc:st.demo.svc[0], day:st.demo.day.toLowerCase(), time:st.demo.time};
+      say(fmt(name ? 'Готово, {name}! {svc}, {day} в {time}. Напомню за сутки и за два часа до визита.'
+        : 'Готово! {svc}, {day} в {time}. Напомню за сутки и за два часа до визита.', o));
+      note = fmt('🆕 Новая запись\n{svc}\n{day}, {time}\nКлиент: {who}', {svc:st.demo.svc[0], day:st.demo.day, time:st.demo.time, who:who});
+    } else {
+      var c = cartSum(), list = D.items.filter(function(it, i){ return st.demo.cart[i]; })
+        .map(function(it){ return it[0] + ' ×' + st.demo.cart[D.items.indexOf(it)]; }).join(', ');
+      var o2 = {name:esc(name), sum:money(c.sum), opt:st.demo.opt.toLowerCase()};
+      say(fmt(name ? 'Спасибо, {name}! Заказ на {sum} принят ({opt}). Пришлём подтверждение, как только всё будет готово.'
+        : 'Спасибо! Заказ на {sum} принят ({opt}). Пришлём подтверждение, как только всё будет готово.', o2));
+      note = fmt('🆕 Новый заказ · {sum}\n{list}\n{opt}\nКлиент: {who}', {sum:money(c.sum), list:list, opt:st.demo.opt, who:who});
+    }
+    say('<b>Так это в ту же секунду видит владелец в Telegram</b>' + note, 'note');
+    return bot(['Это условный пример. Ваш бот так же будет знать ваши услуги, цены и свободные часы, а заявки будут приходить вам в Telegram.'], [
+      {t:'✍️ Хочу такого бота', go:'lead', topic:'Бот, как в демо: ' + D.n, wide:true},
+      {t:'🔁 Другой бизнес', go:'demo-other'},
+      BACK
+    ]);
+  }
+
+  /* ---------- людина ---------- */
+  function human(){
+    st.topic = 'Вопрос человеку';
+    st.step = 'task';
+    setPh('Ваш вопрос');
+    var n = night(), t = kyiv();
+    return bot(['Зову человека 🙋 Дальше бот молчит. Напишите вопрос одним сообщением, и мы ответим лично.' +
+      (n ? fmt('\nСейчас в Киеве {hm}, так что ответим утром.', t) : ''),
+      'Так же работает кнопка «позвать человека» в ботах, которые мы собираем для клиентов.'],
+      [{t:'📲 Написать в Direct', href:DIRECT}, BACK]);
+  }
+
+  /* ---------- заявка ---------- */
   function askContact(){
     st.step = 'contact';
     setPh('+380… или @ник');
     return bot(['Куда ответить? Напишите телефон или @ник в Telegram.' +
       '<span class="fine">Отправляя контакт, вы соглашаетесь с <a href="/privacy" target="_blank" rel="noopener">политикой конфиденциальности</a>.</span>'], [BACK]);
   }
-
   function validContact(v){
-    return (v.replace(/\D/g, '').length >= 9) || /@[A-Za-z0-9_]{4,}/.test(v) || /\S+@\S+\.\S+/.test(v);
+    return (v.replace(/\D/g, '').length >= 9 && v.replace(/[\d\s()+\-.]/g, '').length <= 3) || /@[A-Za-z0-9_]{4,}/.test(v) || /\S+@\S+\.\S+/.test(v);
+  }
+  /* контакт усередині довшого повідомлення: «потрібен бот, мій номер 067 123 45 67» */
+  function findContact(v){
+    var m = v.match(/(\+?\d[\d\s()\-]{8,}\d)/) || v.match(/@[A-Za-z0-9_]{4,}/) || v.match(/\S+@\S+\.\S+/);
+    if(!m) return '';
+    if(m[0].charAt(0) !== '@' && m[0].replace(/\D/g, '').length < 9) return '';
+    return m[0].trim();
+  }
+  function summary(){
+    st.step = 'confirm';
+    setPh();
+    return bot([fmt('Проверьте заявку:\nЧто интересует: {topic}\nЗадача: {task}\nКонтакт: {contact}',
+      {topic:esc(st.topic || 'не выбрано'), task:esc(st.task || '—'), contact:esc(st.contact)})], [
+      {t:'✅ Отправить', go:'send', wide:true},
+      {t:'✏️ Изменить контакт', go:'contact'},
+      BACK
+    ]);
   }
 
   function send(){
@@ -3172,8 +3527,10 @@
         hideTyping(t);
         st.sending = false;
         if(ok){
-          st.topic = st.task = st.contact = '';
-          bubble('in', 'Заявка отправлена ✅ Ответим в течение суток с ценой, сроком и демо под вашу нишу.');
+          st.topic = st.task = st.contact = st.pending = '';
+          store.set('imxLead', '1');
+          bubble('in', 'Заявка отправлена ✅ Ответим в течение суток с ценой, сроком и демо под вашу нишу.' +
+            (night() ? fmt('\nСейчас в Киеве {hm}, так что напишем утром. А бот, как видите, работает и ночью.', kyiv()) : ''));
           keyboard([BACK]);
         } else {
           bubble('in', 'Заявка не отправилась: пропала связь с сервером. Отправьте ещё раз или напишите нам в Direct.');
@@ -3184,6 +3541,35 @@
     return q;
   }
 
+  /* ---------- вільний текст: ключові слова українською, російською й англійською, з типовими помилками.
+     Порядок важливий: спершу конкретні питання, потім послуги, ціни — наостанок ---------- */
+  var INTENTS = [
+    ['human', /людин|оператор|менеджер|человек|живий|живой|human|operator|manager|real person/i],
+    ['f_pass', /парол|password/i],
+    ['f_ban', /блок|бан(ят|ять|и|ы)?(\s|$|\?)|\bban|block|заблок/i],
+    ['demo', /демо|demo|спробу|попробо|потестит|протестув|як (це )?працює|как (это )?работает|how (does )?it work|show me/i],
+    ['cases', /кейс|портфол|ваші роботи|ваши работы|приклади робіт|примеры работ|portfolio|\bcase|відгук|отзыв|review/i],
+    ['f_time', /строк|термін|срок|як швидко|как быстро|скільки (днів|часу|триває|чекати)|сколько (дней|времени|ждать)|коли буде готов|когда будет готов|how long|deadline/i],
+    ['f_pay', /оплат|передоплат|предоплат|аванс|розстрочк|рассрочк|prepay|payment|\bpay\b/i],
+    ['f_support', /підтримк|поддержк|супровід|сопровожд|support|maintenance/i],
+    ['f_miss', /не зрозуміє|не поймет|не поймёт|не понимает|не розуміє|doesn.?t understand/i],
+    ['quiz', /що (мені )?(обрати|вибрати|краще|підійде)|что (мне )?(выбрать|лучше|подойдет)|не знаю|порадь|посоветуй|підбер|подбер|recommend|what should i/i],
+    ['ai', /голосов|voice|(^|[^a-zа-яіїєґ])(ai|аі|ші|ии|gpt|чат ?гпт)([^a-zа-яіїєґ]|$)|штучн|искусствен|нейро|artificial|розумн/i],
+    ['tma', /mini ?app|міні.?(ап|застос)|мини.?(ап|прил)|застосун|приложени|web ?app/i],
+    ['auto', /автоматиз|automat|crm|срм|таблиц|spreadsheet|sheets|n8n|нагадуван|напоминан|reminder|інтеграц|интеграц|integrat/i],
+    ['site', /магазин|кошик|корзин|каталог|shop|store|cart|сайт|лендін|лендин|візитк|визитк|website|\bsite|landing|домен|domain/i],
+    ['bots', /бот|bot|direct|дірект|директ|інст|инст|insta|телеграм|телеграмм|telegram|(^|\s)(тг|tg)(\s|$)|вайбер|viber|whats ?app|ватсап/i],
+    ['price', /ціна|ціни|цін[уиі]|цен[аыу]|вартіст|стоимост|скільки|скіко|скок|сколько|почім|почем|прайс|price|cost|how much|бюджет|budget|грн|\$/i],
+    ['calc', /порахува|посчита|калькул|calculat|набір|набор|bundle|комплект/i],
+    ['thanks', /дяку|спасиб|thank|thx|дякс/i],
+    ['greet', /^(привіт|вітаю|добр(ий|ого|ый)|здравств|здоров|хай|hello|hi|hey|салют|прив)/i]
+  ];
+  function understand(text){
+    var t = text.toLowerCase();
+    for(var i = 0; i < INTENTS.length; i++) if(INTENTS[i][1].test(t)) return INTENTS[i][0];
+    return '';
+  }
+
   form.addEventListener('submit', function(e){
     e.preventDefault();
     var text = input.value.trim();
@@ -3192,16 +3578,44 @@
     start();
     dropKb();
     bubble('out', text, true);
-    if(st.step === 'task'){ st.task = text; askContact(); return; }
+    if(st.step === 'task'){
+      st.task = text;
+      var c = findContact(text);
+      if(c){ st.contact = c; summary(); } else askContact();
+      return;
+    }
     if(st.step === 'contact'){
-      if(validContact(text)){ st.contact = text; send(); }
+      var cc = validContact(text) ? text : findContact(text);
+      if(cc){ st.contact = cc; summary(); }
       else bot(['Не вижу здесь телефона или ника. Напишите номер в формате +380… или @ник в Telegram.'], [BACK]);
       return;
     }
+    if(st.step === 'demo-name'){ demoDone(text.slice(0, 40)); return; }
+    st.step = null;
+    setPh();
+    /* контакт без пояснень: одразу пропонуємо передати */
+    if(validContact(text) && text.length < 60){
+      st.contact = findContact(text) || text;
+      st.pending = st.pending || 'Оставил контакт в чате';
+      bot(['Похоже, это ваш контакт. Передать его нам, чтобы мы вам написали?'], [{t:'✍️ Да, передать', go:'pass'}, BACK]);
+      return;
+    }
     st.pending = text;
-    bot(['Я бот на кнопках, поэтому свободный текст не разбираю. AI-агент ответил бы вам сразу.',
-         'Передать ваше сообщение нам? Добавьте контакт, и мы ответим лично.'],
-        [{t:'✍️ Да, передать', go:'pass'}, BACK]);
+    var intent = understand(text), c3 = findContact(text);
+    var LEADW = /замов|заказ|заявк|order|хочу|want|потрібен|потрібна|потрібно|нужен|нужна|нужно|need|почнемо|начнем|давайте/i;
+    var TOPIC = {bots:'Бот для Direct / Telegram', site:'Сайт', ai:'AI-агент', auto:'Автоматизация', tma:'Telegram Mini App'};
+    if(c3 || (LEADW.test(text) && (!intent || TOPIC[intent]))){
+      st.task = text; st.topic = TOPIC[intent] || 'Сообщение в чате';
+      if(c3){ st.contact = c3; summary(); }
+      else bot(['Понял, передам это нам. Осталось указать, куда ответить.'], null).then(askContact);
+      return;
+    }
+    if(intent === 'greet'){ bot(['Привет 👋 Чем помочь? Можно выбрать кнопку или написать своими словами: «сколько стоит бот», «нужен сайт для кофейни».'], MENU); return; }
+    if(intent === 'thanks'){ bot(['Пожалуйста! Если что-то ещё, я здесь.'], MENU); return; }
+    if(intent){ go(intent); return; }
+    bot(['Тут я не уверен. Я базовый бот: понимаю кнопки и ключевые слова, а живую речь полностью разбирает AI-агент.',
+         'Передать ваше сообщение человеку? Добавьте контакт, и мы ответим лично.'],
+        [{t:'✍️ Да, передать', go:'pass'}, {t:'🧠 Что умеет AI-агент', go:'ai'}, BACK]);
   });
 
   /* вітання починається, коли телефон з'явився після заставки і його видно на екрані
@@ -3210,13 +3624,15 @@
   function start(){
     if(started) return;
     started = true;
-    var n = window.IMX_NICHE;
-    if(n){
+    var n = window.IMX_NICHE, back = store.get('imxLead');
+    if(back){
+      bot(['С возвращением 👋 Ваша заявка уже у нас. Можете посмотреть другое или задать вопрос.'], MENU);
+    } else if(n){
       bot(['Привет 👋 Я бот Intromax. Вот как отвечает бот в ' + n.where + '. Клиент пишет в ' + n.time + ':\n«' + n.q + '»',
            n.a,
-           'Пример условный, но точно так же ваш бот ответит за секунду, даже ночью. А вам что нужно?'], MENU);
+           'Пример условный, но так же ваш бот ответит за секунду, даже ночью. Выберите кнопку или напишите своими словами.'], MENU);
     } else {
-      bot(['Привет 👋 Я бот Intromax. Так же будет отвечать бот в вашем Direct или Telegram: за секунду, даже в три часа ночи.\nЧто вам нужно?'], MENU);
+      bot(['Привет 👋 Я бот Intromax. Так же будет отвечать бот в вашем Direct или Telegram: за секунду, даже в три ночи.\nВыберите кнопку или напишите своими словами.'], MENU);
     }
   }
   /* зміна ніші в першому екрані: якщо гість ще нічого не писав, діалог починається наново */
@@ -3715,6 +4131,23 @@ window.IMX3D = {
     renderInfo(); renderSum();
   }
 
+  /* чат-бот у першому екрані рахує набір тією самою формулою і може передати його сюди */
+  window.IMX_KIT = {
+    items: function(){ return ITEMS.filter(function(it){ return !it.direct; }).map(function(it){ return {k:it.k, n:it.n}; }); },
+    quote: function(list){
+      var keep = picked; picked = {};
+      list.forEach(function(k){ picked[k] = true; });
+      var r = calc(); picked = keep; return r;
+    },
+    set: function(list){
+      picked = {};
+      list.forEach(function(k){ picked[k] = true; });
+      var first = 0;
+      ITEMS.some(function(it, i){ if(picked[it.k]){ first = i; return true; } });
+      go(first); renderSum();
+    }
+  };
+
   btnAdd.addEventListener('click', function(){ if(!ITEMS[cur].direct) toggle(ITEMS[cur].k); });
   btnPrev.addEventListener('click', function(e){ e.stopPropagation(); go(cur - 1); });
   btnNext.addEventListener('click', function(e){ e.stopPropagation(); go(cur + 1); });
@@ -3864,8 +4297,10 @@ window.IMX3D = {
   var SECTIONS = [
     ['services','Услуги'], ['cases','Кейсы'], ['order','Конструктор'],
     ['process','Процесс'], ['terms','Условия'], ['pricing','Цены'], ['niches','Ниши'],
-    ['fit','Кому подходит'], ['faq','Вопросы'], ['reviews','Отзывы'], ['cta','Заявка']
-  ].filter(function(s){ var el = document.getElementById(s[0]); return el && !el.hidden; });
+    ['faq','Вопросы'], ['fit','Кому подходит'], ['reviews','Отзывы'], ['cta','Заявка']
+  ].filter(function(s){ var el = document.getElementById(s[0]); return el && !el.hidden; })
+  /* порядок точок — як розділи стоять на сторінці, навіть якщо їх переставлять */
+  .sort(function(a, b){ return document.getElementById(a[0]).compareDocumentPosition(document.getElementById(b[0])) & 4 ? -1 : 1; });
   var rail = document.getElementById('rail'), dock = document.getElementById('dock');
   var sheet = document.getElementById('dock-sheet'), veil = document.getElementById('dock-veil');
   var where = document.getElementById('dock-where'), nameEl = document.getElementById('dock-name');
