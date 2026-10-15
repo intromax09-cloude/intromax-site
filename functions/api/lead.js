@@ -1,19 +1,17 @@
 /**
  * POST /api/lead  — заявки з форм послуг на сайті.
- * Тіло: {type, title, fields:[{label,value}], page}
+ * Тіло: {type, title, fields:[{label,value}], page, call?:{date:'YYYY-MM-DD', time:'HH:MM'}}
  * Шле повідомлення в Telegram. Потрібні змінні оточення:
  *   TG_TOKEN   — токен бота від @BotFather   (тип Secret)
  *   TG_CHAT_ID — ваш chat id                 (тип Secret)
+ * Якщо до проєкту привʼязано KV-простір REM і в заявці є дзвінок (call), ставить нагадування
+ * і повертає {ok, code, bot}: сайт показує кнопку t.me/<bot>?start=r_<code>, щоб клієнт
+ * увімкнув нагадування собі. Нам нагадування приходить у будь-якому разі (див. /api/tick).
  */
+import { escapeHtml, kyivToUtc, botName, newCode } from '../_lib/rem.js';
 
 const MAX_BODY = 12000;
-
-function escapeHtml(s) {
-  return String(s == null ? '' : s)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
-}
+const MAX_AHEAD = 60 * 86400 * 1000;
 
 function clip(s, n) {
   s = String(s == null ? '' : s).trim();
@@ -64,7 +62,30 @@ export async function onRequestPost({ request, env }) {
   if (!res.ok) {
     return new Response('Telegram error', { status: 502 });
   }
-  return new Response(JSON.stringify({ ok: true }), {
+
+  const out = { ok: true };
+  const call = data.call;
+  if (env.REM && call && /^\d{4}-\d{2}-\d{2}$/.test(call.date || '') && /^\d{2}:\d{2}$/.test(call.time || '')) {
+    const at = kyivToUtc(call.date, call.time);
+    const now = Date.now();
+    if (at > now && at < now + MAX_AHEAD) {
+      const pick = (label) => { const f = fields.find((x) => x.label === label); return f ? clip(f.value, 200) : ''; };
+      const code = newCode();
+      const rem = {
+        at,
+        label: pick('Дзвінок') || (call.date + ' ' + call.time),
+        contact: pick('Контакт'),
+        niche: pick('Ніша'),
+        topic: pick('Що цікавить'),
+        chat: 0,
+        created: now
+      };
+      await env.REM.put('rem:' + code, JSON.stringify(rem), { expirationTtl: Math.round((at - now) / 1000) + 3 * 3600 });
+      out.code = code;
+      out.bot = await botName(env);
+    }
+  }
+  return new Response(JSON.stringify(out), {
     status: 200,
     headers: { 'Content-Type': 'application/json' }
   });

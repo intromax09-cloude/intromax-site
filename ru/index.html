@@ -2992,6 +2992,7 @@
         .formatToParts(d).forEach(function(x){ p[x.type] = x.value; });
     }catch(_){ p = {hour:d.getHours(), minute:pad(d.getMinutes()), day:pad(d.getDate()), month:pad(d.getMonth() + 1), weekday:['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][d.getDay()]}; }
     return {h:+p.hour, hm:pad(p.hour) + ':' + p.minute, dm:p.day + '.' + p.month,
+      iso:(p.year || new Date().getFullYear()) + '-' + p.month + '-' + p.day,
       wd:['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].indexOf(p.weekday)};
   }
   function night(){ var h = kyiv().h; return h >= 21 || h < 8; }
@@ -3235,7 +3236,7 @@
     if(SCRIPT[key]){ var r = SCRIPT[key](); return bot(r[0], r[1]); }
     if(key === 'call') return callStart();
     if(key === 'call-day') return callTime(b.i);
-    if(key === 'call-slot'){ st.call = st.callDay + ', ' + b.v; st.brief = 'call'; st.topic = st.topic || 'Звонок'; return nextStep(); }
+    if(key === 'call-slot'){ st.call = st.callDay + ', ' + b.v; st.callTime = b.v; st.brief = 'call'; st.topic = st.topic || 'Звонок'; return nextStep(); }
     if(key === 'nset') return nicheSet(b && b.k);
     if(key === 'niche'){ setNiche(b.k); return nextStep(); }
     if(key === 'niche-ok') return nextStep();
@@ -3393,7 +3394,7 @@
     var out = [], now = kyiv(), add = now.h >= 17 ? 1 : 0;
     while(out.length < CALL.days){
       var d = kyiv(add);
-      if(d.wd !== 0 && d.wd !== 6) out.push({label:(add === 0 ? 'Сегодня' : add === 1 ? 'Завтра' : WD[d.wd]) + ', ' + d.dm, add:add});
+      if(d.wd !== 0 && d.wd !== 6) out.push({label:(add === 0 ? 'Сегодня' : add === 1 ? 'Завтра' : WD[d.wd]) + ', ' + d.dm, add:add, iso:d.iso});
       add++;
     }
     return out;
@@ -3405,7 +3406,7 @@
   }
   function callTime(i){
     var d = st.callDays[i], now = kyiv();
-    st.callDay = d.label;
+    st.callDay = d.label; st.callIso = d.iso;
     var free = CALL.slots.filter(function(t){ return d.add > 0 || +t.slice(0, 2) > now.h + 1; });
     if(!free.length) return bot(['Сегодня окон уже нет. Выберите другой день.'],
       st.callDays.filter(function(x){ return x.add > 0; }).map(function(x){ return {t:'📅 ' + x.label, go:'call-day', i:st.callDays.indexOf(x)}; }).concat([BACK]));
@@ -3653,14 +3654,18 @@
             {label:'Путь в чате', value: st.path.join(' → ') || '—'},
             {label:'Откуда', value:'чат-бот на первом экране'}
           ]),
+          call: st.call ? {date: st.callIso, time: st.callTime} : undefined,
           page: location.href
         })
       })
-      .then(function(res){ return res.ok; }, function(){ return false; })
-      .then(function(ok){
+      .then(function(res){
+        if(!res.ok) return null;
+        return res.json ? res.json().then(null, function(){ return {ok:true}; }) : {ok:true};
+      }, function(){ return null; })
+      .then(function(r){
         hideTyping(t);
         st.sending = false;
-        if(ok){
+        if(r){
           var wasCall = st.call;
           st.topic = st.task = st.budget = st.call = st.contact = st.pending = '';
           st.brief = 'full';
@@ -3668,7 +3673,11 @@
           bubble('in', (wasCall ? 'Звонок записан ✅ ' + wasCall + ' по Киеву. Перед разговором напишем, чтобы подтвердить.'
             : 'Заявка отправлена ✅ Ответим в течение суток с ценой, сроком и демо под вашу нишу.') +
             (night() ? fmt('\nСейчас в Киеве {hm}, так что напишем утром. А бот, как видите, работает и ночью.', kyiv()) : ''));
-          keyboard([{t:'📤 Поделиться ботом', go:'share'}, BACK]);
+          if(wasCall && r.code && r.bot){
+            /* нагадування клієнту: він сам вмикає його кнопкою Start у нашому Telegram-боті */
+            bubble('in', 'Напомнить вам за час до звонка? Нажмите кнопку, а в Telegram — Start. Так же ваш бот будет напоминать клиентам о записи.');
+            keyboard([{t:'🔔 Напомнить в Telegram', href:'https://t.me/' + r.bot + '?start=r_' + r.code, wide:true}, {t:'📤 Поделиться ботом', go:'share'}, BACK]);
+          } else keyboard([{t:'📤 Поделиться ботом', go:'share'}, BACK]);
         } else {
           bubble('in', 'Заявка не отправилась: пропала связь с сервером. Отправьте ещё раз или напишите нам в Direct.');
           keyboard([{t:'🔁 Отправить ещё раз', go:'resend'}, {t:'📲 Написать в Direct', href:DIRECT}, BACK]);

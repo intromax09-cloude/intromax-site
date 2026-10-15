@@ -2992,6 +2992,7 @@
         .formatToParts(d).forEach(function(x){ p[x.type] = x.value; });
     }catch(_){ p = {hour:d.getHours(), minute:pad(d.getMinutes()), day:pad(d.getDate()), month:pad(d.getMonth() + 1), weekday:['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][d.getDay()]}; }
     return {h:+p.hour, hm:pad(p.hour) + ':' + p.minute, dm:p.day + '.' + p.month,
+      iso:(p.year || new Date().getFullYear()) + '-' + p.month + '-' + p.day,
       wd:['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].indexOf(p.weekday)};
   }
   function night(){ var h = kyiv().h; return h >= 21 || h < 8; }
@@ -3235,7 +3236,7 @@
     if(SCRIPT[key]){ var r = SCRIPT[key](); return bot(r[0], r[1]); }
     if(key === 'call') return callStart();
     if(key === 'call-day') return callTime(b.i);
-    if(key === 'call-slot'){ st.call = st.callDay + ', ' + b.v; st.brief = 'call'; st.topic = st.topic || 'Call'; return nextStep(); }
+    if(key === 'call-slot'){ st.call = st.callDay + ', ' + b.v; st.callTime = b.v; st.brief = 'call'; st.topic = st.topic || 'Call'; return nextStep(); }
     if(key === 'nset') return nicheSet(b && b.k);
     if(key === 'niche'){ setNiche(b.k); return nextStep(); }
     if(key === 'niche-ok') return nextStep();
@@ -3393,7 +3394,7 @@
     var out = [], now = kyiv(), add = now.h >= 17 ? 1 : 0;
     while(out.length < CALL.days){
       var d = kyiv(add);
-      if(d.wd !== 0 && d.wd !== 6) out.push({label:(add === 0 ? 'Today' : add === 1 ? 'Tomorrow' : WD[d.wd]) + ', ' + d.dm, add:add});
+      if(d.wd !== 0 && d.wd !== 6) out.push({label:(add === 0 ? 'Today' : add === 1 ? 'Tomorrow' : WD[d.wd]) + ', ' + d.dm, add:add, iso:d.iso});
       add++;
     }
     return out;
@@ -3405,7 +3406,7 @@
   }
   function callTime(i){
     var d = st.callDays[i], now = kyiv();
-    st.callDay = d.label;
+    st.callDay = d.label; st.callIso = d.iso;
     var free = CALL.slots.filter(function(t){ return d.add > 0 || +t.slice(0, 2) > now.h + 1; });
     if(!free.length) return bot(['No slots left today. Pick another day.'],
       st.callDays.filter(function(x){ return x.add > 0; }).map(function(x){ return {t:'📅 ' + x.label, go:'call-day', i:st.callDays.indexOf(x)}; }).concat([BACK]));
@@ -3653,14 +3654,18 @@
             {label:'Chat path', value: st.path.join(' → ') || '—'},
             {label:'Source', value:'chat bot on the first screen'}
           ]),
+          call: st.call ? {date: st.callIso, time: st.callTime} : undefined,
           page: location.href
         })
       })
-      .then(function(res){ return res.ok; }, function(){ return false; })
-      .then(function(ok){
+      .then(function(res){
+        if(!res.ok) return null;
+        return res.json ? res.json().then(null, function(){ return {ok:true}; }) : {ok:true};
+      }, function(){ return null; })
+      .then(function(r){
         hideTyping(t);
         st.sending = false;
-        if(ok){
+        if(r){
           var wasCall = st.call;
           st.topic = st.task = st.budget = st.call = st.contact = st.pending = '';
           st.brief = 'full';
@@ -3668,7 +3673,11 @@
           bubble('in', (wasCall ? 'Call booked ✅ ' + wasCall + ' Kyiv time. We will message you before the call to confirm.'
             : 'Request sent ✅ We will reply within a day with a price, a timeline and a demo for your niche.') +
             (night() ? fmt('\nIt is {hm} in Kyiv now, so we will write in the morning. The bot, as you can see, works at night too.', kyiv()) : ''));
-          keyboard([{t:'📤 Share the bot', go:'share'}, BACK]);
+          if(wasCall && r.code && r.bot){
+            /* нагадування клієнту: він сам вмикає його кнопкою Start у нашому Telegram-боті */
+            bubble('in', 'Want a reminder an hour before the call? Press the button, then Start in Telegram. Your bot will remind your customers about bookings the same way.');
+            keyboard([{t:'🔔 Remind me in Telegram', href:'https://t.me/' + r.bot + '?start=r_' + r.code, wide:true}, {t:'📤 Share the bot', go:'share'}, BACK]);
+          } else keyboard([{t:'📤 Share the bot', go:'share'}, BACK]);
         } else {
           bubble('in', 'The request was not sent: the connection to the server dropped. Send it again or write to us in Direct.');
           keyboard([{t:'🔁 Send again', go:'resend'}, {t:'📲 Write in Direct', href:DIRECT}, BACK]);

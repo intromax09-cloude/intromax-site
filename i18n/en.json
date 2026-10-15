@@ -865,5 +865,7 @@
 "ще не визначився":"not decided yet",
 "💼 Набір для моєї ніші":"💼 Bundle for my niche",
 "15 хвилин":"15 minutes",
-"📞 Записатись на дзвінок":"📞 Book a call"
+"📞 Записатись на дзвінок":"📞 Book a call",
+"🔔 Нагадати в Telegram":"🔔 Remind me in Telegram",
+"Нагадати вам за годину до дзвінка? Натисніть кнопку, а в Telegram — Start. Так само ваш бот нагадуватиме клієнтам про запис.":"Want a reminder an hour before the call? Press the button, then Start in Telegram. Your bot will remind your customers about bookings the same way."
 }
