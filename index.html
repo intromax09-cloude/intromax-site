@@ -3010,9 +3010,26 @@
     {t:'💰 Ціни', go:'price'},
     {t:'📂 Кейси', go:'cases'},
     {t:'❓ Питання', go:'faq'},
+    {t:'📞 Записатись на дзвінок', go:'call'},
     {t:'✍️ Заявка', go:'lead'},
-    {t:'🙋 Покликати людину', go:'human'}
+    {t:'🙋 Покликати людину', go:'human', wide:true}
   ];
+
+  /* ніші: ті самі, що в розділі «Ніші» на сторінці, плюс пʼять із перемикача першого екрана */
+  var NICHES = [
+    ['dent', 'Стоматологія'], ['beauty', 'Бʼюті та косметологія'], ['food', 'Кондитерські й доставка'], ['shop', 'Магазини й шоуруми'],
+    ['fit', 'Фітнес і тренери'], ['edu', 'Репетитори й курси'], ['photo', 'Фото й відео'], ['auto', 'Сервіс і СТО'], ['rent', 'Оренда й туризм'], ['other', 'Інше']
+  ];
+  function nicheName(k){ var n = ''; NICHES.forEach(function(x){ if(x[0] === k) n = x[1]; }); return n; }
+  function nicheBtns(go){ return NICHES.map(function(x){ return {t:x[1], go:go, k:x[0]}; }); }
+  /* типовий набір для ніші: з чого зазвичай починають */
+  var NICHE_SET = {
+    dent:['ig-bot', 'automation'], beauty:['ig-bot', 'automation'], food:['tg-bot', 'site-pro'], shop:['ig-bot', 'site-pro'],
+    fit:['ig-bot', 'tma'], edu:['tg-bot', 'site'], photo:['ig-bot', 'site'], auto:['tg-bot', 'automation'], rent:['site-pro', 'tg-bot']
+  };
+
+  /* дзвінок: будні, три вікна за Києвом, шість робочих днів наперед. Змінюється тут */
+  var CALL = {slots:['12:00', '15:00', '18:00'], days:6, len:'15 хвилин'};
   var MORE_FAQ = {t:'❓ Інші питання', go:'faq'};
   var LEAD = {t:'✍️ Залишити заявку', go:'lead'};
 
@@ -3083,6 +3100,7 @@
       '\nПакет «Старт»: ' + packStart(),
       'Оплата етапами: частина на старті, решта після робочого результату. Позначте потрібні послуги, і я порахую ціну набору зі знижкою.'
     ], [
+      {t:'💼 Набір для моєї ніші', go:'nset', wide:true},
       {t:'🧮 Порахувати набір', go:'calc'},
       {t:'🎯 Підібрати за 3 питання', go:'quiz'},
       LEAD, BACK
@@ -3113,7 +3131,13 @@
   };
 
   /* ---------- стан ---------- */
-  var st = {step:null, topic:'', task:'', contact:'', pending:'', sending:false, quiz:{}, calc:{}, demo:null};
+  var st = {step:null, topic:'', task:'', budget:'', niche:'', call:'', contact:'', pending:'', sending:false, quiz:{}, calc:{}, demo:null, brief:'full', path:[]};
+  /* памʼять між візитами: що дивився, який набір рахував, яка ніша */
+  var mem = {};
+  try{ mem = JSON.parse(store.get('imxMem') || '{}') || {}; }catch(_){ mem = {}; }
+  function remember(k, v){ mem[k] = v; mem.t = Date.now(); store.set('imxMem', JSON.stringify(mem)); }
+  function setNiche(k){ if(k && k !== 'other'){ st.niche = k; remember('niche', k); } else if(k === 'other') st.niche = 'other'; }
+  if(mem.niche) st.niche = mem.niche;
   var q = Promise.resolve();
 
   function down(){ body.scrollTop = body.scrollHeight; }
@@ -3203,9 +3227,23 @@
     if(o) o.scrollIntoView({behavior: CALM ? 'auto' : 'smooth', block:'start'});
   }
 
+  var TOPICS = {bots:'Бот для Direct / Telegram', site:'Сайт', ai:'AI-агент', auto:'Автоматизація', tma:'Telegram Mini App'};
   function go(key, b){
+    if(st.path[st.path.length - 1] !== key){ st.path.push(key); if(st.path.length > 10) st.path.shift(); }
     if(key === 'menu'){ st.step = null; setPh(); return bot(['Що вам потрібно?'], MENU); }
+    if(TOPICS[key]) remember('topic', key);
     if(SCRIPT[key]){ var r = SCRIPT[key](); return bot(r[0], r[1]); }
+    if(key === 'call') return callStart();
+    if(key === 'call-day') return callTime(b.i);
+    if(key === 'call-slot'){ st.call = st.callDay + ', ' + b.v; st.brief = 'call'; st.topic = st.topic || 'Дзвінок'; return nextStep(); }
+    if(key === 'nset') return nicheSet(b && b.k);
+    if(key === 'niche'){ setNiche(b.k); return nextStep(); }
+    if(key === 'niche-ok') return nextStep();
+    if(key === 'niche-change'){ st.niche = ''; return askNiche(true); }
+    if(key === 'niche-change-set'){ st.niche = ''; return nicheSet(); }
+    if(key === 'task-skip'){ st.task = 'ще не визначився'; return nextStep(); }
+    if(key === 'budget'){ st.budget = b.v; return nextStep(); }
+    if(key === 'share') return share();
     if(key === 'quiz') return quiz(0);
     if(key === 'q') { st.quiz[b.f] = b.v; return quiz(b.n); }
     if(key === 'calc') return calcStart(b && b.keys);
@@ -3221,13 +3259,13 @@
     if(key === 'demo-noname') return demoDone('');
     if(key === 'human') return human();
     if(key === 'lead'){
-      st.topic = (b && b.topic) || '';
-      st.step = 'task';
-      setPh('Наприклад: салон краси, потрібен бот у Direct');
-      return bot(['Розкажіть одним повідомленням, який у вас бізнес і що потрібно зробити.'], [BACK]);
+      st.topic = (b && b.topic) || st.topic || '';
+      if(b && b.niche) setNiche(b.niche);
+      st.brief = 'full';
+      return nextStep();
     }
-    if(key === 'pass'){ st.task = st.pending; st.topic = st.topic || 'Повідомлення в чаті'; return st.contact ? summary() : askContact(); }
-    if(key === 'contact') return askContact();
+    if(key === 'pass'){ st.task = st.pending; st.topic = st.topic || 'Повідомлення в чаті'; st.brief = 'light'; return nextStep(); }
+    if(key === 'contact'){ st.contact = ''; return nextStep(); }
     if(key === 'resend' || key === 'send') return send();
     if(key === 'scroll'){
       scrollToId(b.to);
@@ -3267,6 +3305,7 @@
     if(a.pain === 'lost') add('automation');
     if(a.web === 'no' && set.indexOf('site-pro') < 0 && set.indexOf('tma') < 0) add('site');
     if(!set.length) add('ig-bot');
+    remember('keys', set);
     var lines = set.map(function(k){ return '• ' + WHY[k]; }).join('\n');
     var texts = ['Ось що вам підійде:\n' + lines];
     var r = quote(set);
@@ -3321,6 +3360,7 @@
   function calcDone(){
     var set = chosen(), r = quote(set);
     if(!r) return bot(['Позначте хоча б одну послугу.'], null).then(function(){ return calcStart(); });
+    remember('keys', set);
     return bot([fmt('Набір: {list}.\nРазом: ${lo}–{hi}, запуск {term}.', {list:names(set).join(', '), lo:r.lo, hi:r.hi, term:r.term}) + priceNote(r)], [
       {t:'✍️ Замовити цей набір', go:'lead', topic:'Набір: ' + names(set).join(', '), wide:true},
       {t:'🧮 Відкрити в конструкторі', go:'kit', keys:set},
@@ -3328,6 +3368,59 @@
       BACK
     ]);
   }
+  /* типовий набір для ніші гостя: з чого зазвичай починають такі бізнеси */
+  function nicheSet(k){
+    if(k) setNiche(k);
+    if(!st.niche || !NICHE_SET[st.niche]){
+      return bot([st.niche === 'other' ? 'Для нетипової ніші краще підібрати рішення за три питання.' : 'Який у вас бізнес?'],
+        st.niche === 'other' ? [{t:'🎯 Підібрати за 3 питання', go:'quiz', wide:true}, BACK]
+        : nicheBtns('nset').concat([BACK]));
+    }
+    var set = NICHE_SET[st.niche], r = quote(set);
+    remember('keys', set);
+    var texts = ['Для ніші «' + nicheName(st.niche) + '» зазвичай починають із цього:\n' + set.map(function(x){ return '• ' + WHY[x]; }).join('\n')];
+    if(r) texts.push(fmt('Разом: ${lo}–{hi}, запуск {term}.', r) + priceNote(r));
+    return bot(texts, [
+      {t:'✍️ Замовити цей набір', go:'lead', topic:'Набір для ніші: ' + names(set).join(', '), wide:true},
+      {t:'🧮 Відкрити в конструкторі', go:'kit', keys:set},
+      {t:'🔁 Інша ніша', go:'niche-change-set'},
+      BACK
+    ]);
+  }
+
+  /* ---------- дзвінок: будні за Києвом, три вікна на день ---------- */
+  function callDays(){
+    var out = [], now = kyiv(), add = now.h >= 17 ? 1 : 0;
+    while(out.length < CALL.days){
+      var d = kyiv(add);
+      if(d.wd !== 0 && d.wd !== 6) out.push({label:(add === 0 ? 'Сьогодні' : add === 1 ? 'Завтра' : WD[d.wd]) + ', ' + d.dm, add:add});
+      add++;
+    }
+    return out;
+  }
+  function callStart(){
+    st.callDays = callDays();
+    return bot(['Домовимось про дзвінок: ' + CALL.len + ' у Telegram або телефоном, розберемо ваше завдання і скажемо ціну.', 'Який день зручний?'],
+      st.callDays.map(function(d, i){ return {t:'📅 ' + d.label, go:'call-day', i:i}; }).concat([BACK]));
+  }
+  function callTime(i){
+    var d = st.callDays[i], now = kyiv();
+    st.callDay = d.label;
+    var free = CALL.slots.filter(function(t){ return d.add > 0 || +t.slice(0, 2) > now.h + 1; });
+    if(!free.length) return bot(['Сьогодні вікон уже немає. Оберіть інший день.'],
+      st.callDays.filter(function(x){ return x.add > 0; }).map(function(x){ return {t:'📅 ' + x.label, go:'call-day', i:st.callDays.indexOf(x)}; }).concat([BACK]));
+    return bot(['Час за Києвом:'], free.map(function(t){ return {t:'🕐 ' + t, go:'call-slot', v:t}; }).concat([BACK]));
+  }
+
+  /* поділитись ботом */
+  function share(){
+    var url = location.origin + location.pathname + '?bot=demo';
+    var done = function(){ return bot(['Посилання скопійовано: ' + url], [BACK]); };
+    if(navigator.share) return navigator.share({title:'Intromax', url:url}).then(function(){ return bot(['Дякуємо, що ділитесь!'], [BACK]); }, done);
+    try{ navigator.clipboard.writeText(url).then(done, done); }catch(_){ done(); }
+    return q;
+  }
+
   function toKit(keys){
     var K = kit();
     if(K) K.set(keys);
@@ -3362,6 +3455,7 @@
   function demoStart(k){
     var D = DEMO[k];
     st.demo = {k:k, cart:{}};
+    remember('demo', k);
     say('Демо: умовний бот ' + D.who + '. Нічого нікуди не надсилається, ціни умовні. Тепер ви клієнт 👇', 'demo-tag');
     if(D.kind === 'book'){
       return bot([D.hi], D.items.map(function(it, i){ return {t:it[0] + ' · ' + it[1], go:'demo-svc', i:i, wide:true}; }));
@@ -3454,7 +3548,7 @@
     }
     say('<b>Так це в ту ж секунду бачить власник у Telegram</b>' + note, 'note');
     return bot(['Це умовний приклад. Ваш бот так само знатиме ваші послуги, ціни й вільні години, а заявки надходитимуть вам у Telegram.'], [
-      {t:'✍️ Хочу такого бота', go:'lead', topic:'Бот, як у демо: ' + D.n, wide:true},
+      {t:'✍️ Хочу такого бота', go:'lead', topic:'Бот, як у демо: ' + D.n, niche:st.demo.k, wide:true},
       {t:'🔁 Інший бізнес', go:'demo-other'},
       BACK
     ]);
@@ -3463,6 +3557,7 @@
   /* ---------- людина ---------- */
   function human(){
     st.topic = 'Питання до людини';
+    st.brief = 'light';
     st.step = 'task';
     setPh('Ваше питання');
     var n = night(), t = kyiv();
@@ -3472,7 +3567,38 @@
       [{t:'📲 Написати в Direct', href:DIRECT}, BACK]);
   }
 
-  /* ---------- заявка ---------- */
+  /* ---------- заявка: короткий бриф. Повний — ніша, завдання, бюджет, контакт;
+     для дзвінка — ніша й контакт; для переданого повідомлення — лише контакт ---------- */
+  function nextStep(){
+    var full = st.brief === 'full', call = st.brief === 'call';
+    if((full || call) && !st.niche) return askNiche();
+    if(full && !st.task) return askTask();
+    if(full && !st.budget) return askBudget();
+    if(!st.contact) return askContact();
+    return summary();
+  }
+  function askNiche(force){
+    st.step = null; setPh();
+    var n = !force && !st.niche && window.IMX_NICHE ? window.IMX_NICHE.k : '';
+    if(n && NICHE_SET[n]){
+      return bot(['Ваш бізнес — ' + nicheName(n).toLowerCase() + '?'], [{t:'✅ Так', go:'niche', k:n}, {t:'✏️ Інший', go:'niche-change'}, BACK]);
+    }
+    return bot([st.call ? 'Записав: ' + st.call + '. Ще два кроки. Який у вас бізнес?' : 'Кілька кнопок і одне повідомлення, щоб ми підготувались до розмови. Який у вас бізнес?'],
+      nicheBtns('niche').concat([BACK]));
+  }
+  function askTask(){
+    st.step = 'task';
+    setPh(st.topic ? 'Що саме потрібно?' : 'Наприклад: бот, щоб записував на манікюр');
+    return bot([st.topic ? 'Що саме потрібно зробити? Одним повідомленням.' : 'Що потрібно зробити? Одним повідомленням, як є.'],
+      [{t:'⏭ Поки не знаю, порадьте', go:'task-skip', wide:true}, BACK]);
+  }
+  function askBudget(){
+    st.step = null; setPh();
+    return bot(['Який бюджет закладаєте? Це не фіксує ціну, лише допомагає запропонувати доречне.'], [
+      {t:'до $100', go:'budget', v:'до $100'}, {t:'$100–300', go:'budget', v:'$100–300'},
+      {t:'$300 і більше', go:'budget', v:'$300+'}, {t:'🤷 Ще не знаю', go:'budget', v:'не визначено'}, BACK
+    ]);
+  }
   function askContact(){
     st.step = 'contact';
     setPh('+380… або @нік');
@@ -3489,11 +3615,21 @@
     if(m[0].charAt(0) !== '@' && m[0].replace(/\D/g, '').length < 9) return '';
     return m[0].trim();
   }
+  function leadFields(){
+    var f = [];
+    if(st.niche) f.push({label:'Ніша', value:nicheName(st.niche) || st.niche});
+    f.push({label:'Що цікавить', value:st.topic || 'не обрано'});
+    if(st.task) f.push({label:'Завдання', value:st.task});
+    if(st.budget) f.push({label:'Бюджет', value:st.budget});
+    if(st.call) f.push({label:'Дзвінок', value:st.call + ' (Київ)'});
+    f.push({label:'Контакт', value:st.contact});
+    return f;
+  }
   function summary(){
     st.step = 'confirm';
     setPh();
-    return bot([fmt('Перевірте заявку:\nЩо цікавить: {topic}\nЗавдання: {task}\nКонтакт: {contact}',
-      {topic:esc(st.topic || 'не обрано'), task:esc(st.task || '—'), contact:esc(st.contact)})], [
+    var lines = leadFields().map(function(x){ return x.label + ': ' + esc(x.value); }).join('\n');
+    return bot(['Перевірте заявку:\n' + lines], [
       {t:'✅ Надіслати', go:'send', wide:true},
       {t:'✏️ Змінити контакт', go:'contact'},
       BACK
@@ -3513,12 +3649,10 @@
         body: JSON.stringify({
           type:'chat',
           title:'Заявка з чату на сайті',
-          fields:[
-            {label:'Що цікавить', value: st.topic || 'не обрано'},
-            {label:'Завдання', value: st.task},
-            {label:'Контакт', value: st.contact},
+          fields: leadFields().concat([
+            {label:'Шлях у чаті', value: st.path.join(' → ') || '—'},
             {label:'Звідки', value:'чат-бот у першому екрані'}
-          ],
+          ]),
           page: location.href
         })
       })
@@ -3527,11 +3661,14 @@
         hideTyping(t);
         st.sending = false;
         if(ok){
-          st.topic = st.task = st.contact = st.pending = '';
+          var wasCall = st.call;
+          st.topic = st.task = st.budget = st.call = st.contact = st.pending = '';
+          st.brief = 'full';
           store.set('imxLead', '1');
-          bubble('in', 'Заявку надіслано ✅ Відповімо протягом доби з ціною, строком і демо під вашу нішу.' +
+          bubble('in', (wasCall ? 'Дзвінок записано ✅ ' + wasCall + ' за Києвом. Перед розмовою напишемо, щоб підтвердити.'
+            : 'Заявку надіслано ✅ Відповімо протягом доби з ціною, строком і демо під вашу нішу.') +
             (night() ? fmt('\nЗараз у Києві {hm}, тож напишемо зранку. А бот, як бачите, працює й уночі.', kyiv()) : ''));
-          keyboard([BACK]);
+          keyboard([{t:'📤 Поділитись ботом', go:'share'}, BACK]);
         } else {
           bubble('in', 'Заявка не надіслалась: зник зв’язок із сервером. Надішліть ще раз або напишіть нам у Direct.');
           keyboard([{t:'🔁 Надіслати ще раз', go:'resend'}, {t:'📲 Написати в Direct', href:DIRECT}, BACK]);
@@ -3545,6 +3682,7 @@
      Порядок важливий: спершу конкретні питання, потім послуги, ціни — наостанок ---------- */
   var INTENTS = [
     ['human', /людин|оператор|менеджер|человек|живий|живой|human|operator|manager|real person/i],
+    ['call', /дзвін|дзвон|звон|созвон|зідзвон|консультац|зустріч|встреч|\bcall\b|meeting|поговорити|поговорить/i],
     ['f_pass', /парол|password/i],
     ['f_ban', /блок|бан(ят|ять|и|ы)?(\s|$|\?)|\bban|block|заблок/i],
     ['demo', /демо|demo|спробу|попробо|потестит|протестув|як (це )?працює|как (это )?работает|how (does )?it work|show me/i],
@@ -3564,10 +3702,55 @@
     ['thanks', /дяку|спасиб|thank|thx|дякс/i],
     ['greet', /^(привіт|вітаю|добр(ий|ого|ый)|здравств|здоров|хай|hello|hi|hey|салют|прив)/i]
   ];
+  /* слова з одруківками: «ціна» ↔ «цiна», «автоматизаця», «телегам». Відстань Левенштейна до словника,
+     1 заміна для коротких слів, 2 для довгих; перша літера має збігатися */
+  /* словник записано як регулярні вирази, щоб збирач перекладів його не чіпав: це ключові слова, а не тексти */
+  var FUZZY = [
+    ['bots', /телеграм телеграмм інстаграм инстаграм директ візитка/.source],
+    ['site', /сайт візитка визитка магазин лендінг лендинг каталог/.source],
+    ['ai', /агент голосові голосовые штучний нейронка/.source],
+    ['auto', /автоматизація автоматизация нагадування напоминание інтеграція интеграция/.source],
+    ['tma', /застосунок приложение мініап/.source],
+    ['price', /ціна ціни вартість стоимость скільки сколько прайс коштує стоит бюджет/.source],
+    ['calc', /порахувати посчитать калькулятор комплект набір набор/.source],
+    ['quiz', /підібрати підберіть підбери подобрать подберите подбери порадьте посоветуйте/.source],
+    ['demo', /демо спробувати попробовать приклад пример/.source],
+    ['cases', /кейси кейсы портфоліо портфолио відгуки отзывы/.source],
+    ['f_time', /строки терміни сроки швидко быстро/.source],
+    ['f_pay', /оплата передоплата предоплата/.source],
+    ['f_support', /підтримка поддержка/.source],
+    ['f_pass', /пароль/.source],
+    ['f_ban', /блокування блокировка забанять забанят/.source],
+    ['human', /людина человек оператор менеджер/.source],
+    ['call', /дзвінок звонок созвон консультація консультация зустріч встреча/.source]
+  ];
+  function lev(a, b){
+    var m = a.length, n = b.length, prev = [], cur = [], i, j;
+    for(j = 0; j <= n; j++) prev[j] = j;
+    for(i = 1; i <= m; i++){
+      cur = [i];
+      for(j = 1; j <= n; j++) cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+      prev = cur;
+    }
+    return prev[n];
+  }
+  function fuzzy(t){
+    var words = t.replace(/ё/g, '\u0435').split(/[^a-zа-яіїєґ']+/i).filter(function(w){ return w.length >= 4; });
+    for(var w = 0; w < words.length; w++){
+      var word = words[w], max = word.length >= 7 ? 2 : 1;
+      for(var i = 0; i < FUZZY.length; i++){
+        var dict = FUZZY[i][1].split(' ');
+        for(var d = 0; d < dict.length; d++){
+          if(dict[d][0] === word[0] && Math.abs(dict[d].length - word.length) <= max && lev(word, dict[d]) <= max) return FUZZY[i][0];
+        }
+      }
+    }
+    return '';
+  }
   function understand(text){
     var t = text.toLowerCase();
     for(var i = 0; i < INTENTS.length; i++) if(INTENTS[i][1].test(t)) return INTENTS[i][0];
-    return '';
+    return fuzzy(t);
   }
 
   form.addEventListener('submit', function(e){
@@ -3581,12 +3764,13 @@
     if(st.step === 'task'){
       st.task = text;
       var c = findContact(text);
-      if(c){ st.contact = c; summary(); } else askContact();
+      if(c) st.contact = c;
+      nextStep();
       return;
     }
     if(st.step === 'contact'){
       var cc = validContact(text) ? text : findContact(text);
-      if(cc){ st.contact = cc; summary(); }
+      if(cc){ st.contact = cc; nextStep(); }
       else bot(['Не бачу тут телефону чи ніка. Напишіть номер у форматі +380… або @нік у Telegram.'], [BACK]);
       return;
     }
@@ -3603,11 +3787,10 @@
     st.pending = text;
     var intent = understand(text), c3 = findContact(text);
     var LEADW = /замов|заказ|заявк|order|хочу|want|потрібен|потрібна|потрібно|нужен|нужна|нужно|need|почнемо|начнем|давайте/i;
-    var TOPIC = {bots:'Бот для Direct / Telegram', site:'Сайт', ai:'AI-агент', auto:'Автоматизація', tma:'Telegram Mini App'};
-    if(c3 || (LEADW.test(text) && (!intent || TOPIC[intent]))){
-      st.task = text; st.topic = TOPIC[intent] || 'Повідомлення в чаті';
-      if(c3){ st.contact = c3; summary(); }
-      else bot(['Зрозумів, передам це нам. Лишилось вказати, куди відповісти.'], null).then(askContact);
+    if(c3 || (LEADW.test(text) && (!intent || TOPICS[intent]))){
+      st.task = text; st.topic = TOPICS[intent] || 'Повідомлення в чаті'; st.brief = 'full';
+      if(c3) st.contact = c3;
+      bot(['Зрозумів, передам це нам. Ще пара кнопок, щоб відповісти по суті.'], null).then(nextStep);
       return;
     }
     if(intent === 'greet'){ bot(['Привіт 👋 Чим допомогти? Можна обрати кнопку або написати своїми словами: «скільки коштує бот», «потрібен сайт для кавʼярні».'], MENU); return; }
@@ -3621,12 +3804,30 @@
   /* вітання починається, коли телефон з'явився після заставки і його видно на екрані
      (на телефоні вікно чату нижче першого екрана) */
   var started = false;
+  /* посилання з DM чи візитки: ?bot=quiz | calc | price | call | cases | faq | lead | demo | demo-dent … | niche-beauty … */
+  var ROUTE = (location.search.match(/[?&]bot=([\w-]+)/) || [])[1] || '';
+  function route(){
+    var m;
+    if((m = ROUTE.match(/^demo-(\w+)$/)) && DEMO[m[1]]) return demoStart(m[1]);
+    if((m = ROUTE.match(/^niche-(\w+)$/)) && NICHE_SET[m[1]]) return nicheSet(m[1]);
+    if(/^(quiz|calc|price|call|cases|faq|lead|demo|services)$/.test(ROUTE)) return go(ROUTE);
+    return bot(['Що вам потрібно?'], MENU);
+  }
   function start(){
     if(started) return;
     started = true;
     var n = window.IMX_NICHE, back = store.get('imxLead');
-    if(back){
+    if(ROUTE){
+      say('Привіт 👋 Я бот Intromax, базовий бот на кнопках. Так само відповідатиме ваш.');
+      route();
+    } else if(back){
       bot(['З поверненням 👋 Ваша заявка вже в нас. Можете роздивитись інше або поставити питання.'], MENU);
+    } else if(mem.topic || (mem.keys && mem.keys.length)){
+      var what = mem.keys && mem.keys.length ? names(mem.keys).join(' + ') : TOPICS[mem.topic];
+      bot(['З поверненням 👋 Минулого разу ви дивились: ' + what + '. Продовжимо?'], [
+        mem.keys && mem.keys.length ? {t:'🧮 Порахувати цей набір', go:'calc', keys:mem.keys, wide:true} : {t:'▶️ Продовжити', go:mem.topic, wide:true},
+        {t:'✍️ Залишити заявку', go:'lead'}, BACK
+      ]);
     } else if(n){
       bot(['Привіт 👋 Я бот Intromax. Ось як відповідає бот у ' + n.where + '. Клієнт пише о ' + n.time + ':\n«' + n.q + '»',
            n.a,
@@ -3641,6 +3842,15 @@
     gen++; q = Promise.resolve(); body.innerHTML = ''; started = false; start();
   } };
   function arm(){
+    if(ROUTE){
+      /* прийшли за посиланням на бота: підводимо чат до екрана, щойно заставка відпустила сторінку */
+      var jump = function(){
+        if(document.documentElement.classList.contains('intro-lock')) return setTimeout(jump, 200);
+        phone.scrollIntoView({behavior: CALM ? 'auto' : 'smooth', block:'center'});
+        setTimeout(start, CALM ? 0 : 500);
+      };
+      return jump();
+    }
     function check(){
       var r = body.getBoundingClientRect();
       if(r.top < innerHeight * 0.75 && r.bottom > 0){
