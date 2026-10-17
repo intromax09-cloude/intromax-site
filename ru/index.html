@@ -222,6 +222,9 @@
   .bubble.demo-tag{font-size:11.5px;color:var(--text-dim);background:transparent;border:1px dashed var(--line-strong);}
   .bubble.note{align-self:stretch;max-width:none;background:rgba(242,169,60,.05);border:1px solid var(--line-strong);border-left:3px solid var(--amber);border-radius:12px;font-size:12.5px;}
   .bubble.note b{display:block;margin-bottom:4px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;letter-spacing:.04em;text-transform:uppercase;color:var(--text-dim);white-space:normal;}
+  .bubble.sys{align-self:center;max-width:92%;background:transparent;border:1px dashed var(--line-strong);font-size:12px;color:var(--text-dim);text-align:center;}
+  .bubble.human{border-left:3px solid var(--amber);}
+  .bubble .who{display:block;margin-bottom:3px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;letter-spacing:.04em;text-transform:uppercase;color:var(--amber);}
   .kb button:hover,.kb a:hover{border-color:var(--amber);background:rgba(242,169,60,.08);}
   .kb button:focus-visible,.kb a:focus-visible{outline:2px solid var(--amber);outline-offset:2px;}
   .chat-input{
@@ -2944,7 +2947,8 @@
    — дає «побути клієнтом»: запис або замовлення в умовному бізнесі
      і повідомлення, яке в цю мить отримав би власник;
    — рахує набір послуг просто в чаті й передає його в конструктор;
-   — відповідає на часті питання, показує кейси, кличе людину;
+   — відповідає на часті питання, показує кейси, кличе людину: далі гість листується
+     з нами наживо просто тут, а ми відповідаємо з Telegram (/api/chat);
    — збирає заявку з перевіркою контакту й підтвердженням, знає київський час.
    Ціни читає з карток «Послуг», тож вони завжди збігаються з прайсом і акцією.
    Заявка йде на /api/lead — ту саму функцію, що й у форм.
@@ -3029,8 +3033,8 @@
     fit:['ig-bot', 'tma'], edu:['tg-bot', 'site'], photo:['ig-bot', 'site'], auto:['tg-bot', 'automation'], rent:['site-pro', 'tg-bot']
   };
 
-  /* дзвінок: будні, три вікна за Києвом, шість робочих днів наперед. Змінюється тут */
-  var CALL = {slots:['12:00', '15:00', '18:00'], days:6, len:'15 минут'};
+  /* дзвінок: будь-який день тижня, три вікна за Києвом або свій час (9:00–21:00), сім днів наперед. Змінюється тут */
+  var CALL = {slots:['12:00', '15:00', '18:00'], days:7, from:9, to:21, len:'15 минут'};
   var MORE_FAQ = {t:'❓ Другие вопросы', go:'faq'};
   var LEAD = {t:'✍️ Оставить заявку', go:'lead'};
 
@@ -3157,9 +3161,11 @@
     statusEl.classList.add('typing');
     return t;
   }
+  var statusBase = '● онлайн';
+  function status(text){ statusBase = text || '● онлайн'; statusEl.textContent = statusBase; }
   function hideTyping(t){
     t.remove();
-    statusEl.textContent = '● онлайн';
+    statusEl.textContent = statusBase;
     statusEl.classList.remove('typing');
   }
   function wait(ms){ return new Promise(function(res){ setTimeout(res, CALM ? 120 : ms); }); }
@@ -3236,6 +3242,7 @@
     if(SCRIPT[key]){ var r = SCRIPT[key](); return bot(r[0], r[1]); }
     if(key === 'call') return callStart();
     if(key === 'call-day') return callTime(b.i);
+    if(key === 'call-other') return callOther();
     if(key === 'call-slot'){ st.call = st.callDay + ', ' + b.v; st.callTime = b.v; st.brief = 'call'; st.topic = st.topic || 'Звонок'; return nextStep(); }
     if(key === 'nset') return nicheSet(b && b.k);
     if(key === 'niche'){ setNiche(b.k); return nextStep(); }
@@ -3389,12 +3396,12 @@
     ]);
   }
 
-  /* ---------- дзвінок: будні за Києвом, три вікна на день ---------- */
+  /* ---------- дзвінок: будь-який день за Києвом, три вікна або свій час ---------- */
   function callDays(){
     var out = [], now = kyiv(), add = now.h >= 17 ? 1 : 0;
     while(out.length < CALL.days){
       var d = kyiv(add);
-      if(d.wd !== 0 && d.wd !== 6) out.push({label:(add === 0 ? 'Сегодня' : add === 1 ? 'Завтра' : WD[d.wd]) + ', ' + d.dm, add:add, iso:d.iso});
+      out.push({label:(add === 0 ? 'Сегодня' : add === 1 ? 'Завтра' : WD[d.wd]) + ', ' + d.dm, add:add, iso:d.iso});
       add++;
     }
     return out;
@@ -3406,11 +3413,34 @@
   }
   function callTime(i){
     var d = st.callDays[i], now = kyiv();
-    st.callDay = d.label; st.callIso = d.iso;
+    st.callDay = d.label; st.callIso = d.iso; st.callIdx = i;
     var free = CALL.slots.filter(function(t){ return d.add > 0 || +t.slice(0, 2) > now.h + 1; });
     if(!free.length) return bot(['Сегодня окон уже нет. Выберите другой день.'],
       st.callDays.filter(function(x){ return x.add > 0; }).map(function(x){ return {t:'📅 ' + x.label, go:'call-day', i:st.callDays.indexOf(x)}; }).concat([BACK]));
-    return bot(['Время по Киеву:'], free.map(function(t){ return {t:'🕐 ' + t, go:'call-slot', v:t}; }).concat([BACK]));
+    return bot(['Время по Киеву:'], free.map(function(t){ return {t:'🕐 ' + t, go:'call-slot', v:t}; }).concat([{t:'✏️ Другое время', go:'call-other'}, BACK]));
+  }
+  /* свій час: гість пише «14:30» або «о 20», приймаємо з 9:00 до 21:00 */
+  function callOther(){
+    st.step = 'call-time';
+    setPh('Например, 14:30');
+    return bot([fmt('Напишите удобное время по Киеву, например «14:30» или «в 20». Звоним с {from}:00 до {to}:00.', CALL)], [BACK]);
+  }
+  function parseTime(v){
+    var m = v.match(/(\d{1,2})\s*[:.\-]\s*(\d{2})/) || v.match(/(?:^|\D)(\d{1,2})(?!\d)/);
+    if(!m) return '';
+    var h = +m[1], mi = m[2] ? +m[2] : 0;
+    if(/вечор|вечер|\bpm\b/i.test(v) && h < 12) h += 12;
+    if(h > 23 || mi > 59) return '';
+    return pad(h) + ':' + pad(mi);
+  }
+  function callCustom(text){
+    var t = parseTime(text), d = st.callDays[st.callIdx] || st.callDays[0], now = kyiv(), h = +t.slice(0, 2), mi = +t.slice(3);
+    if(!t) return bot(['Не разобрал время. Напишите в формате 14:30.'], [BACK]);
+    if(h < CALL.from || h > CALL.to || (h === CALL.to && mi > 0)) return bot([fmt('В {t} мы обычно не звоним. Напишите время с {from}:00 до {to}:00.', {t:t.replace(/^0/, ''), from:CALL.from, to:CALL.to})], [BACK]);
+    if(d.add === 0 && h <= now.h) return bot(['Это время сегодня уже прошло. Напишите более позднее или выберите другой день.'], [{t:'📅 Другой день', go:'call'}, BACK]);
+    st.step = null; setPh();
+    st.call = d.label + ', ' + t; st.callDay = d.label; st.callIso = d.iso; st.callTime = t; st.brief = 'call'; st.topic = st.topic || 'Звонок';
+    return nextStep();
   }
 
   /* поділитись ботом */
@@ -3555,18 +3585,101 @@
     ]);
   }
 
-  /* ---------- людина ---------- */
+  /* ---------- людина: живий чат. Повідомлення йдуть на /api/chat і далі нам у Telegram,
+     відповіді з Telegram сайт забирає опитуванням кожні кілька секунд (устрій — functions/_lib/chat.js).
+     Код розмови (sid) живе в localStorage, тож після оновлення сторінки листування триває ---------- */
+  var TGME = 'https://t.me/Intromax_tech';
+  var MENUW = /^\s*(меню|menu|назад|back|старт|start|головна|главная|на початок|в начало|спочатку|сначала)\s*[.!]?\s*$/i;
+  var live = {on:false, sid:'', after:0, ack:false, closed:false, timer:null, last:0, waiting:false};
+  function sidNew(){ var x = ''; while(x.length < 16) x += Math.random().toString(36).slice(2); return x.slice(0, 16); }
+  function liveLoad(){
+    var raw = store.get('imxLive'), o = null;
+    try{ o = JSON.parse(raw || 'null'); }catch(_){ o = null; }
+    if(!o || !o.sid || Date.now() - (o.t || 0) > 2 * 3600e3) return;
+    live.sid = o.sid; live.after = o.after || 0; live.ack = !!o.ack; live.on = true; live.last = o.t;
+  }
+  function liveSave(){ store.set('imxLive', JSON.stringify({sid:live.sid, after:live.after, ack:live.ack, t:Date.now()})); }
   function human(){
     st.topic = 'Вопрос человеку';
     st.brief = 'light';
-    st.step = 'task';
+    st.step = 'live';
+    if(!live.sid) live.sid = sidNew();
+    live.on = true; live.closed = false;
     setPh('Ваш вопрос');
     var n = night(), t = kyiv();
-    return bot(['Зову человека 🙋 Дальше бот молчит. Напишите вопрос одним сообщением, и мы ответим лично.' +
-      (n ? fmt('\nСейчас в Киеве {hm}, так что ответим утром.', t) : ''),
-      'Так же работает кнопка «позвать человека» в ботах, которые мы собираем для клиентов.'],
-      [{t:'📲 Написать в Direct', href:DIRECT}, BACK]);
+    return bot(['Зову человека 🙋 Дальше бот молчит. Напишите вопрос прямо сюда: Максим получит его в Telegram и ответит в этом чате.' +
+      (n ? fmt('\nСейчас в Киеве {hm}, поэтому ответ, скорее всего, будет утром. Добавьте контакт, чтобы мы точно вас нашли.', t) : ''),
+      'Удобнее в мессенджере? Пишите туда, это тоже к нам.'],
+      [{t:'✈️ Написать в Telegram', href:TGME}, {t:'📲 Написать в Direct', href:DIRECT}, BACK]);
   }
+  function liveSend(text){
+    var g = gen;
+    live.last = Date.now();
+    q = q.then(function(){
+      var ty = showTyping();
+      return fetch('/api/chat', {method:'POST', headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({sid:live.sid, text:text, page:location.pathname, niche:st.niche ? nicheName(st.niche) : ''})})
+      .then(function(r){ return r.ok ? r.json() : null; }, function(){ return null; })
+      .then(function(r){
+        hideTyping(ty);
+        if(g !== gen) return;
+        if(!r || !r.ok){
+          bubble('in', 'Не удалось передать: пропала связь с сервером. Напишите нам в Telegram или Direct, ответим там.');
+          keyboard([{t:'✈️ Написать в Telegram', href:TGME}, {t:'📲 Написать в Direct', href:DIRECT}, BACK]);
+          return;
+        }
+        if(r.after > live.after) live.after = r.after;
+        live.ack = !!r.ack; live.closed = false;
+        liveSave();
+        if(r.delivered === false){
+          bubble('in sys', 'Сообщение сохранено, но до Telegram пока не дошло. Напишите нам в Telegram, так быстрее.');
+          keyboard([{t:'✈️ Написать в Telegram', href:TGME}, BACK]);
+        } else if(!live.waiting && !live.ack){
+          live.waiting = true;
+          status('зовём человека…');
+          bubble('in sys', 'Передал Максиму ✅ Сообщение уже у него в Telegram. Можно писать дальше, ответ появится здесь.');
+        }
+        livePoll(true);
+      });
+    });
+    return q;
+  }
+  var title0 = document.title, unreadN = 0;
+  function unread(){ unreadN++; document.title = '💬 ' + unreadN + ' · ' + title0; }
+  document.addEventListener('visibilitychange', function(){
+    if(document.hidden) return;
+    unreadN = 0; document.title = title0;
+    if(live.on) livePoll(true);
+  });
+  function livePoll(now){
+    clearTimeout(live.timer);
+    if(!live.on || !live.sid) return;
+    if(Date.now() - live.last > 30 * 60e3) return; /* пів години тиші: зупиняємось, нове повідомлення запустить знову */
+    live.timer = setTimeout(function(){
+      fetch('/api/chat?sid=' + live.sid + '&after=' + live.after, {cache:'no-store'})
+      .then(function(r){ return r.ok ? r.json() : null; }, function(){ return null; })
+      .then(function(r){
+        if(r){
+          if(r.ack && !live.ack){ live.ack = true; live.waiting = false; status('Максим на связи'); bubble('in sys', 'Максим на связи 👋'); }
+          (r.msgs || []).forEach(function(m){
+            if(m.id <= live.after) return;
+            live.after = m.id; live.last = Date.now();
+            bubble('in human', '<span class="who">Максим</span>' + esc(m.text).replace(/\n/g, '<br>'));
+            if(document.hidden) unread();
+          });
+          if(r.closed && !live.closed){
+            live.closed = true; live.on = false; live.waiting = false; status();
+            bubble('in sys', 'Максим завершил разговор. Если что-то ещё, пишите сюда, мы получим.');
+            keyboard([BACK]);
+          }
+          liveSave();
+        }
+        livePoll();
+      });
+    }, now ? 0 : (document.hidden ? 20000 : 4000));
+  }
+  liveLoad();
+  if(live.on) livePoll(true);
 
   /* ---------- заявка: короткий бриф. Повний — ніша, завдання, бюджет, контакт;
      для дзвінка — ніша й контакт; для переданого повідомлення — лише контакт ---------- */
@@ -3680,7 +3793,7 @@
           } else keyboard([{t:'📤 Поделиться ботом', go:'share'}, BACK]);
         } else {
           bubble('in', 'Заявка не отправилась: пропала связь с сервером. Отправьте ещё раз или напишите нам в Direct.');
-          keyboard([{t:'🔁 Отправить ещё раз', go:'resend'}, {t:'📲 Написать в Direct', href:DIRECT}, BACK]);
+          keyboard([{t:'🔁 Отправить ещё раз', go:'resend'}, {t:'✈️ Написать в Telegram', href:TGME}, {t:'📲 Написать в Direct', href:DIRECT}, BACK]);
         }
       });
     });
@@ -3770,6 +3883,11 @@
     start();
     dropKb();
     bubble('out', text, true);
+    /* «меню» або «назад» словом повертає в меню з будь-якого кроку */
+    if(MENUW.test(text)){ st.step = null; setPh(); go('menu'); return; }
+    /* після «покликати людину» бот мовчить: усе йде Максиму. Так само, коли Максим уже на звʼязку */
+    if(st.step === 'live' || (live.on && live.ack && !live.closed && !st.step)){ st.step = 'live'; liveSend(text); return; }
+    if(st.step === 'call-time'){ callCustom(text); return; }
     if(st.step === 'task'){
       st.task = text;
       var c = findContact(text);
