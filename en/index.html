@@ -1610,7 +1610,7 @@
       </details>
       <details>
         <summary>How does payment work?</summary>
-        <div class="ans"><p>In stages: part at the start, the rest after you have seen a working result. The price is fixed before we begin and does not grow along the way. We agree on a convenient payment method in the chat: just tell us what suits you.</p></div>
+        <div class="ans"><p>In stages: part at the start, the rest after you have seen a working result. The price is fixed before we begin and does not grow along the way. You can pay by bank card or in cryptocurrency: we agree on the method in the chat.</p></div>
       </details>
     </div>
     <p class="faq-foot">Did not find an answer? <button type="button" data-lead="unsure">Ask your question</button>, we reply within a day.</p>
@@ -2888,7 +2888,8 @@
     {"@type":"Question","name":"How long does the launch take?","acceptedAnswer":{"@type":"Answer","text":"A basic bot takes 2–3 days, a one-page website up to a week, an AI agent or extended website 1–2 weeks, a Telegram Mini App 2–3 weeks. All we need from you is 10 minutes for a brief."}},
     {"@type":"Question","name":"Do you need my Instagram password?","acceptedAnswer":{"@type":"Answer","text":"No. The connection is official, through the Instagram button inside the service: you log in with your own account and press “allow”. We never see the password, and you can revoke access at any moment with one button."}},
     {"@type":"Question","name":"What happens if the bot does not understand a customer?","acceptedAnswer":{"@type":"Answer","text":"The bot does not invent an answer: it says it will pass the question to a human and leaves the message for the owner. Every bot has a “call a human” button."}},
-    {"@type":"Question","name":"What is n8n automation in plain words?","acceptedAnswer":{"@type":"Answer","text":"It is when services pass data to each other without you: a lead from the website goes to a CRM or spreadsheet, you get a notification, and the customer gets a reminder a day before the visit."}}
+    {"@type":"Question","name":"What is n8n automation in plain words?","acceptedAnswer":{"@type":"Answer","text":"It is when services pass data to each other without you: a lead from the website goes to a CRM or spreadsheet, you get a notification, and the customer gets a reminder a day before the visit."}},
+    {"@type":"Question","name":"How does payment work?","acceptedAnswer":{"@type":"Answer","text":"In stages: part at the start, the rest after you have seen a working result. The price is fixed before we begin and does not grow along the way. You can pay by bank card or in cryptocurrency: we agree on the method in the chat."}}
   ]
 }
 </script>
@@ -3130,7 +3131,7 @@
     f_ban: function(){ return [['Accounts get blocked for mass messaging strangers. The bot only replies to people who messaged you first and runs through the official Meta connection. That is an allowed use.'], [MORE_FAQ, LEAD, BACK]]; },
     f_miss: function(){ return [['It does not make answers up. Questions outside the flow go to you, and after the “call a human” button the bot goes quiet in that chat. You can test it right here: type something unusual or press “🙋 Call a human”.'], [{t:'🙋 Call a human', go:'human'}, MORE_FAQ, BACK]]; },
     f_demo: function(){ return [['Yes. After your request we build a demo for your task: a bot with your services and prices, a page mockup or an automation diagram. You get a link and try it yourself. It is free and non-binding.'], [{t:'👆 Try the bot as a customer', go:'demo', wide:true}, LEAD, BACK]]; },
-    f_pay: function(){ return [['Payment in stages: part up front, the rest after a working result. We give the exact price within a day of your request and fix it before work starts.'], [MORE_FAQ, LEAD, BACK]]; },
+    f_pay: function(){ return [['Payment in stages: part up front, the rest after a working result. You can pay by bank card or in cryptocurrency. We give the exact price within a day of your request and fix it before work starts.'], [MORE_FAQ, LEAD, BACK]]; },
     f_time: function(){ return [['Basic bot — 2–3 days. Landing page — up to a week. AI agent or extended website — 1–2 weeks. Telegram Mini App — 2–3 weeks. Automation flow — from one day if we already have access.'], [MORE_FAQ, LEAD, BACK]]; },
     f_support: function(){ return [['Support is optional: the bot and the website work without it. It covers edits to flows and texts, watching platform updates and a reply from us within a day. It costs $10–50 a month.'], [MORE_FAQ, LEAD, BACK]]; }
   };

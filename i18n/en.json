@@ -249,7 +249,6 @@
 "Чи є у вас кейси й відгуки?":"Do you have cases and reviews?",
 "Intromax тільки починає роботу з клієнтами, тому відгуків поки мало, і вигадувати їх ми не будемо. Замість них є те, що можна перевірити просто зараз: два здані проєкти з живими посиланнями в розділі «Кейси», бот у Direct і прозорий прайс.":"Intromax is only starting to work with clients, so there are few reviews yet, and we will not make them up. Instead there is what you can check right now: two delivered projects with live links in the Cases section, a Direct bot and a transparent price list.",
 "Як відбувається оплата?":"How does payment work?",
-"Етапами: частина на старті, решта після того, як ви побачили робочий результат. Ціна фіксується до початку і не зростає в процесі. Зручний спосіб оплати узгоджуємо в листуванні — скажіть, як вам зручно.":"In stages: part at the start, the rest after you have seen a working result. The price is fixed before we begin and does not grow along the way. We agree on a convenient payment method in the chat: just tell us what suits you.",
 "Не знайшли відповідь —":"Did not find an answer?",
 "поставте своє питання":"Ask your question",
 ", відповімо протягом доби.":", we reply within a day.",
@@ -776,7 +775,6 @@
 "Оберіть бізнес:":"Pick a business:",
 "Підтримка не обовʼязкова: бот і сайт працюють без неї. Вона включає правки в сценаріях і текстах, нагляд за оновленнями платформ і відповідь від нас протягом доби. Коштує $10–50 на місяць.":"Support is optional: the bot and the website work without it. It covers edits to flows and texts, watching platform updates and a reply from us within a day. It costs $10–50 a month.",
 "Базовий бот — 2–3 дні. Сайт-візитка — до тижня. AI-агент або розширений сайт — 1–2 тижні. Telegram Mini App — 2–3 тижні. Сценарій автоматизації — від одного дня, якщо доступи вже є.":"Basic bot — 2–3 days. Landing page — up to a week. AI agent or extended website — 1–2 weeks. Telegram Mini App — 2–3 weeks. Automation flow — from one day if we already have access.",
-"Оплата етапами: частина на старті, решта після робочого результату. Точну ціну називаємо протягом доби після заявки і фіксуємо до початку роботи.":"Payment in stages: part up front, the rest after a working result. We give the exact price within a day of your request and fix it before work starts.",
 "👆 Спробувати бота як клієнт":"👆 Try the bot as a customer",
 "Так. Після заявки збираємо демо під ваше завдання: бот із вашими послугами й цінами, макет сторінки або схему автоматизації. Ви отримуєте посилання і пробуєте самі. Це безкоштовно і ні до чого не зобовʼязує.":"Yes. After your request we build a demo for your task: a bot with your services and prices, a page mockup or an automation diagram. You get a link and try it yourself. It is free and non-binding.",
 "🙋 Покликати людину":"🙋 Call a human",
@@ -886,5 +884,7 @@
 "<span class=\"who\">AI-агент</span>":"<span class=\"who\">AI agent</span>",
 "✍️ Замовити":"✍️ Order",
 "👉 Детальніше":"👉 More details",
-".\\nКнопки цього чату — теж базовий бот: усе, що вони вміють, можна зібрати і для вас.":".\\nThe buttons in this chat are a basic bot too: everything they can do can be built for you."
+".\\nКнопки цього чату — теж базовий бот: усе, що вони вміють, можна зібрати і для вас.":".\\nThe buttons in this chat are a basic bot too: everything they can do can be built for you.",
+"Етапами: частина на старті, решта після того, як ви побачили робочий результат. Ціна фіксується до початку і не зростає в процесі. Оплатити можна на банківську картку або криптовалютою — спосіб узгоджуємо в листуванні.":"In stages: part at the start, the rest after you have seen a working result. The price is fixed before we begin and does not grow along the way. You can pay by bank card or in cryptocurrency: we agree on the method in the chat.",
+"Оплата етапами: частина на старті, решта після робочого результату. Оплатити можна на банківську картку або криптовалютою. Точну ціну називаємо протягом доби після заявки і фіксуємо до початку роботи.":"Payment in stages: part up front, the rest after a working result. You can pay by bank card or in cryptocurrency. We give the exact price within a day of your request and fix it before work starts."
 }
