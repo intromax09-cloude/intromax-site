@@ -129,6 +129,17 @@ function history(hist) {
   return out;
 }
 
+/* мова відповіді за буквами питання: модель інакше тягнеться до української бази й відповідає росіянину українською */
+function replyLang(q, page) {
+  if (/[ыэъё]/i.test(q)) return 'Russian';
+  if (/[іїєґʼ]/i.test(q)) return 'Ukrainian';
+  /* без особливих літер: російські слова, яких немає в українській */
+  if (/(^|[^а-я])(и|что|как|сколько|можно|вы|вас|нужен|нужна|нужно|есть|если|это|мне|какой|какая|когда|где|почему|будет|стоит|сделать|делаете|ли|очень|только|привет|здравствуйте|спасибо|пожалуйста|салона|магазина)(?![а-я])/i.test(q)) return 'Russian';
+  if (/[а-я]/i.test(q)) return page === 'ru' ? 'Russian' : 'Ukrainian';
+  if (/[a-z]/i.test(q)) return 'English';
+  return 'the language of the visitor\'s message';
+}
+
 function cost(u) {
   const write = u.cache_creation_input_tokens || 0, read = u.cache_read_input_tokens || 0;
   return (u.input_tokens * PRICE.in + u.output_tokens * PRICE.out + read * PRICE.read + write * PRICE.write); // мікродолари
@@ -139,7 +150,7 @@ export async function ask(env, db, q, ctx) {
   const extra = await extras(db);
   const system = [{ type: 'text', text: RULES + '\n\n' + KB, cache_control: { type: 'ephemeral' } }];
   if (extra) system.push({ type: 'text', text: extra });
-  const meta = '[Сьогодні ' + ctx.day + ' (Київ). Мова сторінки: ' + ctx.lang + '.' + (ctx.niche ? ' Ніша гостя: ' + ctx.niche + '.' : '') + ']\n';
+  const meta = '[Today: ' + ctx.day + ' (Kyiv). Answer in: ' + replyLang(q, ctx.lang) + '.' + (ctx.niche ? ' Visitor\'s niche: ' + ctx.niche + '.' : '') + ']\n';
   const messages = history(ctx.hist).concat([{ role: 'user', content: meta + q }]);
   let res;
   try {
