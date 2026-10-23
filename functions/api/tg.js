@@ -4,11 +4,13 @@
  *  1) наш робочий чат (TG_CHAT_ID): відповіді на картки живого чату з сайту йдуть гостю
  *     (reply на картку → той чат; без reply → єдиний відкритий), /close закриває чат;
  *  2) кнопки під картками: «Беру» зупиняє нагадування, «Закрити» завершує чат;
- *  3) чати клієнтів: Start за посиланням t.me/<бот>?start=r_<код> привʼязує чат до нагадування про дзвінок.
+ *  3) чати клієнтів: Start за посиланням t.me/<бот>?start=r_<код> привʼязує чат до нагадування про дзвінок;
+ *  4) AI-агент сайту: reply на картку «🤖❓ не знав відповіді» додає відповідь у його базу, /kb і /kbdel N — доповнення.
  * Перевірка справжності: заголовок X-Telegram-Bot-Api-Secret-Token (секрет виводиться з токена).
  */
 import { webhookSecret, send, escapeHtml, tg } from '../_lib/rem.js';
 import { getChat, findBySid, acked, closeChat, reply, code, GONE_MS } from '../_lib/chat.js';
+import { teach, kbCommand } from '../_lib/ai.js';
 
 const SITE = 'https://intromax.com.ua';
 
@@ -83,6 +85,8 @@ async function onCallback(cq, env) {
 async function onOperator(msg, text, env) {
   const db = env.DB, me = env.TG_CHAT_ID, now = Date.now();
   const replyTo = msg.reply_to_message && msg.reply_to_message.message_id;
+  if (replyTo && await teach(env, db, replyTo, text, now)) return ok();
+  if (text && await kbCommand(env, db, text)) return ok();
   let chat = null;
   if (replyTo) {
     const sid = await findBySid(db, replyTo);
@@ -99,7 +103,7 @@ async function onOperator(msg, text, env) {
   }
 
   if (/^\/(start|help)(@\w+)?$/i.test(text)) {
-    await send(env, me, 'Це робочий чат Intromax. Сюди приходять заявки з сайту, нагадування про дзвінки й повідомлення гостей із живого чату.\nВідповідь гостю: reply на його картку (або просто повідомлення, якщо відкритий чат один). /close — завершити чат.');
+    await send(env, me, 'Це робочий чат Intromax. Сюди приходять заявки з сайту, нагадування про дзвінки й повідомлення гостей із живого чату.\nВідповідь гостю: reply на його картку (або просто повідомлення, якщо відкритий чат один). /close — завершити чат.\nAI-агент сайту: reply на картку 🤖❓ додає відповідь у його базу. /kb — доповнення бази, /kbdel N — прибрати одне.');
     return ok();
   }
   if (!chat) {

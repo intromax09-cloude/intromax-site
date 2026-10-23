@@ -3047,7 +3047,7 @@
     ]]; },
     bots: function(){ return [[
       'Бот відповідає клієнтам за сценарієм: ціни, графік, запис. Заявку з контактом надсилає вам одним повідомленням. Клієнт хоче поговорити з людиною? Тисне «покликати людину», і бот замовкає.',
-      'Бот у Direct: ' + svc('ig-bot') + ', запуск за 2–3 дні.\nTelegram-бот: ' + svc('tg-bot') + '.\nЦей чат теж базовий бот: усе, що він уміє, можна зібрати і для вас.'
+      'Бот у Direct: ' + svc('ig-bot') + ', запуск за 2–3 дні.\nTelegram-бот: ' + svc('tg-bot') + '.\nКнопки цього чату — теж базовий бот: усе, що вони вміють, можна зібрати і для вас.'
     ], [
       {t:'👆 Спробувати як клієнт', go:'demo'},
       {t:'✍️ Замовити бота', go:'lead', topic:'Бот для Direct / Telegram'},
@@ -3072,7 +3072,7 @@
     ]]; },
     ai: function(){ return [[
       'AI-агент розуміє живу мову: «скіко кошту», «а є щось на суботу», голосові з помилками. Відповідає за вашим прайсом. Чого не знає, передає вам.',
-      svc('ai-agent') + ' + $40/міс, запуск 1–2 тижні.\nЯ, для порівняння, базовий бот: розумію кнопки й ключові слова. Для більшості малих бізнесів цього вистачає.'
+      svc('ai-agent') + ' + $40/міс, запуск 1–2 тижні.\nСпробуйте просто тут: кнопки в цьому чаті — базовий бот, а на питання своїми словами відповідає AI-агент. Для більшості малих бізнесів вистачає базового.'
     ], [
       {t:'✍️ Замовити AI-агента', go:'lead', topic:'AI-агент', wide:true},
       {t:'🎯 Що підійде саме мені?', go:'quiz', wide:true},
@@ -3912,6 +3912,14 @@
       return;
     }
     st.pending = text;
+    /* контакт усередині повідомлення — одразу заявка, без AI */
+    if(findContact(text)) return basic(text);
+    if(ai.off) return basic(text);
+    aiAsk(text);
+  });
+
+  /* базовий бот: ключові слова. Працює, коли AI-агент вимкнений, уперся в ліміт або не відповів */
+  function basic(text){
     var intent = understand(text), c3 = findContact(text);
     var LEADW = /замов|заказ|заявк|order|хочу|want|потрібен|потрібна|потрібно|нужен|нужна|нужно|need|почнемо|начнем|давайте/i;
     if(c3 || (LEADW.test(text) && (!intent || TOPICS[intent]))){
@@ -3926,7 +3934,57 @@
     bot(['Тут я не впевнений. Я базовий бот: розумію кнопки й ключові слова, а живу мову повністю розбирає AI-агент.',
          'Передати ваше повідомлення людині? Додасте контакт, і ми відповімо особисто.'],
         [{t:'✍️ Так, передати', go:'pass'}, {t:'🧠 Що вміє AI-агент', go:'ai'}, BACK]);
-  });
+  }
+
+  /* ---------- AI-агент: власний текст гостя (поза кроками заявки) іде на /api/ai, кнопки лишаються базовим ботом.
+     Відповідь підписана «AI-агент», під нею кнопка наступного кроку. Без відповіді (немає ключа, ліміт, збій)
+     чат до кінця візиту відповідає по-старому, ключовими словами ---------- */
+  var ai = {off:false, sid:'', hist:[]};
+  var AI_BTN = {
+    lead:{t:'✍️ Залишити заявку', go:'lead'},
+    call:{t:'📞 Записатись на дзвінок', go:'call'},
+    human:{t:'🙋 Покликати людину', go:'human'},
+    calc:{t:'🧮 Порахувати набір', go:'calc'},
+    quiz:{t:'🎯 Підібрати рішення за 3 питання', go:'quiz', wide:true},
+    demo:{t:'👆 Спробувати бота як клієнт', go:'demo', wide:true},
+    cases:{t:'📂 Кейси', go:'cases'},
+    price:{t:'💰 Ціни', go:'price'},
+    services:{t:'🧩 Послуги', go:'services'}
+  };
+  function aiButtons(r){
+    if(r.action === 'none' && r.status !== 'unknown') return MENU;
+    var out = [];
+    if(TOPICS[r.action]) out.push({t:'👉 Детальніше', go:r.action}, {t:'✍️ Замовити', go:'lead', topic:TOPICS[r.action]});
+    else if(AI_BTN[r.action]) out.push(AI_BTN[r.action]);
+    if(r.status === 'unknown' && r.action !== 'human') out.push(AI_BTN.human);
+    out.push(BACK);
+    return out;
+  }
+  function aiAsk(text){
+    var g = gen;
+    if(!ai.sid) ai.sid = sidNew();
+    q = q.then(function(){
+      var ty = showTyping(), ctl = window.AbortController ? new AbortController() : null;
+      var timer = setTimeout(function(){ if(ctl) ctl.abort(); }, 20000);
+      return fetch('/api/ai', {method:'POST', headers:{'Content-Type':'application/json'}, signal:ctl ? ctl.signal : undefined,
+        body:JSON.stringify({sid:ai.sid, text:text, hist:ai.hist, lang:document.documentElement.lang || 'uk',
+          page:location.pathname, niche:st.niche ? nicheName(st.niche) : ''})})
+      .then(function(r){ return r.ok ? r.json() : null; }, function(){ return null; })
+      .then(function(r){
+        clearTimeout(timer);
+        hideTyping(ty);
+        if(g !== gen) return;
+        if(!r || !r.ok || !r.answer){ ai.off = true; return basic(text); }
+        ai.hist.push({r:'u', t:text}, {r:'a', t:r.answer});
+        if(ai.hist.length > 8) ai.hist = ai.hist.slice(-8);
+        if(r.action === 'lead' && text.length > 20) st.task = text;
+        if(TOPICS[r.action]) remember('topic', r.action);
+        bubble('in ai', '<span class="who">AI-агент</span>' + esc(r.answer));
+        keyboard(aiButtons(r));
+      });
+    });
+    return q;
+  }
 
   /* вітання починається, коли телефон з'явився після заставки і його видно на екрані
      (на телефоні вікно чату нижче першого екрана) */
@@ -3945,7 +4003,7 @@
     started = true;
     var n = window.IMX_NICHE, back = store.get('imxLead');
     if(ROUTE){
-      say('Привіт 👋 Я бот Intromax, базовий бот на кнопках. Так само відповідатиме ваш.');
+      say('Привіт 👋 Я бот Intromax. Кнопки тут — базовий бот, а на питання своїми словами відповідає AI-агент. Так само може відповідати ваш.');
       route();
     } else if(back){
       bot(['З поверненням 👋 Ваша заявка вже в нас. Можете роздивитись інше або поставити питання.'], MENU);
@@ -3958,9 +4016,9 @@
     } else if(n){
       bot(['Привіт 👋 Я бот Intromax. Ось як відповідає бот у ' + n.where + '. Клієнт пише о ' + n.time + ':\n«' + n.q + '»',
            n.a,
-           'Приклад умовний, але так само ваш бот відповість за секунду, навіть уночі. Оберіть кнопку або напишіть своїми словами.'], MENU);
+           'Приклад умовний, але так само ваш бот відповість за секунду, навіть уночі. Оберіть кнопку або спитайте своїми словами: відповість AI-агент.'], MENU);
     } else {
-      bot(['Привіт 👋 Я бот Intromax. Так само відповідатиме бот у вашому Direct чи Telegram: за секунду, навіть о третій ночі.\nОберіть кнопку або напишіть своїми словами.'], MENU);
+      bot(['Привіт 👋 Я бот Intromax. Так само відповідатиме бот у вашому Direct чи Telegram: за секунду, навіть о третій ночі.\nОберіть кнопку або спитайте своїми словами: відповість AI-агент.'], MENU);
     }
   }
   /* зміна ніші в першому екрані: якщо гість ще нічого не писав, діалог починається наново */
