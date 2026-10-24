@@ -816,20 +816,32 @@
   .promo-note::before{content:'';flex-shrink:0;width:7px;height:7px;border-radius:50%;background:var(--amber);}
   [data-after][hidden]{display:none !important;}
 
-  /* ---------- КЕЙСИ ---------- */
-  .cases{display:grid;grid-template-columns:repeat(2,1fr);gap:24px;}
-  @media (max-width:700px){ .cases{grid-template-columns:1fr;} }
+  /* ---------- КЕЙСИ ----------
+     Картка — коротко: обкладинка, суть, одна цифра. Повний розбір відкривається у вікні
+     (.case-more всередині картки копіюється у #case-modal-in). */
+  .case-filter{display:flex;flex-wrap:wrap;gap:8px;margin:-8px 0 28px;}
+  .case-filter button{
+    font-family:'JetBrains Mono',monospace;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--text-dim);background:transparent;border:1px solid var(--line);border-radius:100px;
+    padding:8px 15px;cursor:pointer;transition:color .3s var(--ease),border-color .3s var(--ease),background .3s var(--ease);
+  }
+  .case-filter button:hover{color:var(--text);border-color:var(--line-strong);}
+  .case-filter button[aria-pressed="true"]{color:var(--ink-0);background:var(--amber);border-color:var(--amber);}
+  .cases{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
+  @media (max-width:1100px){ .cases{grid-template-columns:repeat(2,1fr);} }
+  @media (max-width:700px){ .cases{grid-template-columns:1fr;} .case-filter{display:none;} }
   .case{
-    display:flex;flex-direction:column;overflow:hidden;
+    display:flex;flex-direction:column;overflow:hidden;cursor:pointer;
     transition:border-color .4s var(--ease),transform .5s var(--ease);
   }
+  .case.is-off{display:none;}
   .case:hover{border-color:var(--line-strong);transform:translateY(-3px);}
   .case-shot{position:relative;aspect-ratio:16/10;overflow:hidden;border-bottom:1px solid var(--line);background:var(--ink-0);}
   .case-shot img{width:100%;height:100%;object-fit:cover;object-position:top;display:block;transform:scale(1.01);transition:transform 1.2s var(--ease);}
   .case:hover .case-shot img{transform:scale(1.04);}
   .case-bar{
-    display:flex;align-items:center;gap:8px;padding:12px 18px;border-bottom:1px solid var(--line);
-    font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text-dim);background:rgba(255,255,255,.02);
+    display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--line);
+    font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-dim);background:rgba(12,13,18,.5);
   }
   .case-bar::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 0 3px rgba(123,201,154,.15);}
   .case-bar span{margin-left:auto;color:var(--green);}
@@ -838,12 +850,75 @@
   .case h3{font-size:19px;margin-bottom:10px;}
   .case p{color:var(--text-dim);font-size:14px;margin-bottom:20px;}
   .case-num{display:flex;align-items:baseline;gap:14px;padding:16px 0;border-top:1px solid var(--line);margin-top:auto;}
-  .case-num b{font-family:'Manrope',sans-serif;font-weight:800;font-size:40px;line-height:1;letter-spacing:-.03em;color:var(--amber);}
+  .case-num b{font-family:'Manrope',sans-serif;font-weight:800;font-size:36px;line-height:1;letter-spacing:-.03em;color:var(--amber);white-space:nowrap;}
   .case-num span{font-size:13px;color:var(--text-dim);line-height:1.45;}
   .case-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px;}
   .case-tags i{font-style:normal;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-dim);border:1px solid var(--line);border-radius:100px;padding:4px 10px;}
   .case .btn{justify-content:center;}
-  @media (prefers-reduced-motion: reduce){ .case:hover{transform:none;} }
+  .case-open .arr{margin-left:8px;transition:transform .4s var(--ease);}
+  .case:hover .case-open{border-color:var(--amber);color:var(--amber);}
+  .case:hover .case-open .arr{transform:translateX(4px);}
+  @media (prefers-reduced-motion: reduce){ .case:hover{transform:none;} .case:hover .case-open .arr{transform:none;} }
+
+  /* вікно кейсу */
+  .case-overlay{
+    position:fixed;inset:0;z-index:190;background:rgba(8,9,12,.88);
+    display:none;align-items:flex-start;justify-content:center;padding:40px 24px;overflow-y:auto;overscroll-behavior:contain;
+  }
+  .case-overlay.open{display:flex;}
+  .case-modal{
+    position:relative;width:100%;max-width:1040px;margin:auto;overflow:hidden;border-radius:24px;
+    background:linear-gradient(180deg,rgba(238,233,219,.035),rgba(238,233,219,.012)),var(--ink-2);
+    border:1px solid var(--line-strong);box-shadow:0 40px 120px rgba(0,0,0,.6);
+    animation:modalIn .3s var(--ease);
+  }
+  .case-x{
+    position:absolute;top:14px;right:14px;z-index:3;width:42px;height:42px;border-radius:50%;
+    display:grid;place-items:center;cursor:pointer;color:var(--text);
+    background:rgba(12,13,18,.78);border:1px solid var(--line-strong);transition:border-color .3s var(--ease),color .3s var(--ease);
+  }
+  .case-x:hover{border-color:var(--amber);color:var(--amber);}
+  .case-x svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;}
+  .cm-media{border-bottom:1px solid var(--line);background:var(--ink-0);}
+  .cm-main{display:block;width:100%;height:auto;aspect-ratio:16/10;object-fit:cover;object-position:top;}
+  .cm-thumbs{display:flex;gap:10px;padding:12px 16px;overflow-x:auto;scrollbar-width:none;border-top:1px solid var(--line);}
+  .cm-thumbs button{flex:0 0 auto;width:104px;padding:0;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:none;cursor:pointer;opacity:.55;transition:opacity .3s var(--ease),border-color .3s var(--ease);}
+  .cm-thumbs button img{display:block;width:100%;height:auto;aspect-ratio:16/10;object-fit:cover;object-position:top;}
+  .cm-thumbs button:hover{opacity:.85;}
+  .cm-thumbs button.on{opacity:1;border-color:var(--amber);}
+  .cm-phones{
+    display:flex;justify-content:center;align-items:flex-start;gap:20px;padding:44px 24px 0;overflow:hidden;max-height:470px;
+    border-bottom:1px solid var(--line);
+    background:radial-gradient(600px 300px at 50% 0%,rgba(242,169,60,.14),transparent 70%),var(--ink-0);
+  }
+  .cm-phones img{width:min(28%,210px);height:auto;border-radius:26px;border:1px solid var(--line-strong);box-shadow:0 24px 60px rgba(0,0,0,.5);}
+  .cm-phones img:nth-child(2){margin-top:-20px;}
+  .cm-text{padding:34px 44px 40px;}
+  .cm-title{font-size:clamp(26px,3.2vw,36px);margin-bottom:14px;}
+  .cm-lead{font-size:17px;line-height:1.65;color:var(--text);max-width:820px;}
+  .cm-facts{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;margin:30px 0 8px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden;}
+  .cm-facts div{background:var(--ink-2);padding:18px 20px;}
+  .cm-facts b{display:block;font-family:'Manrope',sans-serif;font-weight:800;font-size:28px;line-height:1.05;letter-spacing:-.03em;color:var(--amber);}
+  .cm-facts span{display:block;font-size:13px;color:var(--text-dim);margin-top:6px;line-height:1.4;}
+  .cm-block{margin-top:30px;max-width:860px;}
+  .cm-block h4{font-family:'JetBrains Mono',monospace;font-weight:500;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim);margin-bottom:14px;}
+  .cm-block ul{list-style:none;}
+  .cm-block li{position:relative;padding-left:22px;font-size:15px;line-height:1.65;color:var(--text);}
+  .cm-block li + li{margin-top:10px;}
+  .cm-block li::before{content:'';position:absolute;left:2px;top:.68em;width:6px;height:6px;border-radius:50%;background:var(--amber);}
+  .cm-stack .case-tags{margin-bottom:0;}
+  .cm-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:32px;padding-top:26px;border-top:1px solid var(--line);}
+  @media (max-width:700px){
+    .case-overlay{padding:0;}
+    .case-modal{border-radius:0;min-height:100%;border:0;}
+    .cm-text{padding:26px 20px 34px;}
+    .cm-facts{grid-template-columns:repeat(2,1fr);}
+    .cm-facts b{font-size:24px;}
+    .cm-phones{gap:10px;padding:36px 12px 0;max-height:360px;}
+    .cm-phones img{width:31%;border-radius:18px;}
+    .cm-lead{font-size:16px;}
+    .cm-actions .btn{flex:1 1 100%;justify-content:center;}
+  }
 
 
   /* ---------- УМОВИ РОБОТИ ---------- */
@@ -1297,11 +1372,110 @@
 <section id="cases" class="tint-plum tint-line">
   <div class="wrap">
     <div class="section-head">
-      <h2>Проєкти, які можна відкрити <em>просто зараз</em></h2>
-      <p class="lead">Обидва здані замовникам через Сейф Freelancehunt і працюють у відкритому доступі. Цифри взяті з самих проєктів.</p>
+      <h2>Проєкти, у які можна <em>зазирнути</em></h2>
+      <p class="lead">Замовлення клієнтів і наші власні розробки. Натисніть на картку, щоб побачити повний розбір: завдання, що зроблено, технічні рішення й стек.</p>
+    </div>
+    <div class="case-filter" role="group" aria-label="Фільтр кейсів">
+      <button type="button" data-f="all" aria-pressed="true">Усі</button><button type="button" data-f="client" aria-pressed="false">Для клієнтів</button><button type="button" data-f="own" aria-pressed="false">Власні розробки</button>
     </div>
     <div class="cases">
-      <article class="case bloom">
+      <article class="case bloom" data-kind="own" id="case-finance">
+        <div class="case-bar">Telegram Mini App<span>працює</span></div>
+        <div class="case-shot"><img src="/img/work-finance.jpg" alt="Екрани Finance App: головна, історія, статистика" width="1200" height="750" loading="lazy" decoding="async"></div>
+        <div class="case-body">
+          <div class="case-meta">Telegram Mini App · фінанси · 2026</div>
+          <h3>Finance App</h3>
+          <p>Облік особистих і бізнес-фінансів прямо в Telegram. Запис одним повідомленням «кава 85», статистика й бюджети, спільні гаманці, синхронізація з Monobank і ШІ, що читає чеки.</p>
+          <div class="case-num"><b>20</b><span>мов інтерфейсу, зокрема арабська й фарсі справа наліво</span></div>
+          <div class="case-tags"><i>Next.js</i><i>Supabase</i><i>Telegram Stars</i><i>ШІ</i></div>
+          <button type="button" class="btn btn-ghost btn-sm case-open" aria-haspopup="dialog">Детальніше<span class="arr" aria-hidden="true">→</span></button>
+        </div>
+        <div class="case-more" hidden>
+          <div class="cm-phones"><img src="/img/work-finance-1.jpg" alt="Екрани Finance App: головна, історія, статистика" width="585" height="1266" loading="lazy" decoding="async"><img src="/img/work-finance-2.jpg" alt="Екрани Finance App: головна, історія, статистика" width="585" height="1266" loading="lazy" decoding="async"><img src="/img/work-finance-3.jpg" alt="Екрани Finance App: головна, історія, статистика" width="585" height="1266" loading="lazy" decoding="async"></div>
+          <div class="cm-text">
+            <div class="case-meta">Telegram Mini App · фінанси · 2026</div>
+            <h3 class="cm-title">Finance App</h3>
+            <p class="cm-lead">Наш власний продукт: повноцінний застосунок обліку грошей, який відкривається в Telegram за секунду, без встановлення й реєстрації. Будували його як фінтех: строгий дизайн, швидкість, захист даних і монетизація з першого дня.</p>
+            <div class="cm-facts"><div><b>20</b><span>мов</span></div><div><b>115</b><span>валют</span></div><div><b>22</b><span>таблиці під RLS</span></div><div><b>15 хв</b><span>цикл фонових завдань</span></div></div>
+            <div class="cm-block"><h4>Що вміє</h4><ul><li>Запис одним повідомленням: «кава 85», «таксі 120 готівкою», «+500$ на приват». Сервер сам визначає суму, валюту, гаманець і категорію за словником на 1500 слів трьома мовами, а вибрану вручну категорію запамʼятовує.</li><li>Головна з балансом, прогнозом на місяць і сумою «можна витратити сьогодні»; статистика за місяць і рік, тренд за пів року, бюджети зі сповіщеннями на 80% і 100%.</li><li>Спільні гаманці до пʼяти учасників за посиланням, скарбнички з ціллю, регулярні платежі, борги з нагадуваннями, інвестиційний портфель з котируваннями акцій і криптовалют.</li><li>Імпорт виписок CSV і Excel будь-якого банку: колонки й кодування визначаються автоматично, категорії підбираються за описом і 300 MCC-кодами. Monobank синхронізується щогодини.</li><li>Бізнес-режим: гаманці проєктів, звіт про прибутки й збитки, рух грошей між рахунками, податок до сплати.</li><li>ШІ-функції: фото чека стає записом з потрібною карткою, складний текст «обід 120 і таксі 80 вчора» розбирається на дві операції, є розбір місяця й відповіді на питання про гроші. Повторний чек застосунок помічає й перепитує.</li><li>Звіти Excel, PDF і CSV за будь-який період надходять файлом у чат; «Підсумки року» картками для сторіс.</li><li>Тарифи Free, Premium і Pro з оплатою Telegram Stars, преміальні теми оформлення з металевим переливом сум.</li></ul></div><div class="cm-block"><h4>Технічні рішення</h4><ul><li>Next.js з TypeScript на Vercel; серверні функції працюють у тому ж регіоні, що й база, тож затримка мінімальна.</li><li>PostgreSQL у Supabase: 20 міграцій, Row Level Security на кожній таблиці, доступ до даних лише через сервер. Тригери бази відносять записи до проєктів незалежно від джерела.</li><li>Вхід через підписані дані Telegram, тому паролі не потрібні. Банківські токени зберігаються зашифрованими.</li><li>Перший екран вантажиться одним запитом, а останній стан зберігається на телефоні: інтерфейс зʼявляється миттєво, дані оновлюються у фоні.</li><li>Фонове завдання кожні 15 хвилин через pg_cron: регулярні платежі, курси валют, ціни активів, нагадування, синхронізація банків.</li><li>Щоночі зашифрований бекап бази через GitHub Actions; про збої адміністратор дізнається в Telegram.</li><li>ШІ-підтримка всередині застосунку відповідає за базою знань, а складні питання передає людині з чернеткою відповіді. Витрати на ШІ обмежені лімітами на людину й на добу.</li><li>20 мов з окремим завантаженням мовного пакета та розкладкою справа наліво для арабської й фарсі.</li></ul></div>
+            <div class="cm-block cm-stack"><h4>Стек</h4><div class="case-tags"><i>Next.js</i><i>TypeScript</i><i>Supabase</i><i>PostgreSQL</i><i>pg_cron</i><i>Vercel</i><i>Telegram Mini Apps</i><i>Bot API</i><i>Telegram Stars</i><i>Monobank API</i><i>GitHub Actions</i></div></div>
+            <div class="cm-actions"><a href="https://t.me/finance_Intro_bot" class="btn btn-primary btn-sm" target="_blank" rel="noopener">Відкрити в Telegram ↗</a><button type="button" class="btn btn-ghost btn-sm" data-lead="unsure">Хочу схожий проєкт</button></div>
+          </div>
+        </div>
+      </article>
+      <article class="case bloom" data-kind="own" id="case-lavka">
+        <div class="case-bar">lavka-green.vercel.app<span>онлайн</span></div>
+        <div class="case-shot"><img src="/img/work-lavka.jpg" alt="Маркетплейс Lavka: головна, каталог, товар, підбір подарунка" width="1200" height="750" loading="lazy" decoding="async"></div>
+        <div class="case-body">
+          <div class="case-meta">Маркетплейс · вебплатформа · 2026</div>
+          <h3>Lavka</h3>
+          <p>Маркетплейс авторських виробів з трьома ролями: покупець, майстер, адміністратор. Замовлення, чат у реальному часі, аналітика продавця, пошук за кольором і три мови інтерфейсу.</p>
+          <div class="case-num"><b>82</b><span>автотести перевіряють кожен реліз</span></div>
+          <div class="case-tags"><i>Next.js</i><i>Supabase</i><i>Realtime</i><i>UA / EN / RU</i></div>
+          <button type="button" class="btn btn-ghost btn-sm case-open" aria-haspopup="dialog">Детальніше<span class="arr" aria-hidden="true">→</span></button>
+        </div>
+        <div class="case-more" hidden>
+          <div class="cm-media"><img class="cm-main" src="/img/work-lavka-1.jpg" alt="Маркетплейс Lavka: головна, каталог, товар, підбір подарунка" width="1200" height="750" loading="lazy" decoding="async"><div class="cm-thumbs"><button type="button" data-src="/img/work-lavka-1.jpg" class="on"><img src="/img/work-lavka-1.jpg" alt="" width="1200" height="750" loading="lazy" decoding="async"></button><button type="button" data-src="/img/work-lavka-2.jpg"><img src="/img/work-lavka-2.jpg" alt="" width="1200" height="750" loading="lazy" decoding="async"></button><button type="button" data-src="/img/work-lavka-3.jpg"><img src="/img/work-lavka-3.jpg" alt="" width="1200" height="750" loading="lazy" decoding="async"></button><button type="button" data-src="/img/work-lavka-4.jpg"><img src="/img/work-lavka-4.jpg" alt="" width="1200" height="750" loading="lazy" decoding="async"></button></div></div>
+          <div class="cm-text">
+            <div class="case-meta">Маркетплейс · вебплатформа · 2026</div>
+            <h3 class="cm-title">Lavka</h3>
+            <p class="cm-lead">Повнофункціональний маркетплейс ручної роботи на реальній базі даних: 10 крамниць, 69 товарів, замовлення, відгуки й листування. На ньому видно, як ми будуємо складні продукти з кількома ролями і власною логікою.</p>
+            <div class="cm-facts"><div><b>3</b><span>ролі</span></div><div><b>3</b><span>мови</span></div><div><b>82</b><span>автотести</span></div><div><b>7</b><span>міграцій бази</span></div></div>
+            <div class="cm-block"><h4>Що зроблено</h4><ul><li>Покупець: каталог з фільтрами за категорією, ціною, матеріалом і регіоном, картка товару з галереєю, обране, кошик, оформлення з промокодами, історія замовлень, відгуки й рейтинги.</li><li>Майстер: власна крамниця з обкладинкою, товари з фото й залишками, замовлення зі статусами, індивідуальні замовлення (покупець описує, майстер називає ціну й термін), аналітика переглядів, виручки та конверсії.</li><li>Адміністратор: модерація товарів і крамниць, керування ролями, зведена статистика майданчика.</li><li>Чат покупця з майстром і центр сповіщень у реальному часі: замовлення, повідомлення, відгуки, зниження ціни й повернення в наявність товарів з обраного.</li><li>Пошук з одруківками й підказкою «можливо, ви шукали», миттєвий пошук Ctrl+K на будь-якій розкладці.</li><li>Пошук за кольором: палітра кожного товару витягується з фото на сервері. Підбір подарунка за чотири питання, інтерактивна карта майстрів по регіонах, лічильник «хто дивиться зараз».</li><li>Порівняння до чотирьох товарів, публічні колекції, питання й відповіді під товаром, плавний перехід фото з каталогу в картку товару.</li><li>Інтерфейс українською, англійською й російською з автовизначенням мови, темна тема, вхід в один клік під кожною роллю для демонстрації.</li></ul></div><div class="cm-block"><h4>Технічні рішення</h4><ul><li>Next.js App Router, React і TypeScript у строгому режимі, Tailwind; PostgreSQL у Supabase з Row Level Security і сховищем фото; деплой на Vercel.</li><li>Сповіщення пишуть лише тригери Postgres, тож підробити їх з браузера неможливо; доставка через Supabase Realtime з фільтром за користувачем.</li><li>Нечіткий пошук на pg_trgm, палітри товарів рахуються на сервері з фото, перехід між сторінками на View Transitions API.</li><li>Власна легка локалізація: словники типізовані, тож TypeScript не дасть пропустити переклад; відмінки й дати під кожну мову.</li><li>SEO: OG-картинки, sitemap, robots, розмітка JSON-LD.</li><li>Кожен реліз проходить lint, перевірку типів, 82 тести й production build, і лише тоді йде на сервер. Код відкритий на GitHub.</li></ul></div>
+            <div class="cm-block cm-stack"><h4>Стек</h4><div class="case-tags"><i>Next.js</i><i>React</i><i>TypeScript</i><i>Tailwind</i><i>Supabase</i><i>PostgreSQL</i><i>Realtime</i><i>pg_trgm</i><i>Zod</i><i>Vitest</i><i>Vercel</i></div></div>
+            <div class="cm-actions"><a href="https://lavka-green.vercel.app" class="btn btn-primary btn-sm" target="_blank" rel="noopener">Відкрити живий сайт ↗</a><a href="https://github.com/ValentynKoval/lavka" class="btn btn-ghost btn-sm" target="_blank" rel="noopener">GitHub ↗</a><button type="button" class="btn btn-ghost btn-sm" data-lead="unsure">Хочу схожий проєкт</button></div>
+          </div>
+        </div>
+      </article>
+      <article class="case bloom" data-kind="own" id="case-olx">
+        <div class="case-bar">Telegram-бот і вебпанель<span>працює</span></div>
+        <div class="case-shot"><img src="/img/work-olx.jpg" alt="Картка вигідної пропозиції в Telegram і показники системи" width="1200" height="750" loading="lazy" decoding="async"></div>
+        <div class="case-body">
+          <div class="case-meta">Telegram-бот · аналітика ринку · 2026</div>
+          <h3>Монітор вигідних оголошень OLX</h3>
+          <p>Система цілодобово аналізує десятки тисяч оголошень про техніку, рахує ринкову ціну й чистий прибуток угоди та за 1–2 хвилини надсилає в Telegram пропозиції нижче ринку.</p>
+          <div class="case-num"><b>86%</b><span>сигналів підтверджені як вигідні на ручній перевірці</span></div>
+          <div class="case-tags"><i>Node.js</i><i>PostgreSQL</i><i>Gemini</i><i>Ollama</i></div>
+          <button type="button" class="btn btn-ghost btn-sm case-open" aria-haspopup="dialog">Детальніше<span class="arr" aria-hidden="true">→</span></button>
+        </div>
+        <div class="case-more" hidden>
+          <div class="cm-media"><img class="cm-main" src="/img/work-olx.jpg" alt="Картка вигідної пропозиції в Telegram і показники системи" width="1200" height="750" loading="lazy" decoding="async"></div>
+          <div class="cm-text">
+            <div class="case-meta">Telegram-бот · аналітика ринку · 2026</div>
+            <h3 class="cm-title">Монітор вигідних оголошень OLX</h3>
+            <p class="cm-lead">Внутрішній інструмент для бізнесу з перепродажу вживаної техніки. Завдання: знаходити ноутбуки, смартфони, відеокарти й ПК дешевше ринку раніше за конкурентів і оминати шахраїв.</p>
+            <div class="cm-facts"><div><b>54 тис.</b><span>оголошень у базі</span></div><div><b>86%</b><span>точність сигналів</span></div><div><b>92%</b><span>знахідок класу A продаються за 48 год</span></div><div><b>1–2 хв</b><span>від публікації до сигналу</span></div></div>
+            <div class="cm-block"><h4>Що зроблено</h4><ul><li>Збір оголошень з восьми категорій по всій Україні та окремий «гарячий» цикл щохвилини: від появи оголошення в пошуку до повідомлення минає 1–2 хвилини.</li><li>Ринкова ціна моделі як медіана за 30 днів з поправкою на реально продані оголошення; оцінка ПК і ноутбуків за комплектуючими.</li><li>Економіка угоди: доставка, комісія майданчика, резерв і стан акумулятора дають чистий прибуток, оцінку від A до D і межу «вигідно купити до X грн».</li><li>Фільтр шахраїв: новий акаунт, перехід у месенджери, підміна літер, однакові тексти й фото в різних продавців; рейтинг продавця від 0 до 100.</li><li>Картка в Telegram з кнопками і режимом «До угоди»: план торгу, чек-лист перевірки за типом товару, готові питання продавцю. Журнал угод і список бажань на кшталт «iPhone 13 до 12 000».</li><li>Вебпанель: ціни за моделями з графіками, швидкість продажу, стрічка сигналів, журнал угод і налаштування тарифів доставки та комісій.</li><li>Широкий індекс з близько 1200 категорій показує розкид цін і швидкість продажу та підказує нові ніші.</li></ul></div><div class="cm-block"><h4>Технічні рішення</h4><ul><li>Node.js і TypeScript, PostgreSQL 17; бот, збір і панель працюють як служби з автозапуском і після перезапуску наздоганяють пропущене.</li><li>Розбір описів у три рівні: правила покривають 80% оголошень, решту розбирає Gemini пакетами по 10, паралельно працює локальна модель Qwen через Ollama. ШІ також перевіряє фото на пошкодження й чужі знімки.</li><li>Самонавчання: словник моделей поповнюється з відповідей ШІ, а поріг знижки підлаштовується під те, як швидко ринок забирає знахідки.</li><li>Бектест на розмічених сигналах: частка вигідних виросла з 36% до 86%, пропуски дефектів упали з 8,4% до 2%.</li><li>Обережне навантаження на джерело, близько 15 запитів на хвилину, без блокувань.</li></ul></div>
+            <div class="cm-block cm-stack"><h4>Стек</h4><div class="case-tags"><i>Node.js</i><i>TypeScript</i><i>PostgreSQL 17</i><i>Telegram Bot API</i><i>Gemini</i><i>Ollama</i><i>Qwen</i><i>вебпанель</i></div></div>
+            <div class="cm-actions"><button type="button" class="btn btn-ghost btn-sm" data-lead="unsure">Хочу схожий проєкт</button></div>
+          </div>
+        </div>
+      </article>
+      <article class="case bloom" data-kind="own" id="case-fh">
+        <div class="case-bar">Telegram-бот<span>працює</span></div>
+        <div class="case-shot"><img src="/img/work-fh.jpg" alt="Картка нового замовлення з оцінкою в Telegram" width="1200" height="750" loading="lazy" decoding="async"></div>
+        <div class="case-body">
+          <div class="case-meta">Telegram-бот · ШІ-асистент · 2026</div>
+          <h3>Монітор замовлень з ШІ-оцінкою</h3>
+          <p>Telegram-бот стежить за біржею фрилансу через офіційний API, ловить нові замовлення в перші секунди, відсіює невідповідні й за 5–15 секунд оцінює кожне за допомогою мовної моделі.</p>
+          <div class="case-num"><b>15 с</b><span>між перевірками стрічки нових замовлень</span></div>
+          <div class="case-tags"><i>Telegram Bot API</i><i>REST API</i><i>LLM</i><i>автозапуск</i></div>
+          <button type="button" class="btn btn-ghost btn-sm case-open" aria-haspopup="dialog">Детальніше<span class="arr" aria-hidden="true">→</span></button>
+        </div>
+        <div class="case-more" hidden>
+          <div class="cm-media"><img class="cm-main" src="/img/work-fh.jpg" alt="Картка нового замовлення з оцінкою в Telegram" width="1200" height="750" loading="lazy" decoding="async"></div>
+          <div class="cm-text">
+            <div class="case-meta">Telegram-бот · ШІ-асистент · 2026</div>
+            <h3 class="cm-title">Монітор замовлень з ШІ-оцінкою</h3>
+            <p class="cm-lead">Внутрішній інструмент нашої команди. На біржах вирішує швидкість: замовлення з нулем відгуків за кілька годин набирає 60–90 пропозицій. Бот дає людині реагувати першою й витрачати час лише на те, що команда справді зробить.</p>
+            <div class="cm-facts"><div><b>15 с</b><span>цикл опитування</span></div><div><b>5–15 с</b><span>вердикт моделі</span></div><div><b>3</b><span>рівні рішення</span></div><div><b>24/7</b><span>з автозапуском</span></div></div>
+            <div class="cm-block"><h4>Що зроблено</h4><ul><li>Опитування стрічки кожні 15 секунд через офіційний API біржі; старі замовлення й ті, де відгук уже є, пропускаються.</li><li>Безкоштовний відсів правилами: закриті замовлення, понад 100 відгуків, заборонені теми й категорії поза нашою експертизою.</li><li>Оцінка моделлю за 5–15 секунд з урахуванням замовника (відгуки, стаж) і трьома рішеннями: «беремо», «можна взяти», «не беремо» з причиною.</li><li>Картка в Telegram з кнопками: вивчити глибше, переписати чернетку відповіді, пропустити. Відповідь редагує й надсилає людина, автоматично нічого не відправляється.</li><li>Після відгуку бот стежить за листуванням: повідомлення замовника й персональні пропозиції надходять у Telegram одразу, разом зі стрічкою результатів.</li><li>Облік денного ліміту відгуків з паузою до скидання, статистика відгуків і перемог за тиждень командою /stats.</li></ul></div><div class="cm-block"><h4>Технічні рішення</h4><ul><li>Оцінка у дві фази: швидкий вердикт і окремий, ретельніший етап для чернетки відповіді; системний промпт кешується, тож відповідь швидша й дешевша.</li><li>Служба стартує разом з компʼютером ще до входу в систему й перезапускається при збої; після простою бот повідомляє, скільки був вимкнений, і не оцінює застарілі замовлення.</li><li>Ключ API зберігається поза кодом, бот відповідає лише своєму власнику.</li></ul></div>
+            <div class="cm-block cm-stack"><h4>Стек</h4><div class="case-tags"><i>Telegram Bot API</i><i>REST API</i><i>LLM</i><i>prompt caching</i><i>служба Windows</i></div></div>
+            <div class="cm-actions"><button type="button" class="btn btn-ghost btn-sm" data-lead="unsure">Хочу схожий проєкт</button></div>
+          </div>
+        </div>
+      </article>
+      <article class="case bloom" data-kind="client" id="case-phyto">
         <div class="case-bar">fotoanalyzer.com<span>онлайн</span></div>
         <div class="case-shot"><img src="/img/case-fotoanalyzer.jpg" alt="Головна сторінка fotoanalyzer.com" width="799" height="506" loading="lazy" decoding="async"></div>
         <div class="case-body">
@@ -1310,10 +1484,22 @@
           <p>Людина завантажує фото рослини й отримує її назву. Замовник бачить журнал запитів, вивантажує його в Excel і щодня отримує резервну копію.</p>
           <div class="case-num"><b>117</b><span>автотестів перевіряють сервіс перед кожним оновленням</span></div>
           <div class="case-tags"><i>FastAPI</i><i>Pl@ntNet API</i><i>UA / EN</i><i>здано за 6 днів</i></div>
-          <a href="https://fotoanalyzer.com" class="btn btn-ghost btn-sm" target="_blank" rel="noopener">Відкрити живий сайт ↗</a>
+          <button type="button" class="btn btn-ghost btn-sm case-open" aria-haspopup="dialog">Детальніше<span class="arr" aria-hidden="true">→</span></button>
+        </div>
+        <div class="case-more" hidden>
+          <div class="cm-media"><img class="cm-main" src="/img/case-fotoanalyzer.jpg" alt="Головна сторінка fotoanalyzer.com" width="799" height="506" loading="lazy" decoding="async"></div>
+          <div class="cm-text">
+            <div class="case-meta">Вебсервіс · розпізнавання рослин · 2026</div>
+            <h3 class="cm-title">PhytoAnalyzer AI</h3>
+            <p class="cm-lead">Замовлення з Freelancehunt: вебсервіс розпізнавання рослин за фото для fotoanalyzer.com. Від демо до роботи на сервері замовника з власним доменом за шість днів.</p>
+            <div class="cm-facts"><div><b>117</b><span>автотестів на здачі</span></div><div><b>109</b><span>видів у словнику назв</span></div><div><b>6</b><span>днів до запуску</span></div><div><b>UA / EN</b><span>інтерфейс</span></div></div>
+            <div class="cm-block"><h4>Що зроблено</h4><ul><li>Людина завантажує фото, сервіс через Pl@ntNet API визначає рослину й показує назву українською; низька впевненість дає чесне попередження.</li><li>Чотири стани на одній сторінці, опитування, форма звʼязку з reCAPTCHA v3.</li><li>Журнал запитів з переглядом і вивантаженням в Excel, сторінка лімітів зі скиданням блокувань за IP під паролем.</li></ul></div><div class="cm-block"><h4>Технічні рішення</h4><ul><li>FastAPI на VPS замовника, автозапуск через systemd, SSL і DNS через Cloudflare.</li><li>Захист: перевірка файлу за сигнатурою, ліміт 20 МБ, rate limiting, геолокація за локальною базою.</li><li>Щоденний бекап фото й налаштувань, моніторинг місця на диску, документ передачі з доступами та інструкціями.</li></ul></div>
+            <div class="cm-block cm-stack"><h4>Стек</h4><div class="case-tags"><i>Python</i><i>FastAPI</i><i>Pl@ntNet API</i><i>reCAPTCHA v3</i><i>systemd</i><i>Cloudflare</i><i>pytest</i></div></div>
+            <div class="cm-actions"><a href="https://fotoanalyzer.com" class="btn btn-primary btn-sm" target="_blank" rel="noopener">Відкрити живий сайт ↗</a><button type="button" class="btn btn-ghost btn-sm" data-lead="unsure">Хочу схожий проєкт</button></div>
+          </div>
         </div>
       </article>
-      <article class="case bloom">
+      <article class="case bloom" data-kind="client" id="case-dom">
         <div class="case-bar">domlounge.it<span>онлайн</span></div>
         <div class="case-shot"><img src="/img/case-domlounge.jpg" alt="Головна сторінка domlounge.it" width="799" height="506" loading="lazy" decoding="async"></div>
         <div class="case-body">
@@ -1322,12 +1508,31 @@
           <p>Сайт італійського ресторану з кухнею, баром і винною картою. Позиції й ціни власниця змінює сама, а бронювання надходить у WhatsApp.</p>
           <div class="case-num"><b>3</b><span>меню в CMS, які оновлюються без розробника</span></div>
           <div class="case-tags"><i>Framer</i><i>CMS</i><i>свій домен</i><i>італійською</i></div>
-          <a href="https://domlounge.it" class="btn btn-ghost btn-sm" target="_blank" rel="noopener">Відкрити живий сайт ↗</a>
+          <button type="button" class="btn btn-ghost btn-sm case-open" aria-haspopup="dialog">Детальніше<span class="arr" aria-hidden="true">→</span></button>
+        </div>
+        <div class="case-more" hidden>
+          <div class="cm-media"><img class="cm-main" src="/img/case-domlounge.jpg" alt="Головна сторінка domlounge.it" width="799" height="506" loading="lazy" decoding="async"></div>
+          <div class="cm-text">
+            <div class="case-meta">Сайт · ресторан, Італія · 2026</div>
+            <h3 class="cm-title">DOM Risto Lounge Bar</h3>
+            <p class="cm-lead">Замовлення з Freelancehunt: сайт італійського ресторану DOM Risto Lounge Bar на власному домені domlounge.it. Власниця сама оновлює меню, а гості бронюють столик у WhatsApp.</p>
+            <div class="cm-facts"><div><b>175</b><span>позицій меню в CMS</span></div><div><b>3</b><span>розділи меню</span></div><div><b>IT</b><span>мова сайту</span></div></div>
+            <div class="cm-block"><h4>Що зроблено</h4><ul><li>Головна й три розділи меню: кухня, бар, вина й шампанське; кнопки «меню», «винна карта» й «забронювати столик» на першому екрані.</li><li>QR-код на столи веде прямо в меню, OG-картинка для красивих посилань у месенджерах.</li></ul></div><div class="cm-block"><h4>Технічні рішення</h4><ul><li>Framer з CMS: 175 позицій, які власниця змінює без розробника; для меню кухні окремий код-компонент.</li><li>Підключення домену .it, переадресація www, щогодинний моніторинг доступності.</li></ul></div>
+            <div class="cm-block cm-stack"><h4>Стек</h4><div class="case-tags"><i>Framer</i><i>CMS</i><i>код-компоненти</i><i>свій домен</i></div></div>
+            <div class="cm-actions"><a href="https://domlounge.it" class="btn btn-primary btn-sm" target="_blank" rel="noopener">Відкрити живий сайт ↗</a><button type="button" class="btn btn-ghost btn-sm" data-lead="unsure">Хочу схожий проєкт</button></div>
+          </div>
         </div>
       </article>
     </div>
   </div>
 </section>
+
+<div class="case-overlay" id="case-overlay">
+  <div class="case-modal" role="dialog" aria-modal="true" aria-labelledby="case-modal-title">
+    <button type="button" class="case-x" id="case-x" aria-label="Закрити"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    <div class="case-modal-in" id="case-modal-in"></div>
+  </div>
+</div>
 
 <section id="order" class="tint-line">
   <div class="wrap">
@@ -1606,7 +1811,7 @@
       </details>
       <details>
         <summary>Чи є у вас кейси й відгуки?</summary>
-        <div class="ans"><p>Intromax тільки починає роботу з клієнтами, тому відгуків поки мало, і вигадувати їх ми не будемо. Замість них є те, що можна перевірити просто зараз: два здані проєкти з живими посиланнями в розділі «Кейси», бот у Direct і прозорий прайс.</p></div>
+        <div class="ans"><p>Intromax тільки починає роботу з клієнтами, тому відгуків поки мало, і вигадувати їх ми не будемо. Замість них є те, що можна перевірити просто зараз: здані клієнтам проєкти й наші власні розробки з повним технічним розбором у розділі «Кейси», бот у Direct і прозорий прайс.</p></div>
       </details>
       <details>
         <summary>Як відбувається оплата?</summary>
@@ -2857,6 +3062,77 @@
 </script>
 
 
+<script>
+/* КЕЙСИ: фільтр і вікно з повним розбором. Вміст вікна береться з .case-more картки,
+   тому переклади на /en/ і /ru/ працюють без окремого коду. Посилання #case-<id> відкриває кейс одразу. */
+(function(){
+  var ov = document.getElementById('case-overlay');
+  var box = document.getElementById('case-modal-in');
+  var x = document.getElementById('case-x');
+  var grid = document.querySelector('.cases');
+  if(!ov || !box || !grid) return;
+  var last = null;
+
+  function open(card, mark){
+    var more = card.querySelector('.case-more');
+    if(!more) return;
+    last = document.activeElement;
+    box.innerHTML = more.innerHTML;
+    var t = box.querySelector('.cm-title');
+    if(t) t.id = 'case-modal-title';
+    ov.classList.add('open');
+    ov.scrollTop = 0;
+    document.documentElement.classList.add('modal-lock');
+    x.focus({preventScroll:true});
+    if(mark !== false && history.replaceState) history.replaceState(null, '', '#' + card.id);
+  }
+  function close(){
+    if(!ov.classList.contains('open')) return;
+    ov.classList.remove('open');
+    box.innerHTML = '';
+    document.documentElement.classList.remove('modal-lock');
+    if(location.hash.indexOf('#case-') === 0 && history.replaceState) history.replaceState(null, '', location.pathname + location.search);
+    if(last && document.contains(last)) last.focus({preventScroll:true});
+  }
+
+  grid.addEventListener('click', function(e){
+    var card = e.target.closest('.case');
+    if(!card || e.target.closest('a')) return;
+    open(card);
+  });
+  x.addEventListener('click', close);
+  ov.addEventListener('mousedown', function(e){ if(e.target === ov) close(); });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') close(); });
+  box.addEventListener('click', function(e){
+    var th = e.target.closest('.cm-thumbs button');
+    if(th){
+      var main = box.querySelector('.cm-main');
+      if(main) main.src = th.getAttribute('data-src');
+      [].forEach.call(box.querySelectorAll('.cm-thumbs button'), function(b){ b.classList.toggle('on', b === th); });
+      return;
+    }
+    if(e.target.closest('[data-lead]')) close();
+  });
+
+  var filter = document.querySelector('.case-filter');
+  if(filter) filter.addEventListener('click', function(e){
+    var b = e.target.closest('button[data-f]');
+    if(!b) return;
+    var f = b.getAttribute('data-f');
+    [].forEach.call(filter.querySelectorAll('button'), function(z){ z.setAttribute('aria-pressed', z === b ? 'true' : 'false'); });
+    [].forEach.call(grid.children, function(c){ c.classList.toggle('is-off', f !== 'all' && c.getAttribute('data-kind') !== f); });
+  });
+
+  function fromHash(){
+    if(!/^#case-[a-z]+$/.test(location.hash)) return;
+    var c = document.getElementById(location.hash.slice(1));
+    if(c && c.classList.contains('case')) open(c, false);
+  }
+  window.addEventListener('hashchange', fromHash);
+  fromHash();
+})();
+</script>
+
 <script type="application/ld+json">
 {
   "@context":"https://schema.org",
@@ -3112,10 +3388,15 @@
       LEAD, BACK
     ]]; },
     cases: function(){ return [[
-      'Два здані проєкти, обидва працюють.',
+      'Здані клієнтам проєкти й наші власні розробки, усі працюють.',
+      'Finance App: облік фінансів у Telegram. Запис одним повідомленням, статистика, банки, ШІ для чеків, 20 мов.',
+      'Lavka: маркетплейс з трьома ролями, чатом у реальному часі й аналітикою продавця.',
+      'Монітор OLX: знаходить техніку дешевше ринку за 1–2 хвилини й рахує прибуток угоди.',
       'PhytoAnalyzer AI: людина завантажує фото рослини й отримує її назву. Замовник бачить журнал запитів, вивантажує його в Excel і щодня отримує резервну копію. Здано за 6 днів.',
       'DOM Risto Lounge Bar: сайт ресторану в Італії. Меню й ціни власниця змінює сама, бронювання надходить у WhatsApp.'
     ], [
+      {t:'💰 Finance App', href:'https://t.me/finance_Intro_bot'},
+      {t:'🧺 Lavka', href:'https://lavka-green.vercel.app'},
       {t:'🌿 fotoanalyzer.com', href:'https://fotoanalyzer.com'},
       {t:'🍷 domlounge.it', href:'https://domlounge.it'},
       {t:'📂 Кейси на сторінці', go:'scroll', to:'cases'},

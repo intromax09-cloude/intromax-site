@@ -816,20 +816,32 @@
   .promo-note::before{content:'';flex-shrink:0;width:7px;height:7px;border-radius:50%;background:var(--amber);}
   [data-after][hidden]{display:none !important;}
 
-  /* ---------- КЕЙСИ ---------- */
-  .cases{display:grid;grid-template-columns:repeat(2,1fr);gap:24px;}
-  @media (max-width:700px){ .cases{grid-template-columns:1fr;} }
+  /* ---------- КЕЙСИ ----------
+     Картка — коротко: обкладинка, суть, одна цифра. Повний розбір відкривається у вікні
+     (.case-more всередині картки копіюється у #case-modal-in). */
+  .case-filter{display:flex;flex-wrap:wrap;gap:8px;margin:-8px 0 28px;}
+  .case-filter button{
+    font-family:'JetBrains Mono',monospace;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--text-dim);background:transparent;border:1px solid var(--line);border-radius:100px;
+    padding:8px 15px;cursor:pointer;transition:color .3s var(--ease),border-color .3s var(--ease),background .3s var(--ease);
+  }
+  .case-filter button:hover{color:var(--text);border-color:var(--line-strong);}
+  .case-filter button[aria-pressed="true"]{color:var(--ink-0);background:var(--amber);border-color:var(--amber);}
+  .cases{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
+  @media (max-width:1100px){ .cases{grid-template-columns:repeat(2,1fr);} }
+  @media (max-width:700px){ .cases{grid-template-columns:1fr;} .case-filter{display:none;} }
   .case{
-    display:flex;flex-direction:column;overflow:hidden;
+    display:flex;flex-direction:column;overflow:hidden;cursor:pointer;
     transition:border-color .4s var(--ease),transform .5s var(--ease);
   }
+  .case.is-off{display:none;}
   .case:hover{border-color:var(--line-strong);transform:translateY(-3px);}
   .case-shot{position:relative;aspect-ratio:16/10;overflow:hidden;border-bottom:1px solid var(--line);background:var(--ink-0);}
   .case-shot img{width:100%;height:100%;object-fit:cover;object-position:top;display:block;transform:scale(1.01);transition:transform 1.2s var(--ease);}
   .case:hover .case-shot img{transform:scale(1.04);}
   .case-bar{
-    display:flex;align-items:center;gap:8px;padding:12px 18px;border-bottom:1px solid var(--line);
-    font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text-dim);background:rgba(255,255,255,.02);
+    display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--line);
+    font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-dim);background:rgba(12,13,18,.5);
   }
   .case-bar::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 0 3px rgba(123,201,154,.15);}
   .case-bar span{margin-left:auto;color:var(--green);}
@@ -838,12 +850,75 @@
   .case h3{font-size:19px;margin-bottom:10px;}
   .case p{color:var(--text-dim);font-size:14px;margin-bottom:20px;}
   .case-num{display:flex;align-items:baseline;gap:14px;padding:16px 0;border-top:1px solid var(--line);margin-top:auto;}
-  .case-num b{font-family:'Manrope',sans-serif;font-weight:800;font-size:40px;line-height:1;letter-spacing:-.03em;color:var(--amber);}
+  .case-num b{font-family:'Manrope',sans-serif;font-weight:800;font-size:36px;line-height:1;letter-spacing:-.03em;color:var(--amber);white-space:nowrap;}
   .case-num span{font-size:13px;color:var(--text-dim);line-height:1.45;}
   .case-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px;}
   .case-tags i{font-style:normal;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-dim);border:1px solid var(--line);border-radius:100px;padding:4px 10px;}
   .case .btn{justify-content:center;}
-  @media (prefers-reduced-motion: reduce){ .case:hover{transform:none;} }
+  .case-open .arr{margin-left:8px;transition:transform .4s var(--ease);}
+  .case:hover .case-open{border-color:var(--amber);color:var(--amber);}
+  .case:hover .case-open .arr{transform:translateX(4px);}
+  @media (prefers-reduced-motion: reduce){ .case:hover{transform:none;} .case:hover .case-open .arr{transform:none;} }
+
+  /* вікно кейсу */
+  .case-overlay{
+    position:fixed;inset:0;z-index:190;background:rgba(8,9,12,.88);
+    display:none;align-items:flex-start;justify-content:center;padding:40px 24px;overflow-y:auto;overscroll-behavior:contain;
+  }
+  .case-overlay.open{display:flex;}
+  .case-modal{
+    position:relative;width:100%;max-width:1040px;margin:auto;overflow:hidden;border-radius:24px;
+    background:linear-gradient(180deg,rgba(238,233,219,.035),rgba(238,233,219,.012)),var(--ink-2);
+    border:1px solid var(--line-strong);box-shadow:0 40px 120px rgba(0,0,0,.6);
+    animation:modalIn .3s var(--ease);
+  }
+  .case-x{
+    position:absolute;top:14px;right:14px;z-index:3;width:42px;height:42px;border-radius:50%;
+    display:grid;place-items:center;cursor:pointer;color:var(--text);
+    background:rgba(12,13,18,.78);border:1px solid var(--line-strong);transition:border-color .3s var(--ease),color .3s var(--ease);
+  }
+  .case-x:hover{border-color:var(--amber);color:var(--amber);}
+  .case-x svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;}
+  .cm-media{border-bottom:1px solid var(--line);background:var(--ink-0);}
+  .cm-main{display:block;width:100%;height:auto;aspect-ratio:16/10;object-fit:cover;object-position:top;}
+  .cm-thumbs{display:flex;gap:10px;padding:12px 16px;overflow-x:auto;scrollbar-width:none;border-top:1px solid var(--line);}
+  .cm-thumbs button{flex:0 0 auto;width:104px;padding:0;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:none;cursor:pointer;opacity:.55;transition:opacity .3s var(--ease),border-color .3s var(--ease);}
+  .cm-thumbs button img{display:block;width:100%;height:auto;aspect-ratio:16/10;object-fit:cover;object-position:top;}
+  .cm-thumbs button:hover{opacity:.85;}
+  .cm-thumbs button.on{opacity:1;border-color:var(--amber);}
+  .cm-phones{
+    display:flex;justify-content:center;align-items:flex-start;gap:20px;padding:44px 24px 0;overflow:hidden;max-height:470px;
+    border-bottom:1px solid var(--line);
+    background:radial-gradient(600px 300px at 50% 0%,rgba(242,169,60,.14),transparent 70%),var(--ink-0);
+  }
+  .cm-phones img{width:min(28%,210px);height:auto;border-radius:26px;border:1px solid var(--line-strong);box-shadow:0 24px 60px rgba(0,0,0,.5);}
+  .cm-phones img:nth-child(2){margin-top:-20px;}
+  .cm-text{padding:34px 44px 40px;}
+  .cm-title{font-size:clamp(26px,3.2vw,36px);margin-bottom:14px;}
+  .cm-lead{font-size:17px;line-height:1.65;color:var(--text);max-width:820px;}
+  .cm-facts{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;margin:30px 0 8px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden;}
+  .cm-facts div{background:var(--ink-2);padding:18px 20px;}
+  .cm-facts b{display:block;font-family:'Manrope',sans-serif;font-weight:800;font-size:28px;line-height:1.05;letter-spacing:-.03em;color:var(--amber);}
+  .cm-facts span{display:block;font-size:13px;color:var(--text-dim);margin-top:6px;line-height:1.4;}
+  .cm-block{margin-top:30px;max-width:860px;}
+  .cm-block h4{font-family:'JetBrains Mono',monospace;font-weight:500;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim);margin-bottom:14px;}
+  .cm-block ul{list-style:none;}
+  .cm-block li{position:relative;padding-left:22px;font-size:15px;line-height:1.65;color:var(--text);}
+  .cm-block li + li{margin-top:10px;}
+  .cm-block li::before{content:'';position:absolute;left:2px;top:.68em;width:6px;height:6px;border-radius:50%;background:var(--amber);}
+  .cm-stack .case-tags{margin-bottom:0;}
+  .cm-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:32px;padding-top:26px;border-top:1px solid var(--line);}
+  @media (max-width:700px){
+    .case-overlay{padding:0;}
+    .case-modal{border-radius:0;min-height:100%;border:0;}
+    .cm-text{padding:26px 20px 34px;}
+    .cm-facts{grid-template-columns:repeat(2,1fr);}
+    .cm-facts b{font-size:24px;}
+    .cm-phones{gap:10px;padding:36px 12px 0;max-height:360px;}
+    .cm-phones img{width:31%;border-radius:18px;}
+    .cm-lead{font-size:16px;}
+    .cm-actions .btn{flex:1 1 100%;justify-content:center;}
+  }
 
 
   /* ---------- УМОВИ РОБОТИ ---------- */
@@ -1297,11 +1372,110 @@
 <section id="cases" class="tint-plum tint-line">
   <div class="wrap">
     <div class="section-head">
-      <h2>Projects you can open <em>right now</em></h2>
-      <p class="lead">Both were delivered to clients through Freelancehunt Safe and are publicly live. The numbers come from the projects themselves.</p>
+      <h2>Projects you can <em>look inside</em></h2>
+      <p class="lead">Client orders and our own products. Tap a card to see the full breakdown: the task, what was built, technical decisions and the stack.</p>
+    </div>
+    <div class="case-filter" role="group" aria-label="Case filter">
+      <button type="button" data-f="all" aria-pressed="true">All</button><button type="button" data-f="client" aria-pressed="false">For clients</button><button type="button" data-f="own" aria-pressed="false">Our products</button>
     </div>
     <div class="cases">
-      <article class="case bloom">
+      <article class="case bloom" data-kind="own" id="case-finance">
+        <div class="case-bar">Telegram Mini App<span>running</span></div>
+        <div class="case-shot"><img src="/img/work-finance.jpg" alt="Finance App screens: home, history, statistics" width="1200" height="750" loading="lazy" decoding="async"></div>
+        <div class="case-body">
+          <div class="case-meta">Telegram Mini App · finance · 2026</div>
+          <h3>Finance App</h3>
+          <p>Personal and business finance tracking right inside Telegram. One message like “coffee 85” makes an entry; statistics and budgets, shared wallets, Monobank sync and AI that reads receipts.</p>
+          <div class="case-num"><b>20</b><span>interface languages, including right-to-left Arabic and Farsi</span></div>
+          <div class="case-tags"><i>Next.js</i><i>Supabase</i><i>Telegram Stars</i><i>AI</i></div>
+          <button type="button" class="btn btn-ghost btn-sm case-open" aria-haspopup="dialog">Details<span class="arr" aria-hidden="true">→</span></button>
+        </div>
+        <div class="case-more" hidden>
+          <div class="cm-phones"><img src="/img/work-finance-1.jpg" alt="Finance App screens: home, history, statistics" width="585" height="1266" loading="lazy" decoding="async"><img src="/img/work-finance-2.jpg" alt="Finance App screens: home, history, statistics" width="585" height="1266" loading="lazy" decoding="async"><img src="/img/work-finance-3.jpg" alt="Finance App screens: home, history, statistics" width="585" height="1266" loading="lazy" decoding="async"></div>
+          <div class="cm-text">
+            <div class="case-meta">Telegram Mini App · finance · 2026</div>
+            <h3 class="cm-title">Finance App</h3>
+            <p class="cm-lead">Our own product: a full money-tracking app that opens inside Telegram in a second, with no install and no sign-up. We built it like fintech: a strict design, speed, data protection and monetization from day one.</p>
+            <div class="cm-facts"><div><b>20</b><span>languages</span></div><div><b>115</b><span>currencies</span></div><div><b>22</b><span>tables under RLS</span></div><div><b>15 min</b><span>background job cycle</span></div></div>
+            <div class="cm-block"><h4>What it does</h4><ul><li>One message makes an entry: “coffee 85”, “taxi 120 cash”, “+500$ to privat”. The server works out the amount, currency, wallet and category from a 1,500-word dictionary in three languages and remembers any category picked by hand.</li><li>A home screen with the balance, a month forecast and “safe to spend today”; monthly and yearly statistics, a six-month trend, budgets with alerts at 80% and 100%.</li><li>Shared wallets for up to five people via a link, savings goals, recurring payments, debts with reminders and an investment portfolio with stock and crypto quotes.</li><li>CSV and Excel statement import from any bank: columns and encoding are detected automatically, categories come from the description and 300 MCC codes. Monobank syncs every hour.</li><li>Business mode: project wallets, a profit and loss report, cash flow between accounts and tax due.</li><li>AI features: a receipt photo becomes an entry on the right card, a complex text like “lunch 120 and taxi 80 yesterday” becomes two transactions, plus a monthly review and answers to money questions. A duplicate receipt is caught and confirmed.</li><li>Excel, PDF and CSV reports for any period arrive as a file in the chat; “Year in review” cards for stories.</li><li>Free, Premium and Pro plans paid with Telegram Stars, premium themes with metallic shimmer on the numbers.</li></ul></div><div class="cm-block"><h4>Technical decisions</h4><ul><li>Next.js with TypeScript on Vercel; server functions run in the same region as the database to keep latency minimal.</li><li>PostgreSQL on Supabase: 20 migrations, Row Level Security on every table, data access only through the server. Database triggers assign entries to projects whatever their source.</li><li>Sign-in through signed Telegram data, so no passwords are needed. Bank tokens are stored encrypted.</li><li>The first screen loads with a single request and the last state is cached on the phone, so the UI appears instantly while data refreshes in the background.</li><li>A background job every 15 minutes via pg_cron: recurring payments, exchange rates, asset prices, reminders and bank sync.</li><li>A nightly encrypted database backup via GitHub Actions; the admin learns about failures in Telegram.</li><li>In-app AI support answers from a knowledge base and hands complex questions to a person with a draft reply. AI spending is capped per user and per day.</li><li>20 languages with per-language bundle loading and a right-to-left layout for Arabic and Farsi.</li></ul></div>
+            <div class="cm-block cm-stack"><h4>Stack</h4><div class="case-tags"><i>Next.js</i><i>TypeScript</i><i>Supabase</i><i>PostgreSQL</i><i>pg_cron</i><i>Vercel</i><i>Telegram Mini Apps</i><i>Bot API</i><i>Telegram Stars</i><i>Monobank API</i><i>GitHub Actions</i></div></div>
+            <div class="cm-actions"><a href="https://t.me/finance_Intro_bot" class="btn btn-primary btn-sm" target="_blank" rel="noopener">Open in Telegram ↗</a><button type="button" class="btn btn-ghost btn-sm" data-lead="unsure">I want a similar project</button></div>
+          </div>
+        </div>
+      </article>
+      <article class="case bloom" data-kind="own" id="case-lavka">
+        <div class="case-bar">lavka-green.vercel.app<span>online</span></div>
+        <div class="case-shot"><img src="/img/work-lavka.jpg" alt="Lavka marketplace: home, catalog, product, gift finder" width="1200" height="750" loading="lazy" decoding="async"></div>
+        <div class="case-body">
+          <div class="case-meta">Marketplace · web platform · 2026</div>
+          <h3>Lavka</h3>
+          <p>A handmade marketplace with three roles: buyer, maker and admin. Orders, real-time chat, seller analytics, search by colour and a three-language interface.</p>
+          <div class="case-num"><b>82</b><span>automated tests check every release</span></div>
+          <div class="case-tags"><i>Next.js</i><i>Supabase</i><i>Realtime</i><i>UA / EN / RU</i></div>
+          <button type="button" class="btn btn-ghost btn-sm case-open" aria-haspopup="dialog">Details<span class="arr" aria-hidden="true">→</span></button>
+        </div>
+        <div class="case-more" hidden>
+          <div class="cm-media"><img class="cm-main" src="/img/work-lavka-1.jpg" alt="Lavka marketplace: home, catalog, product, gift finder" width="1200" height="750" loading="lazy" decoding="async"><div class="cm-thumbs"><button type="button" data-src="/img/work-lavka-1.jpg" class="on"><img src="/img/work-lavka-1.jpg" alt="" width="1200" height="750" loading="lazy" decoding="async"></button><button type="button" data-src="/img/work-lavka-2.jpg"><img src="/img/work-lavka-2.jpg" alt="" width="1200" height="750" loading="lazy" decoding="async"></button><button type="button" data-src="/img/work-lavka-3.jpg"><img src="/img/work-lavka-3.jpg" alt="" width="1200" height="750" loading="lazy" decoding="async"></button><button type="button" data-src="/img/work-lavka-4.jpg"><img src="/img/work-lavka-4.jpg" alt="" width="1200" height="750" loading="lazy" decoding="async"></button></div></div>
+          <div class="cm-text">
+            <div class="case-meta">Marketplace · web platform · 2026</div>
+            <h3 class="cm-title">Lavka</h3>
+            <p class="cm-lead">A fully working handmade marketplace on a real database: 10 shops, 69 products, orders, reviews and messages. It shows how we build complex products with several roles and their own business logic.</p>
+            <div class="cm-facts"><div><b>3</b><span>roles</span></div><div><b>3</b><span>languages</span></div><div><b>82</b><span>tests</span></div><div><b>7</b><span>DB migrations</span></div></div>
+            <div class="cm-block"><h4>What was built</h4><ul><li>Buyer: a catalog filtered by category, price, material and region, a product page with a gallery, favourites, cart, checkout with promo codes, order history, reviews and ratings.</li><li>Maker: their own shop with a cover, products with photos and stock, orders with statuses, custom orders (the buyer describes, the maker quotes price and time) and analytics for views, revenue and conversion.</li><li>Admin: moderation of products and shops, role management and platform-wide statistics.</li><li>Buyer-to-maker chat and a real-time notification centre: orders, messages, reviews, price drops and back-in-stock alerts for favourites.</li><li>Typo-tolerant search with “did you mean”, plus instant Ctrl+K search on any keyboard layout.</li><li>Search by colour: each product’s palette is extracted from its photos on the server. A four-question gift finder, an interactive map of makers by region and a “viewing now” counter.</li><li>Comparison of up to four products, public collections, Q&A under each product and a smooth photo transition from the catalog into the product page.</li><li>Ukrainian, English and Russian interface with automatic language detection, a dark theme and one-click demo sign-in for each role.</li></ul></div><div class="cm-block"><h4>Technical decisions</h4><ul><li>Next.js App Router, React and strict TypeScript, Tailwind; PostgreSQL on Supabase with Row Level Security and photo storage; deployed on Vercel.</li><li>Notifications are written only by Postgres triggers, so they cannot be forged from the browser; delivery goes through Supabase Realtime filtered per user.</li><li>Fuzzy search on pg_trgm, product palettes computed on the server from photos, page transitions on the View Transitions API.</li><li>Our own lightweight localization: typed dictionaries so TypeScript won’t let a translation go missing; plural forms and dates per language.</li><li>SEO: OG images, sitemap, robots and JSON-LD markup.</li><li>Every release passes lint, type checks, 82 tests and a production build before it ships. The code is open on GitHub.</li></ul></div>
+            <div class="cm-block cm-stack"><h4>Stack</h4><div class="case-tags"><i>Next.js</i><i>React</i><i>TypeScript</i><i>Tailwind</i><i>Supabase</i><i>PostgreSQL</i><i>Realtime</i><i>pg_trgm</i><i>Zod</i><i>Vitest</i><i>Vercel</i></div></div>
+            <div class="cm-actions"><a href="https://lavka-green.vercel.app" class="btn btn-primary btn-sm" target="_blank" rel="noopener">Open the live site ↗</a><a href="https://github.com/ValentynKoval/lavka" class="btn btn-ghost btn-sm" target="_blank" rel="noopener">GitHub ↗</a><button type="button" class="btn btn-ghost btn-sm" data-lead="unsure">I want a similar project</button></div>
+          </div>
+        </div>
+      </article>
+      <article class="case bloom" data-kind="own" id="case-olx">
+        <div class="case-bar">Telegram bot and web panel<span>running</span></div>
+        <div class="case-shot"><img src="/img/work-olx.jpg" alt="A deal card in Telegram and system metrics" width="1200" height="750" loading="lazy" decoding="async"></div>
+        <div class="case-body">
+          <div class="case-meta">Telegram bot · market analytics · 2026</div>
+          <h3>OLX deal monitor</h3>
+          <p>The system analyses tens of thousands of electronics listings around the clock, calculates the market price and the net profit of a deal, and sends below-market offers to Telegram within 1–2 minutes.</p>
+          <div class="case-num"><b>86%</b><span>of signals confirmed as good deals by manual review</span></div>
+          <div class="case-tags"><i>Node.js</i><i>PostgreSQL</i><i>Gemini</i><i>Ollama</i></div>
+          <button type="button" class="btn btn-ghost btn-sm case-open" aria-haspopup="dialog">Details<span class="arr" aria-hidden="true">→</span></button>
+        </div>
+        <div class="case-more" hidden>
+          <div class="cm-media"><img class="cm-main" src="/img/work-olx.jpg" alt="A deal card in Telegram and system metrics" width="1200" height="750" loading="lazy" decoding="async"></div>
+          <div class="cm-text">
+            <div class="case-meta">Telegram bot · market analytics · 2026</div>
+            <h3 class="cm-title">OLX deal monitor</h3>
+            <p class="cm-lead">An internal tool for a used-electronics resale business. The goal: find laptops, phones, graphics cards and PCs below market price before competitors do, and avoid scammers.</p>
+            <div class="cm-facts"><div><b>54k</b><span>listings in the database</span></div><div><b>86%</b><span>signal precision</span></div><div><b>92%</b><span>of grade-A finds sell within 48 h</span></div><div><b>1–2 min</b><span>from listing to alert</span></div></div>
+            <div class="cm-block"><h4>What was built</h4><ul><li>Listings are collected from eight categories across Ukraine, with a separate “hot” cycle every minute: 1–2 minutes from a listing appearing in search to the alert.</li><li>The market price of a model is a 30-day median adjusted by listings that actually sold; PCs and laptops are valued by their components.</li><li>Deal economics: delivery, platform fees, a reserve and battery health give the net profit, an A–D grade and a “worth buying up to X UAH” limit.</li><li>A scam filter: new accounts, moving to messengers, swapped look-alike letters, identical texts and photos across sellers; a seller score from 0 to 100.</li><li>A Telegram card with buttons and a “Deal” mode: a haggling plan, an inspection checklist per product type and ready questions for the seller. A deal journal and a wish list like “iPhone 13 up to 12,000”.</li><li>A web panel: prices by model with charts, sell-through speed, a signal feed, a deal journal and settings for delivery and fee rates.</li><li>A wide index of about 1,200 categories shows price spread and selling speed and points to new niches.</li></ul></div><div class="cm-block"><h4>Technical decisions</h4><ul><li>Node.js and TypeScript, PostgreSQL 17; the bot, collector and panel run as auto-start services and catch up on anything missed after a restart.</li><li>Descriptions are parsed in three tiers: rules cover 80% of listings, Gemini handles the rest in batches of 10 and a local Qwen model runs in parallel via Ollama. AI also checks photos for damage and stolen images.</li><li>Self-learning: the model dictionary grows from AI answers, and the discount threshold adapts to how fast the market picks up the finds.</li><li>Backtesting on labelled signals: the share of good deals rose from 36% to 86%, missed defects fell from 8.4% to 2%.</li><li>A gentle load on the source, about 15 requests per minute, with no blocks.</li></ul></div>
+            <div class="cm-block cm-stack"><h4>Stack</h4><div class="case-tags"><i>Node.js</i><i>TypeScript</i><i>PostgreSQL 17</i><i>Telegram Bot API</i><i>Gemini</i><i>Ollama</i><i>Qwen</i><i>web panel</i></div></div>
+            <div class="cm-actions"><button type="button" class="btn btn-ghost btn-sm" data-lead="unsure">I want a similar project</button></div>
+          </div>
+        </div>
+      </article>
+      <article class="case bloom" data-kind="own" id="case-fh">
+        <div class="case-bar">Telegram bot<span>running</span></div>
+        <div class="case-shot"><img src="/img/work-fh.jpg" alt="A new order card with an assessment in Telegram" width="1200" height="750" loading="lazy" decoding="async"></div>
+        <div class="case-body">
+          <div class="case-meta">Telegram bot · AI assistant · 2026</div>
+          <h3>Order monitor with AI scoring</h3>
+          <p>A Telegram bot watches a freelance marketplace via its official API, catches new orders in the first seconds, filters out unsuitable ones and scores each in 5–15 seconds with a language model.</p>
+          <div class="case-num"><b>15 s</b><span>between checks of the new-orders feed</span></div>
+          <div class="case-tags"><i>Telegram Bot API</i><i>REST API</i><i>LLM</i><i>autostart</i></div>
+          <button type="button" class="btn btn-ghost btn-sm case-open" aria-haspopup="dialog">Details<span class="arr" aria-hidden="true">→</span></button>
+        </div>
+        <div class="case-more" hidden>
+          <div class="cm-media"><img class="cm-main" src="/img/work-fh.jpg" alt="A new order card with an assessment in Telegram" width="1200" height="750" loading="lazy" decoding="async"></div>
+          <div class="cm-text">
+            <div class="case-meta">Telegram bot · AI assistant · 2026</div>
+            <h3 class="cm-title">Order monitor with AI scoring</h3>
+            <p class="cm-lead">An internal tool for our team. Speed decides everything on marketplaces: an order with zero bids collects 60–90 within hours. The bot lets a person react first and spend time only on work the team can really deliver.</p>
+            <div class="cm-facts"><div><b>15 s</b><span>polling cycle</span></div><div><b>5–15 s</b><span>model verdict</span></div><div><b>3</b><span>decision levels</span></div><div><b>24/7</b><span>with autostart</span></div></div>
+            <div class="cm-block"><h4>What was built</h4><ul><li>The feed is polled every 15 seconds via the marketplace’s official API; old orders and those already bid on are skipped.</li><li>A free rule-based filter: closed orders, more than 100 bids, banned topics and categories outside our expertise.</li><li>A model assessment in 5–15 seconds that weighs the client (reviews, tenure) and gives one of three verdicts: “take it”, “maybe”, “skip” with a reason.</li><li>A Telegram card with buttons: dig deeper, rewrite the reply draft, skip. A person edits and sends the reply; nothing goes out automatically.</li><li>After a bid the bot watches the conversation: client messages and personal offers reach Telegram instantly, along with a results feed.</li><li>Daily bid limit tracking with a pause until reset, plus weekly bid and win statistics via /stats.</li></ul></div><div class="cm-block"><h4>Technical decisions</h4><ul><li>Two-phase scoring: a fast verdict, then a separate, more careful step for the reply draft; the system prompt is cached, making responses faster and cheaper.</li><li>The service starts with the computer before anyone logs in and restarts on failure; after downtime the bot reports how long it was off and skips stale orders.</li><li>The API key lives outside the code and the bot answers only its owner.</li></ul></div>
+            <div class="cm-block cm-stack"><h4>Stack</h4><div class="case-tags"><i>Telegram Bot API</i><i>REST API</i><i>LLM</i><i>prompt caching</i><i>Windows service</i></div></div>
+            <div class="cm-actions"><button type="button" class="btn btn-ghost btn-sm" data-lead="unsure">I want a similar project</button></div>
+          </div>
+        </div>
+      </article>
+      <article class="case bloom" data-kind="client" id="case-phyto">
         <div class="case-bar">fotoanalyzer.com<span>online</span></div>
         <div class="case-shot"><img src="/img/case-fotoanalyzer.jpg" alt="Home page of fotoanalyzer.com" width="799" height="506" loading="lazy" decoding="async"></div>
         <div class="case-body">
@@ -1310,10 +1484,22 @@
           <p>A person uploads a photo of a plant and gets its name. The client sees a request log, exports it to Excel and receives a daily backup.</p>
           <div class="case-num"><b>117</b><span>automated tests check the service before every update</span></div>
           <div class="case-tags"><i>FastAPI</i><i>Pl@ntNet API</i><i>UA / EN</i><i>delivered in 6 days</i></div>
-          <a href="https://fotoanalyzer.com" class="btn btn-ghost btn-sm" target="_blank" rel="noopener">Open the live site ↗</a>
+          <button type="button" class="btn btn-ghost btn-sm case-open" aria-haspopup="dialog">Details<span class="arr" aria-hidden="true">→</span></button>
+        </div>
+        <div class="case-more" hidden>
+          <div class="cm-media"><img class="cm-main" src="/img/case-fotoanalyzer.jpg" alt="Home page of fotoanalyzer.com" width="799" height="506" loading="lazy" decoding="async"></div>
+          <div class="cm-text">
+            <div class="case-meta">Web service · plant recognition · 2026</div>
+            <h3 class="cm-title">PhytoAnalyzer AI</h3>
+            <p class="cm-lead">A Freelancehunt order: a plant recognition web service for fotoanalyzer.com. From demo to running on the client’s server with their own domain in six days.</p>
+            <div class="cm-facts"><div><b>117</b><span>tests at handover</span></div><div><b>109</b><span>species in the name dictionary</span></div><div><b>6</b><span>days to launch</span></div><div><b>UA / EN</b><span>interface</span></div></div>
+            <div class="cm-block"><h4>What was built</h4><ul><li>A visitor uploads a photo, the service identifies the plant via the Pl@ntNet API and shows its Ukrainian name; low confidence triggers an honest warning.</li><li>Four states on one page, a survey and a contact form with reCAPTCHA v3.</li><li>A request log with viewing and Excel export, and a password-protected limits page for resetting IP blocks.</li></ul></div><div class="cm-block"><h4>Technical decisions</h4><ul><li>FastAPI on the client’s VPS, autostart via systemd, SSL and DNS via Cloudflare.</li><li>Protection: file signature checks, a 20 MB limit, rate limiting and geolocation from a local database.</li><li>Daily backups of photos and settings, disk space monitoring and a handover document with access details and instructions.</li></ul></div>
+            <div class="cm-block cm-stack"><h4>Stack</h4><div class="case-tags"><i>Python</i><i>FastAPI</i><i>Pl@ntNet API</i><i>reCAPTCHA v3</i><i>systemd</i><i>Cloudflare</i><i>pytest</i></div></div>
+            <div class="cm-actions"><a href="https://fotoanalyzer.com" class="btn btn-primary btn-sm" target="_blank" rel="noopener">Open the live site ↗</a><button type="button" class="btn btn-ghost btn-sm" data-lead="unsure">I want a similar project</button></div>
+          </div>
         </div>
       </article>
-      <article class="case bloom">
+      <article class="case bloom" data-kind="client" id="case-dom">
         <div class="case-bar">domlounge.it<span>online</span></div>
         <div class="case-shot"><img src="/img/case-domlounge.jpg" alt="Home page of domlounge.it" width="799" height="506" loading="lazy" decoding="async"></div>
         <div class="case-body">
@@ -1321,13 +1507,32 @@
           <h3>DOM Risto Lounge Bar</h3>
           <p>A website for an Italian restaurant with a kitchen, bar and wine list. The owner edits items and prices herself, and reservations arrive in WhatsApp.</p>
           <div class="case-num"><b>3</b><span>menus in a CMS, updated without a developer</span></div>
-          <div class="case-tags"><i>Framer</i><i>CMS</i><i>own domain</i><i>in Italian</i></div>
-          <a href="https://domlounge.it" class="btn btn-ghost btn-sm" target="_blank" rel="noopener">Open the live site ↗</a>
+          <div class="case-tags"><i>Framer</i><i>CMS</i><i>custom domain</i><i>in Italian</i></div>
+          <button type="button" class="btn btn-ghost btn-sm case-open" aria-haspopup="dialog">Details<span class="arr" aria-hidden="true">→</span></button>
+        </div>
+        <div class="case-more" hidden>
+          <div class="cm-media"><img class="cm-main" src="/img/case-domlounge.jpg" alt="Home page of domlounge.it" width="799" height="506" loading="lazy" decoding="async"></div>
+          <div class="cm-text">
+            <div class="case-meta">Website · restaurant, Italy · 2026</div>
+            <h3 class="cm-title">DOM Risto Lounge Bar</h3>
+            <p class="cm-lead">A Freelancehunt order: a website for the Italian restaurant DOM Risto Lounge Bar on its own domain, domlounge.it. The owner updates the menu herself and guests book a table on WhatsApp.</p>
+            <div class="cm-facts"><div><b>175</b><span>menu items in the CMS</span></div><div><b>3</b><span>menu sections</span></div><div><b>IT</b><span>site language</span></div></div>
+            <div class="cm-block"><h4>What was built</h4><ul><li>A home page and three menu sections: kitchen, bar, wine and champagne; “menu”, “wine list” and “book a table” buttons on the first screen.</li><li>A table QR code leads straight to the menu, plus an OG image for neat links in messengers.</li></ul></div><div class="cm-block"><h4>Technical decisions</h4><ul><li>Framer with a CMS: 175 items the owner edits without a developer; a separate code component for the kitchen menu.</li><li>Connecting the .it domain, www redirect and hourly uptime monitoring.</li></ul></div>
+            <div class="cm-block cm-stack"><h4>Stack</h4><div class="case-tags"><i>Framer</i><i>CMS</i><i>code components</i><i>custom domain</i></div></div>
+            <div class="cm-actions"><a href="https://domlounge.it" class="btn btn-primary btn-sm" target="_blank" rel="noopener">Open the live site ↗</a><button type="button" class="btn btn-ghost btn-sm" data-lead="unsure">I want a similar project</button></div>
+          </div>
         </div>
       </article>
     </div>
   </div>
 </section>
+
+<div class="case-overlay" id="case-overlay">
+  <div class="case-modal" role="dialog" aria-modal="true" aria-labelledby="case-modal-title">
+    <button type="button" class="case-x" id="case-x" aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    <div class="case-modal-in" id="case-modal-in"></div>
+  </div>
+</div>
 
 <section id="order" class="tint-line">
   <div class="wrap">
@@ -1606,7 +1811,7 @@
       </details>
       <details>
         <summary>Do you have cases and reviews?</summary>
-        <div class="ans"><p>Intromax is only starting to work with clients, so there are few reviews yet, and we will not make them up. Instead there is what you can check right now: two delivered projects with live links in the Cases section, a Direct bot and a transparent price list.</p></div>
+        <div class="ans"><p>Intromax is only starting to work with clients, so there are few reviews yet, and we will not make them up. Instead there is what you can check right now: projects delivered to clients and our own products with a full technical breakdown in the Cases section, a Direct bot and a transparent price list.</p></div>
       </details>
       <details>
         <summary>How does payment work?</summary>
@@ -2857,6 +3062,77 @@
 </script>
 
 
+<script>
+/* КЕЙСИ: фільтр і вікно з повним розбором. Вміст вікна береться з .case-more картки,
+   тому переклади на /en/ і /ru/ працюють без окремого коду. Посилання #case-<id> відкриває кейс одразу. */
+(function(){
+  var ov = document.getElementById('case-overlay');
+  var box = document.getElementById('case-modal-in');
+  var x = document.getElementById('case-x');
+  var grid = document.querySelector('.cases');
+  if(!ov || !box || !grid) return;
+  var last = null;
+
+  function open(card, mark){
+    var more = card.querySelector('.case-more');
+    if(!more) return;
+    last = document.activeElement;
+    box.innerHTML = more.innerHTML;
+    var t = box.querySelector('.cm-title');
+    if(t) t.id = 'case-modal-title';
+    ov.classList.add('open');
+    ov.scrollTop = 0;
+    document.documentElement.classList.add('modal-lock');
+    x.focus({preventScroll:true});
+    if(mark !== false && history.replaceState) history.replaceState(null, '', '#' + card.id);
+  }
+  function close(){
+    if(!ov.classList.contains('open')) return;
+    ov.classList.remove('open');
+    box.innerHTML = '';
+    document.documentElement.classList.remove('modal-lock');
+    if(location.hash.indexOf('#case-') === 0 && history.replaceState) history.replaceState(null, '', location.pathname + location.search);
+    if(last && document.contains(last)) last.focus({preventScroll:true});
+  }
+
+  grid.addEventListener('click', function(e){
+    var card = e.target.closest('.case');
+    if(!card || e.target.closest('a')) return;
+    open(card);
+  });
+  x.addEventListener('click', close);
+  ov.addEventListener('mousedown', function(e){ if(e.target === ov) close(); });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') close(); });
+  box.addEventListener('click', function(e){
+    var th = e.target.closest('.cm-thumbs button');
+    if(th){
+      var main = box.querySelector('.cm-main');
+      if(main) main.src = th.getAttribute('data-src');
+      [].forEach.call(box.querySelectorAll('.cm-thumbs button'), function(b){ b.classList.toggle('on', b === th); });
+      return;
+    }
+    if(e.target.closest('[data-lead]')) close();
+  });
+
+  var filter = document.querySelector('.case-filter');
+  if(filter) filter.addEventListener('click', function(e){
+    var b = e.target.closest('button[data-f]');
+    if(!b) return;
+    var f = b.getAttribute('data-f');
+    [].forEach.call(filter.querySelectorAll('button'), function(z){ z.setAttribute('aria-pressed', z === b ? 'true' : 'false'); });
+    [].forEach.call(grid.children, function(c){ c.classList.toggle('is-off', f !== 'all' && c.getAttribute('data-kind') !== f); });
+  });
+
+  function fromHash(){
+    if(!/^#case-[a-z]+$/.test(location.hash)) return;
+    var c = document.getElementById(location.hash.slice(1));
+    if(c && c.classList.contains('case')) open(c, false);
+  }
+  window.addEventListener('hashchange', fromHash);
+  fromHash();
+})();
+</script>
+
 <script type="application/ld+json">
 {
   "@context":"https://schema.org",
@@ -3112,10 +3388,15 @@
       LEAD, BACK
     ]]; },
     cases: function(){ return [[
-      'Two delivered projects, both live.',
+      'Projects delivered to clients and our own products, all of them live.',
+      'Finance App: finance tracking in Telegram. One-message entries, statistics, banks, AI for receipts, 20 languages.',
+      'Lavka: a marketplace with three roles, real-time chat and seller analytics.',
+      'OLX monitor: finds electronics below market price within 1–2 minutes and calculates the deal profit.',
       'PhytoAnalyzer AI: a person uploads a plant photo and gets its name. The client sees a request log, exports it to Excel and gets a daily backup. Delivered in 6 days.',
       'DOM Risto Lounge Bar: a website for a restaurant in Italy. The owner edits menus and prices herself, bookings arrive in WhatsApp.'
     ], [
+      {t:'💰 Finance App', href:'https://t.me/finance_Intro_bot'},
+      {t:'🧺 Lavka', href:'https://lavka-green.vercel.app'},
       {t:'🌿 fotoanalyzer.com', href:'https://fotoanalyzer.com'},
       {t:'🍷 domlounge.it', href:'https://domlounge.it'},
       {t:'📂 Cases on the page', go:'scroll', to:'cases'},
