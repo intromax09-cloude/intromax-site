@@ -69,7 +69,7 @@
   .mono{font-family:'JetBrains Mono',monospace;font-variant-numeric:tabular-nums;}
   a{color:inherit;text-decoration:none;}
   img{max-width:100%;display:block;}
-  .wrap{max-width:1120px;margin:0 auto;padding:0 24px;}
+  .wrap{max-width:1240px;margin:0 auto;padding:0 24px;}
   section{padding:112px 0;scroll-margin-top:76px;}
   @media (max-width:720px){ section{padding:64px 0;} }
 
@@ -81,7 +81,7 @@
     transition:background .45s var(--ease),border-color .45s var(--ease);
   }
   header.stuck{background:rgba(19,20,28,.84);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom-color:var(--line);}
-  nav{display:flex;align-items:center;justify-content:space-between;padding:18px 24px;max-width:1120px;margin:0 auto;}
+  nav{display:flex;align-items:center;justify-content:space-between;padding:18px 24px;max-width:1240px;margin:0 auto;}
   .logo{font-family:'Manrope',sans-serif;font-weight:800;font-size:19px;letter-spacing:-.03em;display:flex;align-items:center;gap:9px;}
   .logo-dot{width:8px;height:8px;border-radius:50%;background:var(--amber);}
   .navlinks{display:flex;gap:32px;font-size:14px;font-weight:500;color:var(--text-dim);}
@@ -132,7 +132,7 @@
   .hero{padding:88px 0 72px;position:relative;}
   .hero-grid{display:grid;grid-template-columns:1.08fr .92fr;gap:72px;align-items:center;}
   @media (max-width:900px){ .hero-grid{grid-template-columns:1fr;} }
-  .hero h1{font-size:clamp(42px,5.8vw,68px);line-height:1;letter-spacing:-.035em;margin-bottom:26px;}
+  .hero h1{font-size:clamp(42px,6.2vw,78px);line-height:1;letter-spacing:-.035em;margin-bottom:26px;}
   .hero p.lead{font-size:17.5px;line-height:1.62;color:var(--text-dim);max-width:46ch;margin-bottom:34px;}
   .hero-actions{display:flex;gap:12px;flex-wrap:wrap;}
   .btn{
@@ -246,8 +246,8 @@
   @media (max-width:700px){ input.field{font-size:16px;} }
 
   /* ---------- SERVICES ---------- */
-  .section-head{max-width:680px;margin-bottom:56px;}
-  .section-head h2{font-size:clamp(30px,4.2vw,48px);line-height:1.06;max-width:20ch;}
+  .section-head{max-width:760px;margin-bottom:56px;}
+  .section-head h2{font-size:clamp(30px,4.6vw,56px);line-height:1.05;max-width:22ch;}
   .section-head .lead{font-size:16.5px;line-height:1.6;color:var(--text-dim);margin-top:18px;max-width:56ch;}
   .tag{font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--text-dim);border:1px solid var(--line);padding:4px 10px;border-radius:100px;}
 
@@ -552,7 +552,7 @@
   .tint-line{position:relative;}
   .tint-line::before{
     content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);
-    width:min(1120px,100%);height:1px;
+    width:min(1240px,100%);height:1px;
     background:linear-gradient(90deg,transparent,var(--line) 18%,var(--line) 82%,transparent);
   }
   section{position:relative;z-index:1;}
@@ -744,7 +744,7 @@
     position:fixed;right:18px;top:50%;transform:translateY(-50%);z-index:40;
     display:none;flex-direction:column;gap:2px;align-items:flex-end;
   }
-  @media (min-width:1240px){ .rail{display:flex;} }
+  @media (min-width:1380px){ .rail{display:flex;} }
   .rail a{display:flex;align-items:center;gap:10px;padding:5px 4px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-dim);}
   .rail a span{
     opacity:0;transform:translateX(6px);transition:opacity .2s ease,transform .2s ease;
@@ -766,7 +766,7 @@
     max-width:calc(100vw - 24px);
   }
   .dock.show{transform:translate(-50%,0);}
-  @media (min-width:1240px){ .dock,.dock-sheet,.dock-veil{display:none !important;} }
+  @media (min-width:1380px){ .dock,.dock-sheet,.dock-veil{display:none !important;} }
   .modal-lock .dock{display:none;}
   .dock-where{
     display:flex;align-items:center;gap:10px;min-width:0;background:none;border:none;color:var(--text);
@@ -922,12 +922,12 @@
 
 
   /* ---------- УМОВИ РОБОТИ ---------- */
-  .terms-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;}
+  .terms-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
   @media (max-width:980px){ .terms-grid{grid-template-columns:1fr 1fr;} }
   @media (max-width:560px){ .terms-grid{grid-template-columns:1fr;} }
-  .term{padding:26px 24px;}
-  .term h3{font-size:17px;margin-bottom:8px;letter-spacing:-.02em;}
-  .term p{font-size:13.5px;color:var(--text-dim);}
+  .term{padding:32px 30px;}
+  .term h3{font-size:20px;margin-bottom:10px;letter-spacing:-.025em;}
+  .term p{font-size:14.5px;line-height:1.6;color:var(--text-dim);}
 
   /* ---------- ЦІНИ: третій блок + підтримка ---------- */
   .price-tables.three{grid-template-columns:repeat(3,1fr);}
@@ -1107,7 +1107,7 @@
   /* ---------- ПОВЕРХНІ (жовтень 2026): одна мова для всіх карток ----------
      Матеріал задається тут, а не в кожному блоці: тонка лінія, ледь світліший
      верх і без тіней-плям. Так картки читаються як деталі одного корпусу. */
-  .svc,.pack,.case,.term,.niche,.sup,.price-block,.kit-main,.kit-sum,.notfit,.cta,.review-card,.reviews-empty,.review-modal{
+  .svc,.pack,.case,.term,.niche,.sup,.price-block,.kit-main,.kit-sum,.notfit,.cta,.review-card,.reviews-empty,.review-modal,.flow-node,.calc-in,.calc-out{
     background:linear-gradient(180deg,rgba(238,233,219,.035),rgba(238,233,219,.012)),var(--ink-2);
     border:1px solid var(--line);border-radius:var(--radius);
     box-shadow:inset 0 1px 0 rgba(255,255,255,.05);
@@ -1121,6 +1121,122 @@
   .lang a[aria-current]{color:var(--text);background:rgba(238,233,219,.07);}
   .foot-row .lang{margin-left:auto;}
   @media (max-width:420px){ .foot-row .lang{margin-left:0;} }
+
+  /* ---------- ШЛЯХ ЗАЯВКИ: кроки загоряються під час прокрутки ---------- */
+  .flow-sticky{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:72px;align-items:center;}
+  .flow-left h2{font-size:clamp(30px,4.2vw,52px);line-height:1.05;max-width:16ch;}
+  .flow-left .lead{font-size:16.5px;line-height:1.6;color:var(--text-dim);margin-top:16px;max-width:46ch;}
+  .flow-list{list-style:none;margin:28px 0 22px;border-top:1px solid var(--line);}
+  .flow-list li{padding:13px 0;border-bottom:1px solid var(--line);color:var(--text-dim);transition:color .4s var(--ease);}
+  .flow-list b{display:block;font-size:16px;font-weight:700;letter-spacing:-.01em;}
+  .flow-list span{display:block;font-size:14px;line-height:1.55;margin-top:4px;}
+  .flow-list li.on{color:var(--text);}
+  .flow-list li.on b{color:var(--amber);}
+  .flow-cmp{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px;}
+  .flow-cmp > div{padding:14px 16px;border-radius:14px;border:1px solid var(--line);background:rgba(238,233,219,.02);}
+  .flow-cmp i{display:block;font-style:normal;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px;}
+  .flow-cmp-out{border-color:rgba(242,169,60,.35) !important;}
+  .flow-cmp-out i{color:var(--amber);}
+  .flow-cmp p{font-size:13px;line-height:1.5;color:var(--text-dim);}
+  .flow-nodes{list-style:none;position:relative;display:flex;flex-direction:column;gap:14px;}
+  .flow-nodes::before{content:'';position:absolute;left:37px;top:30px;bottom:30px;width:2px;background:var(--line-strong);border-radius:2px;}
+  .flow-nodes::after{content:'';position:absolute;left:37px;top:30px;width:2px;height:calc((100% - 60px) * var(--p,0));background:var(--amber);border-radius:2px;transition:height .5s var(--ease);}
+  .flow-node{position:relative;z-index:1;display:flex;align-items:center;gap:18px;padding:18px 22px;opacity:.42;transform:scale(.985);transition:opacity .45s var(--ease),transform .45s var(--ease),border-color .45s var(--ease);}
+  .flow-node .n{flex:none;width:34px;height:34px;border-radius:10px;border:1px solid var(--line-strong);background:var(--ink-2);display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--text-dim);transition:background .4s var(--ease),color .4s var(--ease),border-color .4s var(--ease);}
+  .flow-node b{display:block;font-size:18px;font-weight:700;letter-spacing:-.02em;}
+  .flow-node small{display:block;margin-top:3px;font-size:12px;line-height:1.5;color:var(--text-dim);}
+  .flow-node.done{opacity:.8;transform:none;}
+  .flow-node.done .n{border-color:var(--amber-dim);color:var(--amber);}
+  .flow-node.on{opacity:1;transform:none;border-color:rgba(242,169,60,.6);}
+  .flow-node.on .n{background:var(--amber);border-color:var(--amber);color:#1a1206;}
+  .flow-cap{margin-top:14px;font-size:12.5px;color:var(--text-dim);}
+  /* десктоп: сцена закріплена, поки йдуть п'ять кроків; низький екран і телефон бачать усе одразу */
+  @media (min-width:901px) and (min-height:720px){
+    .flow-scroll{height:340vh;}
+    .flow-sticky{position:sticky;top:96px;min-height:calc(100vh - 150px);}
+    .flow-list span{display:block;max-height:0;overflow:hidden;margin-top:0;opacity:0;transition:max-height .45s var(--ease),opacity .45s var(--ease),margin-top .45s var(--ease);}
+        .flow-list li.on span{max-height:90px;opacity:1;margin-top:4px;}
+  }
+  @media (max-width:900px){
+    .flow-sticky{grid-template-columns:minmax(0,1fr);gap:22px;}
+    .flow-left h2{max-width:20ch;}
+    .flow-sticky{display:flex;flex-direction:column;}
+    .flow-left{display:contents;}
+    .flow-list{display:none;}
+    .flow-left .lead{margin-bottom:0;}
+    .flow-right{order:1;}
+    .flow-cmp{order:2;margin-bottom:0;}
+    .flow-left > .btn{order:3;align-self:flex-start;}
+    .flow-node{padding:15px 16px;}
+    .flow-nodes::before,.flow-nodes::after{left:31px;}
+  }
+  @media (max-width:520px){ .flow-cmp{grid-template-columns:1fr;} }
+
+  /* ---------- КАЛЬКУЛЯТОР РУТИНИ ---------- */
+  .calc{display:grid;grid-template-columns:minmax(0,1.02fr) minmax(0,.98fr);gap:22px;align-items:stretch;}
+  .calc-in,.calc-out{padding:32px;}
+  .calc-row{display:grid;grid-template-columns:1fr auto;gap:2px 16px;align-items:baseline;padding-bottom:22px;}
+  .calc-row label{font-size:15px;font-weight:600;color:var(--text);}
+  .calc-row b{font-size:20px;font-weight:600;color:var(--amber);}
+  .calc-row .rng{grid-column:1 / -1;margin-top:8px;}
+  .rng{-webkit-appearance:none;appearance:none;width:100%;height:28px;background:transparent;cursor:pointer;--fill:50%;}
+  .rng::-webkit-slider-runnable-track{height:4px;border-radius:4px;background:linear-gradient(90deg,var(--amber) var(--fill),var(--line-strong) var(--fill));}
+  .rng::-moz-range-track{height:4px;border-radius:4px;background:linear-gradient(90deg,var(--amber) var(--fill),var(--line-strong) var(--fill));}
+  .rng::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;margin-top:-9px;border-radius:50%;background:var(--amber);border:4px solid var(--ink-2);box-shadow:0 0 0 1px var(--amber);}
+  .rng::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:var(--amber);border:4px solid var(--ink-2);box-shadow:0 0 0 1px var(--amber);}
+  .calc-hint{font-size:13.5px;line-height:1.55;color:var(--text-dim);}
+  .calc-out{display:flex;flex-direction:column;}
+  .calc-cap{font-family:'JetBrains Mono',monospace;font-size:11.5px;letter-spacing:.03em;text-transform:uppercase;color:var(--text-dim);}
+  .calc-big{font-size:clamp(40px,5.2vw,68px);font-weight:600;letter-spacing:-.04em;line-height:1.05;margin-top:14px;color:var(--amber);}
+  .calc-sub{font-size:14px;color:var(--text-dim);margin-top:6px;}
+  .calc-stats{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:24px 0 20px;padding:18px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+  .calc-stats b{display:block;font-size:26px;font-weight:600;letter-spacing:-.03em;}
+  .calc-stats span{font-size:13px;color:var(--text-dim);}
+  .calc-save{font-size:15.5px;line-height:1.55;}
+  .calc-save b{color:var(--amber);font-weight:700;}
+  .calc-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:22px;}
+  .calc-note{margin-top:auto;padding-top:20px;font-size:12px;line-height:1.55;color:var(--text-dim);}
+  @media (max-width:900px){ .calc{grid-template-columns:minmax(0,1fr);} .calc-in,.calc-out{padding:24px 20px;} }
+
+  /* ---------- КЕЙСИ-СЦЕНИ (десктоп): афіша проєкту на всю ширину, збоку коротка панель; сцени складаються стосом ---------- */
+  @media (min-width:1001px){
+    .cases{display:flex;flex-direction:column;gap:28px;padding-bottom:12px;}
+    .case{
+      display:grid;grid-template-columns:minmax(0,1.62fr) minmax(0,1fr);
+      grid-template-areas:"shot body";
+      position:sticky;top:calc(92px + var(--k,0) * 14px);
+      border-radius:28px;
+    }
+    .case:nth-child(even){grid-template-areas:"body shot";grid-template-columns:minmax(0,1fr) minmax(0,1.62fr);}
+    .case:hover{transform:none;}
+    .case-bar{
+      grid-area:shot;align-self:start;justify-self:start;z-index:2;margin:20px;
+      padding:7px 14px;border:1px solid var(--line-strong);border-radius:100px;
+      background:rgba(12,13,18,.78);
+    }
+    .case-shot{
+      grid-area:shot;border-bottom:0;perspective:1400px;
+      border-right:1px solid var(--line);
+    }
+    .case:nth-child(even) .case-shot{border-right:0;border-left:1px solid var(--line);}
+    .case-shot img{
+      transform:rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) scale(1.01);
+      transition:transform .9s var(--ease);
+    }
+    .case:hover .case-shot img{transform:rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) scale(1.035);}
+    .case-body{grid-area:body;padding:40px 38px 36px;justify-content:center;}
+    .case-meta{margin-bottom:14px;}
+    .case h3{font-size:clamp(30px,3vw,42px);letter-spacing:-.035em;line-height:1.02;margin-bottom:14px;}
+    .case p{font-size:15px;line-height:1.6;margin-bottom:22px;display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden;}
+    .case-num{margin-top:0;padding:16px 0;margin-bottom:4px;}
+    .case-num b{font-size:44px;}
+    .case-tags{margin-bottom:22px;}
+    .case .btn{align-self:flex-start;padding:12px 20px;}
+    .case:nth-child(1){--k:0;} .case:nth-child(2){--k:1;} .case:nth-child(3){--k:2;}
+    .case:nth-child(4){--k:3;} .case:nth-child(5){--k:4;} .case:nth-child(6){--k:5;}
+  }
+  @media (min-width:1001px) and (max-height:700px){ .case{position:relative;top:auto;} }
+  @media (prefers-reduced-motion: reduce){ .case-shot img{transition:none !important;transform:none !important;} }
 </style>
 <noscript><style>#intro{display:none}.bloom,.navlinks a,.nav-cta{opacity:1;transform:none}</style></noscript>
 </head>
@@ -1534,6 +1650,86 @@
   </div>
 </div>
 
+<section id="flow" class="tint-line">
+  <div class="wrap">
+    <div class="flow-scroll">
+      <div class="flow-sticky">
+        <div class="flow-left">
+          <h2>Заявка проходить <em>увесь шлях</em> без вашої участі</h2>
+          <p class="lead">Так виглядає типовий ланцюжок автоматизації. Прокручуйте, і кроки загоряються один за одним.</p>
+          <ol class="flow-list">
+            <li><b>Клієнт залишає заявку</b><span>На сайті, в Direct або в Telegram. Йому не треба чекати відповіді людини.</span></li>
+            <li><b>Система перевіряє дані</b><span>Порожні поля, дублі й спам відсіюються ще до того, як заявка дійде до вас.</span></li>
+            <li><b>Заявка лягає в CRM</b><span>Імʼя, контакт, джерело й побажання клієнта потрапляють у CRM або таблицю.</span></li>
+            <li><b>Вам приходить повідомлення</b><span>Картка з усіма полями зʼявляється в Telegram. Так працюють і заявки на нашому сайті.</span></li>
+            <li><b>Звіт оновлюється сам</b><span>За бажання таблиця зводить, скільки заявок прийшло і звідки.</span></li>
+          </ol>
+          <div class="flow-cmp">
+            <div class="flow-cmp-in"><i>Вручну</i><p>Скопіювати з листа, внести в таблицю, написати менеджеру, оновити звіт.</p></div>
+            <div class="flow-cmp-out"><i>Автоматично</i><p>Усі п’ять кроків відбуваються без вас, а до вас доходить готова картка.</p></div>
+          </div>
+          <button type="button" class="btn btn-primary" data-lead="automation">Автоматизувати свій процес<span class="arr"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg></span></button>
+        </div>
+        <div class="flow-right">
+          <ol class="flow-nodes">
+            <li class="flow-node"><span class="n mono">01</span><div><b>Форма на сайті</b><small class="mono">Олена · +380 •• ••• 41 22 · «Потрібен запис на пʼятницю»</small></div></li>
+            <li class="flow-node"><span class="n mono">02</span><div><b>Перевірка</b><small class="mono">Телефон ✓ · Дубль: ні · Спам: ні</small></div></li>
+            <li class="flow-node"><span class="n mono">03</span><div><b>CRM</b><small class="mono">Нова заявка · джерело: сайт · статус: нова</small></div></li>
+            <li class="flow-node"><span class="n mono">04</span><div><b>Telegram</b><small class="mono">🔔 Нова заявка від Олени · запис на пʼятницю</small></div></li>
+            <li class="flow-node"><span class="n mono">05</span><div><b>Звіт</b><small class="mono">Заявок за тиждень: +1 · джерело: сайт</small></div></li>
+          </ol>
+          <p class="flow-cap">Умовний приклад типового ланцюжка. Імена й дані вигадані.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="routine" class="tint-amber tint-line">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Скільки коштує ручна <em>рутина</em></h2>
+      <p class="lead">Посуньте повзунки під свою команду. Рахують ваші цифри, не наші.</p>
+    </div>
+    <div class="calc bloom">
+      <div class="calc-in">
+        <div class="calc-row">
+          <label for="rc-people">Скільки людей виконує рутину</label><b class="mono" id="rc-people-v">3</b>
+          <input type="range" class="rng" id="rc-people" min="1" max="30" step="1" value="3">
+        </div>
+        <div class="calc-row">
+          <label for="rc-hours">Годин на тиждень у кожного</label><b class="mono" id="rc-hours-v">6</b>
+          <input type="range" class="rng" id="rc-hours" min="1" max="40" step="1" value="6">
+        </div>
+        <div class="calc-row">
+          <label for="rc-rate">Вартість години працівника</label><b class="mono" id="rc-rate-v">₴200</b>
+          <input type="range" class="rng" id="rc-rate" min="50" max="1000" step="10" value="200">
+        </div>
+        <div class="calc-row">
+          <label for="rc-share">Яку частку можна автоматизувати</label><b class="mono" id="rc-share-v">50%</b>
+          <input type="range" class="rng" id="rc-share" min="10" max="90" step="5" value="50">
+        </div>
+        <p class="calc-hint">Рутина — це копіювання між таблицями, ручні звіти, перенесення заявок, звірки, нагадування й повторювані розрахунки.</p>
+      </div>
+      <div class="calc-out" aria-live="polite">
+        <div class="calc-cap">Орієнтовна вартість часу на рутину за рік</div>
+        <div class="calc-big mono" id="rc-year">₴172 800</div>
+        <div class="calc-sub">оплачений час, який іде на повторювані дії</div>
+        <div class="calc-stats">
+          <div><b class="mono" id="rc-hrs">864</b><span>годин на рік</span></div>
+          <div><b class="mono" id="rc-days">108</b><span>робочих днів на рік</span></div>
+        </div>
+        <p class="calc-save">Якщо автоматизувати <b id="rc-pct">50%</b>, це приблизно <b class="mono" id="rc-save">₴86 400</b> на рік.</p>
+        <div class="calc-actions">
+          <button type="button" class="btn btn-primary" id="rc-go" data-lead="automation">Прибрати цю рутину<span class="arr"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg></span></button>
+          <a href="#order" class="btn btn-ghost">Подивитись ціни</a>
+        </div>
+        <p class="calc-note">Розрахунок: люди × години × 48 робочих тижнів × вартість години. Це орієнтир, а не обіцянка економії: він не враховує вартість впровадження й завдання, які не варто автоматизувати.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section id="order" class="tint-line">
   <div class="wrap">
     <div class="section-head">
@@ -1627,6 +1823,14 @@
       <div class="term bloom">
         <h3>Все лишається вашим</h3>
         <p>Бот, сайт і сценарії живуть у ваших акаунтах. Ніщо не тримається на нашому доступі.</p>
+      </div>
+      <div class="term bloom">
+        <h3>Демо до оплати</h3>
+        <p>Спершу збираємо демо під ваше завдання. Ви дивитесь на робочий результат і самі вирішуєте, чи продовжувати.</p>
+      </div>
+      <div class="term bloom">
+        <h3>Розмовляєте з тим, хто робить</h3>
+        <p>Без менеджерів-посередників: ваші питання й правки отримує той, хто збирає проєкт.</p>
       </div>
     </div>
   </div>
@@ -1818,7 +2022,7 @@
         <div class="ans"><p>Етапами: частина на старті, решта після того, як ви побачили робочий результат. Ціна фіксується до початку і не зростає в процесі. Оплатити можна на банківську картку або криптовалютою — спосіб узгоджуємо в листуванні.</p></div>
       </details>
     </div>
-    <p class="faq-foot">Не знайшли відповідь — <button type="button" data-lead="unsure">поставте своє питання</button>, відповімо протягом доби.</p>
+    <p class="faq-foot">Не знайшли відповідь — <button type="button" data-ask>запитайте AI-агента в чаті</button> або <button type="button" data-lead="unsure">залиште заявку</button>, відповімо протягом доби.</p>
   </div>
 </section>
 
@@ -2896,6 +3100,9 @@
         '<p class="lead-legal">Надсилаючи форму, ви погоджуєтесь із <a href="/privacy" target="_blank" rel="noopener">політикою конфіденційності</a>.</p>' +
       '</form>';
     pane.innerHTML = html;
+    var pre = window.IMX_LEADPRE && window.IMX_LEADPRE[key];
+    window.IMX_LEADPRE = null;
+    if(pre) Object.keys(pre).forEach(function(n){ var f = pane.querySelector('[name="' + n + '"]'); if(f && !f.value) f.value = pre[n]; });
     if(cfg.plum){
       var ico = pane.querySelector('.svc-ico svg');
       if(ico) ico.style.stroke = 'var(--plum)';
@@ -3051,6 +3258,10 @@
   document.addEventListener('click', function(e){
     var t = e.target.closest('[data-lead]');
     if(t){ e.preventDefault(); open(t.getAttribute('data-lead'), t); }
+  });
+  document.addEventListener('click', function(e){
+    var a = e.target.closest('[data-ask]');
+    if(a && window.IMX_CHAT){ e.preventDefault(); window.IMX_CHAT.focus(); }
   });
   document.getElementById('lead-close').addEventListener('click', close);
   document.getElementById('lead-done-close').addEventListener('click', close);
@@ -4304,7 +4515,10 @@
     }
   }
   /* зміна ніші в першому екрані: якщо гість ще нічого не писав, діалог починається наново */
-  window.IMX_CHAT = { restart:function(){
+  window.IMX_CHAT = { focus:function(){
+    phone.scrollIntoView({behavior: CALM ? 'auto' : 'smooth', block:'center'});
+    setTimeout(function(){ start(); try{ input.focus({preventScroll:true}); }catch(e){} }, CALM ? 0 : 450);
+  }, restart:function(){
     if(!started || st.step || st.sending) return;
     gen++; q = Promise.resolve(); body.innerHTML = ''; started = false; start();
   } };
@@ -4332,6 +4546,106 @@
   else new MutationObserver(function(m, obs){
     if(phone.classList.contains('reveal')){ obs.disconnect(); arm(); }
   }).observe(phone, {attributes:true, attributeFilter:['class']});
+})();
+</script>
+
+<script>
+/* КЕЙСИ-СЦЕНИ: екран трохи нахиляється за курсором (тільки мишка, без reduced motion) */
+(function(){
+  if(!window.matchMedia('(hover:hover) and (min-width:1001px)').matches) return;
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  [].forEach.call(document.querySelectorAll('.case-shot'), function(shot){
+    var img = shot.querySelector('img'); if(!img) return;
+    shot.addEventListener('pointermove', function(e){
+      var r = shot.getBoundingClientRect();
+      var x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5;
+      img.style.setProperty('--ry', (x * 4).toFixed(2) + 'deg');
+      img.style.setProperty('--rx', (-y * 3).toFixed(2) + 'deg');
+    });
+    shot.addEventListener('pointerleave', function(){
+      img.style.setProperty('--ry', '0deg'); img.style.setProperty('--rx', '0deg');
+    });
+  });
+})();
+</script>
+
+<script>
+/* ШЛЯХ ЗАЯВКИ + КАЛЬКУЛЯТОР РУТИНИ */
+(function(){
+  /* ---- шлях заявки: який крок горить, залежить від прокрутки ---- */
+  var scroll = document.querySelector('.flow-scroll');
+  if(scroll){
+    var sticky = scroll.querySelector('.flow-sticky');
+    var nodes = [].slice.call(scroll.querySelectorAll('.flow-node'));
+    var items = [].slice.call(scroll.querySelectorAll('.flow-list li'));
+    var list = scroll.querySelector('.flow-nodes');
+    var N = nodes.length, last = -2, ticking = false;
+    var paint = function(on, doneTo){
+      if(on === last + '' + doneTo) return;
+      last = on + '' + doneTo;
+      nodes.forEach(function(n, i){ n.classList.toggle('on', i === on); n.classList.toggle('done', i < doneTo); });
+      items.forEach(function(n, i){ n.classList.toggle('on', i === on); });
+      list.style.setProperty('--p', N > 1 ? Math.max(0, Math.min(on < 0 ? 0 : on, N - 1)) / (N - 1) : 0);
+    };
+    var update = function(){
+      ticking = false;
+      if(getComputedStyle(sticky).position === 'sticky'){
+        var r = scroll.getBoundingClientRect();
+        var run = r.height - sticky.offsetHeight;
+        var p = run > 0 ? (96 - r.top) / run : 0;
+        p = Math.max(0, Math.min(0.999, p));
+        var i = Math.floor(p * N);
+        paint(i, i);
+      } else {
+        /* без закріплення: крок загорається, коли доходить до середини екрана */
+        var on = -1;
+        nodes.forEach(function(n, i){ if(n.getBoundingClientRect().top < innerHeight * 0.62) on = i; });
+        paint(on, on < 0 ? 0 : on);
+      }
+    };
+    var req = function(){ if(!ticking){ ticking = true; requestAnimationFrame(update); } };
+    addEventListener('scroll', req, {passive:true});
+    addEventListener('resize', req);
+    update();
+  }
+
+  /* ---- калькулятор рутини ---- */
+  var ids = ['people', 'hours', 'rate', 'share'];
+  var el = {};
+  ids.forEach(function(k){ el[k] = document.getElementById('rc-' + k); });
+  if(!el.people) return;
+  var money = function(n){ return '₴' + Math.round(n).toLocaleString('uk-UA'); };
+  var calc = function(){
+    var v = {};
+    ids.forEach(function(k){
+      var inp = el[k];
+      v[k] = +inp.value;
+      inp.style.setProperty('--fill', ((inp.value - inp.min) / (inp.max - inp.min) * 100) + '%');
+    });
+    var hrs = v.people * v.hours * 48;
+    var year = hrs * v.rate;
+    var save = year * v.share / 100;
+    document.getElementById('rc-people-v').textContent = v.people;
+    document.getElementById('rc-hours-v').textContent = v.hours;
+    document.getElementById('rc-rate-v').textContent = money(v.rate);
+    document.getElementById('rc-share-v').textContent = v.share + '%';
+    document.getElementById('rc-year').textContent = money(year);
+    document.getElementById('rc-hrs').textContent = hrs.toLocaleString('uk-UA');
+    document.getElementById('rc-days').textContent = Math.round(hrs / 8).toLocaleString('uk-UA');
+    document.getElementById('rc-pct').textContent = v.share + '%';
+    document.getElementById('rc-save').textContent = money(save);
+    return {v:v, hrs:hrs, year:year, save:save};
+  };
+  ids.forEach(function(k){ el[k].addEventListener('input', calc); });
+  calc();
+  /* кнопка передає цифри в заявку: Максим бачить, з чим людина прийшла */
+  document.getElementById('rc-go').addEventListener('click', function(){
+    var c = calc();
+    window.IMX_LEADPRE = {automation:{
+      manual: 'За калькулятором на сайті: ' + c.v.people + ' люд., ' + c.v.hours + ' год на тиждень кожен, ' +
+              money(c.v.rate) + ' за годину. Рутина коштує близько ' + money(c.year) + ' на рік, автоматизувати можна ' + c.v.share + '%.'
+    }};
+  });
 })();
 </script>
 
@@ -4972,7 +5286,7 @@ window.IMX3D = {
    =========================================================================== */
 (function(){
   var SECTIONS = [
-    ['services','Послуги'], ['cases','Кейси'], ['order','Конструктор'],
+    ['services','Послуги'], ['cases','Кейси'], ['flow','Шлях заявки'], ['routine','Калькулятор'], ['order','Конструктор'],
     ['process','Процес'], ['terms','Умови'], ['pricing','Ціни'], ['niches','Ніші'],
     ['faq','Питання'], ['fit','Кому підходить'], ['reviews','Відгуки'], ['cta','Заявка']
   ].filter(function(s){ var el = document.getElementById(s[0]); return el && !el.hidden; })
