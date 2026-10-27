@@ -1151,8 +1151,9 @@
   .flow-node.on .n{background:var(--amber);border-color:var(--amber);color:#1a1206;}
   .flow-cap{margin-top:14px;font-size:12.5px;color:var(--text-dim);}
   /* десктоп: сцена закріплена, поки йдуть п'ять кроків; низький екран і телефон бачать усе одразу */
-  @media (min-width:901px) and (min-height:720px){
-    .flow-scroll{height:340vh;}
+  @media (min-width:901px) and (min-height:820px){
+    .flow-scroll{height:280vh;}
+    .flow-scroll.live .flow-node,.flow-scroll.live .flow-list li{cursor:pointer;}
     .flow-sticky{position:sticky;top:96px;min-height:calc(100vh - 150px);}
     .flow-list span{display:block;max-height:0;overflow:hidden;margin-top:0;opacity:0;transition:max-height .45s var(--ease),opacity .45s var(--ease),margin-top .45s var(--ease);}
         .flow-list li.on span{max-height:90px;opacity:1;margin-top:4px;}
@@ -1171,6 +1172,28 @@
     .flow-nodes::before,.flow-nodes::after{left:31px;}
   }
   @media (max-width:520px){ .flow-cmp{grid-template-columns:1fr;} }
+  /* підказка «крутіть далі»: висить унизу екрана, поки йде закріплена сцена */
+  .flow-hint{
+    position:fixed;left:50%;bottom:26px;z-index:44;display:none;align-items:center;gap:12px;
+    padding:10px 18px 10px 14px;border-radius:100px;pointer-events:none;
+    background:rgba(24,26,36,.92);border:1px solid rgba(242,169,60,.45);
+    box-shadow:0 10px 30px rgba(0,0,0,.35);
+    transform:translate(-50%,16px);opacity:0;transition:opacity .4s var(--ease),transform .4s var(--ease);
+  }
+  @media (min-width:901px) and (min-height:820px){ .flow-hint{display:flex;} }
+  @media (max-width:1379px){ .flow-hint{bottom:92px;} }
+  .flow-hint.show{opacity:1;transform:translate(-50%,0);}
+  .fh-mouse{position:relative;width:18px;height:28px;border:1.5px solid var(--amber);border-radius:10px;flex:none;}
+  .fh-mouse i{position:absolute;left:50%;top:6px;width:3px;height:6px;margin-left:-1.5px;border-radius:2px;background:var(--amber);animation:fhWheel 1.6s var(--ease) infinite;}
+  .fh-t{font-size:13.5px;font-weight:700;color:var(--text);white-space:nowrap;}
+  .fh-b{display:none;}
+  .flow-hint.last .fh-a{display:none;}
+  .flow-hint.last .fh-b{display:inline;}
+  .fh-n{font-size:12px;color:var(--text-dim);}
+  .fh-chev{width:18px;height:18px;fill:none;stroke:var(--amber);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;animation:fhBob 1.6s var(--ease) infinite;}
+  @keyframes fhWheel{0%{transform:translateY(0);opacity:1;}70%{transform:translateY(9px);opacity:0;}100%{transform:translateY(9px);opacity:0;}}
+  @keyframes fhBob{0%,100%{transform:translateY(-2px);}50%{transform:translateY(3px);}}
+  @media (prefers-reduced-motion: reduce){ .fh-mouse i,.fh-chev{animation:none;} }
 
   /* ---------- КАЛЬКУЛЯТОР РУТИНИ ---------- */
   .calc{display:grid;grid-template-columns:minmax(0,1.02fr) minmax(0,.98fr);gap:22px;align-items:stretch;}
@@ -1202,21 +1225,28 @@
   @media (min-width:1001px){
     .cases{display:flex;flex-direction:column;gap:28px;padding-bottom:12px;}
     .case{
-      display:grid;grid-template-columns:minmax(0,1.62fr) minmax(0,1fr);
-      grid-template-areas:"shot body";
+      display:grid;grid-template-columns:minmax(0,46fr) minmax(0,54fr);
+      grid-template-areas:"shot bar" "shot body";grid-template-rows:auto 1fr;
       position:sticky;top:calc(92px + var(--k,0) * 14px);
       border-radius:28px;
     }
-    .case:nth-child(even){grid-template-areas:"body shot";grid-template-columns:minmax(0,1fr) minmax(0,1.62fr);}
+    .case:nth-child(even){grid-template-areas:"bar shot" "body shot";grid-template-columns:minmax(0,54fr) minmax(0,46fr);}
     .case:hover{transform:none;}
     .case-bar{
-      grid-area:shot;align-self:start;justify-self:start;z-index:2;margin:20px;
+      grid-area:bar;align-self:start;justify-self:start;z-index:2;margin:30px 42px 0;
       padding:7px 14px;border:1px solid var(--line-strong);border-radius:100px;
       background:rgba(12,13,18,.78);
     }
     .case-shot{
       grid-area:shot;border-bottom:0;perspective:1400px;
       border-right:1px solid var(--line);
+      aspect-ratio:1/1;container-type:size;
+    }
+    /* афіша 1200×750: лишаємо праву частину з пристроями, текст афіші дублював би панель збоку */
+    .case.poster .case-shot img{
+      position:absolute;max-width:none;width:auto;height:calc(var(--s,1) * 100cqh);
+      top:calc((1 - var(--s,1)) * 50cqh);
+      left:calc((100cqw - 1.6 * var(--s,1) * 100cqh) * var(--x,1));
     }
     .case:nth-child(even) .case-shot{border-right:0;border-left:1px solid var(--line);}
     .case-shot img{
@@ -1224,7 +1254,7 @@
       transition:transform .9s var(--ease);
     }
     .case:hover .case-shot img{transform:rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) scale(1.035);}
-    .case-body{grid-area:body;padding:40px 38px 36px;justify-content:center;}
+    .case-body{grid-area:body;padding:22px 42px 30px;justify-content:center;}
     .case-meta{margin-bottom:14px;}
     .case h3{font-size:clamp(30px,3vw,42px);letter-spacing:-.035em;line-height:1.02;margin-bottom:14px;}
     .case p{font-size:15px;line-height:1.6;margin-bottom:22px;display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden;}
@@ -1232,10 +1262,14 @@
     .case-num b{font-size:44px;}
     .case-tags{margin-bottom:22px;}
     .case .btn{align-self:flex-start;padding:12px 20px;}
+    .case-no{float:right;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.04em;color:var(--amber);}
+    .case-next{align-self:flex-start;margin-top:14px;padding:6px 0;background:none;border:0;cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text-dim);transition:color .3s var(--ease);}
+    .case-next b{font-weight:500;color:var(--text);transition:color .3s var(--ease);}
+    .case-next:hover,.case-next:hover b{color:var(--amber);}
     .case:nth-child(1){--k:0;} .case:nth-child(2){--k:1;} .case:nth-child(3){--k:2;}
     .case:nth-child(4){--k:3;} .case:nth-child(5){--k:4;} .case:nth-child(6){--k:5;}
   }
-  @media (min-width:1001px) and (max-height:700px){ .case{position:relative;top:auto;} }
+  @media (min-width:1001px) and (max-height:819px){ .case{position:relative;top:auto;} }
   @media (prefers-reduced-motion: reduce){ .case-shot img{transition:none !important;transform:none !important;} }
 </style>
 <noscript><style>#intro{display:none}.bloom,.navlinks a,.nav-cta{opacity:1;transform:none}</style></noscript>
@@ -1495,7 +1529,7 @@
       <button type="button" data-f="all" aria-pressed="true">All</button><button type="button" data-f="client" aria-pressed="false">For clients</button><button type="button" data-f="own" aria-pressed="false">Our products</button>
     </div>
     <div class="cases">
-      <article class="case bloom" data-kind="own" id="case-finance">
+      <article class="case bloom poster" data-kind="own" id="case-finance" style="--s:1.12;--x:.9">
         <div class="case-bar">Telegram Mini App<span>running</span></div>
         <div class="case-shot"><img src="/img/work-finance.jpg" alt="Finance App screens: home, history, statistics" width="1200" height="750" loading="lazy" decoding="async"></div>
         <div class="case-body">
@@ -1519,7 +1553,7 @@
           </div>
         </div>
       </article>
-      <article class="case bloom" data-kind="own" id="case-lavka">
+      <article class="case bloom poster" data-kind="own" id="case-lavka" style="--s:1;--x:1">
         <div class="case-bar">lavka-green.vercel.app<span>online</span></div>
         <div class="case-shot"><img src="/img/work-lavka.jpg" alt="Lavka marketplace: home, catalog, product, gift finder" width="1200" height="750" loading="lazy" decoding="async"></div>
         <div class="case-body">
@@ -1543,7 +1577,7 @@
           </div>
         </div>
       </article>
-      <article class="case bloom" data-kind="own" id="case-olx">
+      <article class="case bloom poster" data-kind="own" id="case-olx" style="--s:1.12;--x:1">
         <div class="case-bar">Telegram bot and web panel<span>running</span></div>
         <div class="case-shot"><img src="/img/work-olx.jpg" alt="A deal card in Telegram and system metrics" width="1200" height="750" loading="lazy" decoding="async"></div>
         <div class="case-body">
@@ -1567,7 +1601,7 @@
           </div>
         </div>
       </article>
-      <article class="case bloom" data-kind="own" id="case-fh">
+      <article class="case bloom poster" data-kind="own" id="case-fh" style="--s:1.2;--x:1">
         <div class="case-bar">Telegram bot<span>running</span></div>
         <div class="case-shot"><img src="/img/work-fh.jpg" alt="A new order card with an assessment in Telegram" width="1200" height="750" loading="lazy" decoding="async"></div>
         <div class="case-body">
@@ -1684,6 +1718,8 @@
     </div>
   </div>
 </section>
+
+<div class="flow-hint" id="flow-hint" aria-hidden="true"><span class="fh-mouse"><i></i></span><b class="fh-t fh-a">Scroll down</b><b class="fh-t fh-b">Next: calculator</b><span class="fh-n mono" id="fh-n">1 / 5</span><svg class="fh-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
 
 <section id="routine" class="tint-amber tint-line">
   <div class="wrap">
@@ -4550,6 +4586,45 @@
 </script>
 
 <script>
+/* КЕЙСИ-СЦЕНИ: номер проєкту й кнопка «Далі» (тільки десктоп, де сцени складаються стосом) */
+(function(){
+  var grid = document.querySelector('.cases');
+  if(!grid || !window.matchMedia('(min-width:1001px)').matches) return;
+  var cards = [].slice.call(grid.querySelectorAll('.case'));
+  var pad = function(n){ return (n < 10 ? '0' : '') + n; };
+  cards.forEach(function(c){
+    var meta = c.querySelector('.case-meta'), body = c.querySelector('.case-body');
+    var no = document.createElement('span'); no.className = 'case-no'; if(meta) meta.insertBefore(no, meta.firstChild);
+    var nx = document.createElement('button'); nx.type = 'button'; nx.className = 'case-next';
+    nx.innerHTML = '<span class="cn-t"></span> <b></b> ↓'; if(body) body.appendChild(nx);
+    nx.addEventListener('click', function(e){
+      e.stopPropagation();
+      var vis = cards.filter(function(x){ return !x.classList.contains('is-off'); });
+      var i = vis.indexOf(c), next = vis[i + 1];
+      if(!next){ var f = document.getElementById('flow'); if(f) f.scrollIntoView({behavior:'smooth'}); return; }
+      var gap = 28, y = grid.getBoundingClientRect().top + scrollY;
+      for(var k = 0; k < i + 1; k++) y += vis[k].offsetHeight + gap;
+      scrollTo({top: y - 92 - (i + 1) * 14, behavior:'smooth'});
+    });
+  });
+  function number(){
+    var vis = cards.filter(function(x){ return !x.classList.contains('is-off'); });
+    cards.forEach(function(c){
+      var i = vis.indexOf(c), no = c.querySelector('.case-no'), nx = c.querySelector('.case-next');
+      if(i < 0) return;
+      no.textContent = pad(i + 1) + ' / ' + pad(vis.length);
+      var next = vis[i + 1];
+      nx.querySelector('.cn-t').textContent = next ? 'Next:' : 'Next: request path';
+      var b = nx.querySelector('b'); b.textContent = next ? next.querySelector('h3').textContent : '';
+    });
+  }
+  number();
+  var fl = document.querySelector('.case-filter');
+  if(fl) fl.addEventListener('click', function(){ setTimeout(number, 0); });
+})();
+</script>
+
+<script>
 /* КЕЙСИ-СЦЕНИ: екран трохи нахиляється за курсором (тільки мишка, без reduced motion) */
 (function(){
   if(!window.matchMedia('(hover:hover) and (min-width:1001px)').matches) return;
@@ -4580,6 +4655,7 @@
     var items = [].slice.call(scroll.querySelectorAll('.flow-list li'));
     var list = scroll.querySelector('.flow-nodes');
     var N = nodes.length, last = -2, ticking = false;
+    var hint = document.getElementById('flow-hint'), hintN = document.getElementById('fh-n');
     var paint = function(on, doneTo){
       if(on === last + '' + doneTo) return;
       last = on + '' + doneTo;
@@ -4596,7 +4672,17 @@
         p = Math.max(0, Math.min(0.999, p));
         var i = Math.floor(p * N);
         paint(i, i);
+        scroll.classList.add('live');
+        if(hint){
+          /* показуємо, поки сцена на екрані і не дійшла до кінця */
+          var inScene = r.top < innerHeight * 0.45 && r.bottom > sticky.offsetHeight + 140;
+          hint.classList.toggle('show', inScene);
+          hint.classList.toggle('last', i === N - 1);
+          hintN.textContent = (i + 1) + ' / ' + N;
+        }
       } else {
+        scroll.classList.remove('live');
+        if(hint) hint.classList.remove('show');
         /* без закріплення: крок загорається, коли доходить до середини екрана */
         var on = -1;
         nodes.forEach(function(n, i){ if(n.getBoundingClientRect().top < innerHeight * 0.62) on = i; });
@@ -4606,6 +4692,15 @@
     var req = function(){ if(!ticking){ ticking = true; requestAnimationFrame(update); } };
     addEventListener('scroll', req, {passive:true});
     addEventListener('resize', req);
+    /* клік по кроку переносить сцену до цього кроку */
+    var jump = function(i){
+      if(getComputedStyle(sticky).position !== 'sticky') return;
+      var run = scroll.offsetHeight - sticky.offsetHeight;
+      var y = scroll.getBoundingClientRect().top + scrollY - 96 + run * (i + 0.5) / N;
+      scrollTo({top: y, behavior: 'smooth'});
+    };
+    nodes.forEach(function(n, i){ n.addEventListener('click', function(){ jump(i); }); });
+    items.forEach(function(n, i){ n.addEventListener('click', function(){ jump(i); }); });
     update();
   }
 
