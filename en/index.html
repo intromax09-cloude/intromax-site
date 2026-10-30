@@ -1213,9 +1213,9 @@
   }
   @media (min-width:1001px) and (max-height:759px){ .case{position:relative;top:auto;} }
   @media (prefers-reduced-motion: reduce){ .case-shot img{transition:none !important;transform:none !important;} }
-  /* ---------- ПРОЦЕС: кроки загоряються під час прокрутки, праворуч вікно проєкту змінюється ---------- */
-  .proc-list{display:none;list-style:none;margin:0 0 36px;border-top:1px solid var(--line);}
-  .proc-list li{display:grid;grid-template-columns:38px auto minmax(0,1fr);align-items:center;gap:14px;padding:17px 0;border-bottom:1px solid var(--line);color:var(--text-dim);transition:color .4s var(--ease);}
+  /* ---------- ПРОЦЕС: п'ять кроків під прокрутку; праворуч вікно проєкту, приклад перемикається ---------- */
+  .proc-list{display:none;list-style:none;margin:0 0 32px;border-top:1px solid var(--line);}
+  .proc-list li{display:grid;grid-template-columns:38px auto minmax(0,1fr);align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid var(--line);color:var(--text-dim);transition:color .4s var(--ease);}
   .proc-list b{font-size:12.5px;font-weight:500;letter-spacing:.04em;}
   .proc-list span{font-size:12.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;}
   .proc-list i{position:relative;display:block;height:1px;background:var(--line-strong);}
@@ -1225,9 +1225,9 @@
   .proc-text{padding:24px 0;border-top:1px solid var(--line);}
   .proc-text:first-child{border-top:0;padding-top:0;}
   .pt-n{display:block;font-size:12.5px;letter-spacing:.04em;color:var(--amber);margin-bottom:10px;}
-  .proc-text h3{font-size:clamp(28px,3.4vw,46px);line-height:1.05;letter-spacing:-.035em;margin-bottom:14px;}
+  .proc-text h3{font-size:clamp(28px,3.2vw,44px);line-height:1.06;letter-spacing:-.035em;margin-bottom:14px;}
   .proc-text p{font-size:16.5px;line-height:1.62;color:var(--text-dim);max-width:46ch;}
-  .proc-hint{display:none;align-items:center;gap:10px;margin-top:30px;font-size:13px;color:var(--text-dim);}
+  .proc-hint{display:none;align-items:center;gap:10px;margin-top:26px;font-size:13px;color:var(--text-dim);}
   .proc-hint .mono{color:var(--amber);font-size:12px;}
   .proc-hint .ph-b{display:none;}
   .proc-hint.last .ph-a{display:none;}
@@ -1235,6 +1235,12 @@
   .proc-hint svg{width:18px;height:18px;fill:none;stroke:var(--amber);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;animation:fhBob 1.6s var(--ease) infinite;}
   @keyframes fhBob{0%,100%{transform:translateY(-2px);}50%{transform:translateY(3px);}}
   .proc-right{display:none;}
+  .pp-switch{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:14px;}
+  .pp-switch .mono{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim);margin-right:4px;}
+  .pp-switch button{font:inherit;font-size:13px;color:var(--text-dim);background:transparent;border:1px solid var(--line-strong);border-radius:100px;padding:7px 14px;cursor:pointer;transition:color .25s var(--ease),border-color .25s var(--ease),background .25s var(--ease);}
+  .pp-switch button:hover{color:var(--text);border-color:rgba(242,169,60,.5);}
+  .pp-switch button.on{color:#1a1206;background:var(--amber);border-color:var(--amber);font-weight:600;}
+  .pp-switch button:focus-visible{outline:2px solid var(--amber);outline-offset:2px;}
   .proc-panel{overflow:hidden;}
   .pp-head{display:flex;align-items:center;gap:12px;padding:14px 18px;border-bottom:1px solid var(--line);background:rgba(12,13,18,.45);}
   .pp-dots{display:flex;gap:6px;}
@@ -1243,28 +1249,32 @@
   .pp-badge{margin-left:auto;position:relative;display:grid;font-style:normal;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--amber);border:1px solid rgba(242,169,60,.45);border-radius:100px;padding:4px 12px;}
   .pp-badge span{grid-area:1/1;opacity:0;transition:opacity .35s var(--ease);text-align:center;}
   .pp-badge span.on{opacity:1;}
-  .pp-body{position:relative;display:grid;padding:26px 24px 22px;min-height:340px;background-image:radial-gradient(rgba(238,233,219,.07) 1px,transparent 1px);background-size:22px 22px;}
-  .pp-view{grid-area:1/1;display:flex;flex-direction:column;gap:12px;opacity:0;transform:translateY(12px);transition:opacity .45s var(--ease),transform .45s var(--ease);pointer-events:none;}
+  .pp-body{position:relative;display:grid;padding:24px 24px 14px;min-height:352px;background-image:radial-gradient(rgba(238,233,219,.07) 1px,transparent 1px);background-size:22px 22px;}
+  .pp-view{grid-area:1/1;opacity:0;transform:translateY(12px);transition:opacity .45s var(--ease),transform .45s var(--ease);pointer-events:none;}
   .pp-view.on{opacity:1;transform:none;}
+  .pp-var{display:none;flex-direction:column;gap:12px;}
+  .proc-panel[data-pv="a"] .pp-var[data-pv="a"],.proc-panel[data-pv="m"] .pp-var[data-pv="m"],.proc-panel[data-pv="i"] .pp-var[data-pv="i"]{display:flex;}
   .pp-field label{display:block;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px;}
   .pp-field div{padding:12px 14px;border-radius:12px;border:1px solid var(--line-strong);background:rgba(238,233,219,.04);font-size:14.5px;}
-  .pp-btn{align-self:flex-start;margin-top:4px;padding:11px 20px;border-radius:100px;background:var(--amber);color:#1a1206;font-weight:700;font-size:13.5px;}
-  .pp-note{margin-top:auto;font-size:12.5px;color:var(--text-dim);}
-  .pp-msg{max-width:84%;padding:12px 15px;border-radius:16px;font-size:14px;line-height:1.5;}
-  .pp-msg.in{align-self:flex-end;background:var(--amber);color:#1a1206;border-bottom-right-radius:5px;}
-  .pp-msg.out{align-self:flex-start;background:rgba(238,233,219,.08);border:1px solid var(--line);border-bottom-left-radius:5px;}
-  .pp-chips{display:flex;gap:8px;}
-  .pp-chips span{padding:8px 16px;border-radius:100px;border:1px solid rgba(242,169,60,.5);color:var(--amber);font-family:'JetBrains Mono',monospace;font-size:12.5px;}
   .pp-test{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:13px 15px;border-radius:12px;border:1px solid var(--line);background:rgba(238,233,219,.03);font-size:14px;}
   .pp-test b{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:rgba(123,201,154,.14);color:var(--green);font-size:13px;flex:none;}
+  .pp-test.dim{color:var(--text-dim);}
+  .pp-test.dim b{background:rgba(238,233,219,.06);color:var(--text-dim);}
   .pp-live{display:flex;align-items:center;gap:12px;padding:13px 15px;border-radius:12px;border:1px solid var(--line);background:rgba(238,233,219,.03);font-size:14px;}
   .pp-live i{width:9px;height:9px;border-radius:50%;background:var(--green);box-shadow:0 0 0 4px rgba(123,201,154,.16);flex:none;}
+  .pp-live em{margin-left:auto;font-style:normal;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--green);}
+  .pp-live.wip i{background:var(--amber);box-shadow:0 0 0 4px rgba(242,169,60,.18);}
+  .pp-live.wip em{color:var(--amber);}
   .pp-live.dim{color:var(--text-dim);}
   .pp-live.dim i{background:var(--line-strong);box-shadow:none;}
-  .pp-cap{margin-top:14px;font-size:12.5px;color:var(--text-dim);}
-  /* десктоп: сцена закріплена, поки йдуть чотири кроки; низький екран і телефон бачать усі кроки списком */
+  .pp-live.dim em{color:var(--text-dim);}
+  .pp-note{display:grid;padding:0 24px 20px;font-size:12.5px;color:var(--text-dim);}
+  .pp-note span{grid-area:1/1;opacity:0;transition:opacity .35s var(--ease);}
+  .pp-note span.on{opacity:1;}
+  .pp-cap{margin-top:14px;font-size:12.5px;color:var(--text-dim);max-width:60ch;}
+  /* десктоп: сцена закріплена, поки йдуть п'ять кроків; низький екран і телефон бачать усі кроки списком */
   @media (min-width:901px) and (min-height:760px){
-    .proc-scroll{height:250vh;}
+    .proc-scroll{height:300vh;}
     .proc-sticky{position:sticky;top:96px;min-height:calc(100vh - 150px);display:grid;grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr);gap:64px;align-items:center;}
     .proc-list,.proc-right{display:block;}
     .proc-hint{display:flex;}
@@ -1827,79 +1837,91 @@
 <section id="process" class="tint-plum tint-line">
   <div class="wrap">
     <div class="section-head">
-      <h2>Four steps from a request to a working system</h2>
+      <h2>Your product, your path: from brief to handover</h2>
+      <p class="lead">Ideas differ, so we build the plan around yours. The five steps are the same, but what is inside each one is its own: it differs for an app, a marketplace or an internal tool.</p>
     </div>
     <div class="proc-scroll">
       <div class="proc-sticky">
         <div class="proc-left">
           <ol class="proc-list" aria-hidden="true">
-            <li><b class="mono">01</b><span>Request</span><i></i></li>
-            <li><b class="mono">02</b><span>Demo</span><i></i></li>
+            <li><b class="mono">01</b><span>Brief</span><i></i></li>
+            <li><b class="mono">02</b><span>Plan and mockup</span><i></i></li>
             <li><b class="mono">03</b><span>Build</span><i></i></li>
-            <li><b class="mono">04</b><span>Launch</span><i></i></li>
+            <li><b class="mono">04</b><span>Tests</span><i></i></li>
+            <li><b class="mono">05</b><span>Handover</span><i></i></li>
           </ol>
           <div class="proc-texts">
             <div class="proc-text">
-              <span class="pt-n mono">01 / request</span>
-              <h3>You fill in the form</h3>
-              <p>Two minutes, no phone call. We reply within a day: what you really need, how much it costs and how long it takes.</p>
+              <span class="pt-n mono">01 / brief</span>
+              <h3>You tell us the idea, we ask the questions</h3>
+              <p>No technical spec and no complicated words. A conversation or a form: who the product is for, what problem it solves and what the first version must do. We reply within a day.</p>
             </div>
             <div class="proc-text">
-              <span class="pt-n mono">02 / demo</span>
-              <h3>We show you an example</h3>
-              <p>A demo built for your task: a bot you can talk to, a page you can open, or a diagram of the whole chain.</p>
+              <span class="pt-n mono">02 / plan and mockup</span>
+              <h3>We estimate and sketch before any code</h3>
+              <p>We fix what goes into the first version and what comes later. We make a clickable mockup: you see the product before development starts. The price and deadline are written down before the start.</p>
             </div>
             <div class="proc-text">
               <span class="pt-n mono">03 / build</span>
-              <h3>We build it and break it on purpose</h3>
-              <p>The bot with typos and messages at 3 a.m. The website on an old phone with a slow connection. The automation with test leads.</p>
+              <h3>We build in stages, each one you can hold</h3>
+              <p>A working version at a link every few days. You see the progress and can change course while it is still cheap. Payment in stages.</p>
             </div>
             <div class="proc-text">
-              <span class="pt-n mono">04 / launch</span>
-              <h3>We hand it over</h3>
-              <p>We connect it to your accounts, domain and services, test it live and show you how to manage it. After that, optional monthly support.</p>
+              <span class="pt-n mono">04 / tests</span>
+              <h3>We break it ourselves so your customers do not</h3>
+              <p>We check the places where your particular product can fail: wrong data, weak internet, old devices, two people in the same spot.</p>
+            </div>
+            <div class="proc-text">
+              <span class="pt-n mono">05 / handover</span>
+              <h3>Launch and handing over the keys</h3>
+              <p>We connect the domain and accounts, hand the code and access over to you and show you how to run it. After that, monthly support if you want it.</p>
             </div>
           </div>
-          <p class="proc-hint" aria-hidden="true"><span class="mono" id="ph-n">1 / 4</span><span class="ph-a">Keep scrolling</span><span class="ph-b">Next: terms</span><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></p>
+          <p class="proc-hint" aria-hidden="true"><span class="mono" id="ph-n">1 / 5</span><span class="ph-a">Keep scrolling</span><span class="ph-b">Next: terms</span><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></p>
         </div>
-        <div class="proc-right" aria-hidden="true">
-          <div class="proc-panel">
+        <div class="proc-right">
+          <div class="pp-switch" role="group" aria-label="Product example">
+            <span class="mono">Example</span>
+            <button type="button" class="on" data-pv="a">Booking app</button>
+            <button type="button" data-pv="m">Marketplace</button>
+            <button type="button" data-pv="i">Internal tool</button>
+          </div>
+          <div class="proc-panel" data-pv="a" aria-hidden="true">
             <div class="pp-head">
               <span class="pp-dots"><i></i><i></i><i></i></span>
               <b class="mono">Intromax · your project</b>
-              <em class="mono pp-badge"><span>Request</span><span>Demo</span><span>Tests</span><span>Live</span></em>
+              <em class="mono pp-badge"><span>Brief</span><span>Mockup</span><span>Build</span><span>Tests</span><span>Handover</span></em>
             </div>
             <div class="pp-body">
               <div class="pp-view">
-                <div class="pp-field"><label>Your name</label><div>Olena</div></div>
-                <div class="pp-field"><label>Niche</label><div>Beauty salon</div></div>
-                <div class="pp-field"><label>What you need</label><div>A bot that books manicures</div></div>
-                <div class="pp-btn">Send request</div>
-                <p class="pp-note">We reply within a day</p>
+                <div class="pp-var" data-pv="a"><div class="pp-field"><label>Who it is for</label><div>A yoga coach’s clients</div></div><div class="pp-field"><label>What problem it solves</label><div>Bookings in messengers, mix-ups with times</div></div><div class="pp-field"><label>The first version can</label><div>Schedule, booking, reminders</div></div></div>
+                <div class="pp-var" data-pv="m"><div class="pp-field"><label>Who it is for</label><div>Craftsmen and the people looking for them</div></div><div class="pp-field"><label>What problem it solves</label><div>People find craftsmen through friends</div></div><div class="pp-field"><label>The first version can</label><div>Catalog, request, reviews</div></div></div>
+                <div class="pp-var" data-pv="i"><div class="pp-field"><label>Who it is for</label><div>Store managers and warehouse</div></div><div class="pp-field"><label>What problem it solves</label><div>Orders in spreadsheets, data drifts apart</div></div><div class="pp-field"><label>The first version can</label><div>One list of orders with statuses</div></div></div>
               </div>
               <div class="pp-view">
-                <div class="pp-msg in">How much is a manicure?</div>
-                <div class="pp-msg out">From 600 UAH. Free slots: Friday 12:00 and 15:00. Shall I book you?</div>
-                <div class="pp-chips"><span>12:00</span><span>15:00</span></div>
-                <p class="pp-note">A demo for your task</p>
+                <div class="pp-var" data-pv="a"><div class="pp-test"><span>Class schedule</span><b>✓</b></div><div class="pp-test"><span>Booking and cancelling</span><b>✓</b></div><div class="pp-test"><span>Reminders in Telegram</span><b>✓</b></div><div class="pp-test dim"><span>Paying for passes · later</span><b>○</b></div></div>
+                <div class="pp-var" data-pv="m"><div class="pp-test"><span>Craftsmen catalog and search</span><b>✓</b></div><div class="pp-test"><span>Service request</span><b>✓</b></div><div class="pp-test"><span>Reviews after the job</span><b>✓</b></div><div class="pp-test dim"><span>Payment in the service · later</span><b>○</b></div></div>
+                <div class="pp-var" data-pv="i"><div class="pp-test"><span>Order list</span><b>✓</b></div><div class="pp-test"><span>Statuses and owners</span><b>✓</b></div><div class="pp-test"><span>Import from a spreadsheet</span><b>✓</b></div><div class="pp-test dim"><span>Reports for the owner · later</span><b>○</b></div></div>
               </div>
               <div class="pp-view">
-                <div class="pp-test"><span>Typos in messages</span><b>✓</b></div>
-                <div class="pp-test"><span>A message at three a.m.</span><b>✓</b></div>
-                <div class="pp-test"><span>Old phone and slow internet</span><b>✓</b></div>
-                <div class="pp-test"><span>Test requests</span><b>✓</b></div>
-                <p class="pp-note">We break it ourselves so your customers do not</p>
+                <div class="pp-var" data-pv="a"><div class="pp-live done"><i></i><span>Stage 1 · Schedule</span><em>done</em></div><div class="pp-live done"><i></i><span>Stage 2 · Booking</span><em>done</em></div><div class="pp-live wip"><i></i><span>Stage 3 · Reminders</span><em>in progress</em></div><div class="pp-live dim"><i></i><span>Stage 4 · Coach dashboard</span><em>next</em></div></div>
+                <div class="pp-var" data-pv="m"><div class="pp-live done"><i></i><span>Stage 1 · Catalog and search</span><em>done</em></div><div class="pp-live done"><i></i><span>Stage 2 · Craftsman profile</span><em>done</em></div><div class="pp-live wip"><i></i><span>Stage 3 · Requests and chat</span><em>in progress</em></div><div class="pp-live dim"><i></i><span>Stage 4 · Reviews</span><em>next</em></div></div>
+                <div class="pp-var" data-pv="i"><div class="pp-live done"><i></i><span>Stage 1 · Order list</span><em>done</em></div><div class="pp-live done"><i></i><span>Stage 2 · Statuses</span><em>done</em></div><div class="pp-live wip"><i></i><span>Stage 3 · Spreadsheet import</span><em>in progress</em></div><div class="pp-live dim"><i></i><span>Stage 4 · Reports</span><em>next</em></div></div>
               </div>
               <div class="pp-view">
-                <div class="pp-live"><i></i><span>The bot answers customers</span></div>
-                <div class="pp-live"><i></i><span>Requests arrive in your Telegram</span></div>
-                <div class="pp-live"><i></i><span>Connected to your accounts</span></div>
-                <div class="pp-live dim"><i></i><span>Monthly support, if you want it</span></div>
-                <p class="pp-note">We show you how to run it</p>
+                <div class="pp-var" data-pv="a"><div class="pp-test"><span>Two people book the last spot</span><b>✓</b></div><div class="pp-test"><span>Cancelling an hour before class</span><b>✓</b></div><div class="pp-test"><span>An old phone</span><b>✓</b></div><div class="pp-test"><span>Slow internet</span><b>✓</b></div></div>
+                <div class="pp-var" data-pv="m"><div class="pp-test"><span>A 10 MB photo in a profile</span><b>✓</b></div><div class="pp-test"><span>Two identical requests in a row</span><b>✓</b></div><div class="pp-test"><span>A craftsman with no reviews</span><b>✓</b></div><div class="pp-test"><span>Slow internet</span><b>✓</b></div></div>
+                <div class="pp-var" data-pv="i"><div class="pp-test"><span>A spreadsheet with errors in the data</span><b>✓</b></div><div class="pp-test"><span>Two people edit one record</span><b>✓</b></div><div class="pp-test"><span>Duplicate orders</span><b>✓</b></div><div class="pp-test"><span>An old computer in the warehouse</span><b>✓</b></div></div>
+              </div>
+              <div class="pp-view">
+                <div class="pp-var" data-pv="a"><div class="pp-live"><i></i><span>The app opens from your bot</span></div><div class="pp-live"><i></i><span>Requests and bookings come to you</span></div><div class="pp-live"><i></i><span>Code and access handed over to you</span></div><div class="pp-live dim"><i></i><span>Monthly support, if you want it</span></div></div>
+                <div class="pp-var" data-pv="m"><div class="pp-live"><i></i><span>The service runs on your domain</span></div><div class="pp-live"><i></i><span>You manage the catalog in your admin panel</span></div><div class="pp-live"><i></i><span>Code and access handed over to you</span></div><div class="pp-live dim"><i></i><span>Monthly support, if you want it</span></div></div>
+                <div class="pp-var" data-pv="i"><div class="pp-live"><i></i><span>The tool is running in your team</span></div><div class="pp-live"><i></i><span>Roles and access are set up</span></div><div class="pp-live"><i></i><span>Data moved over from the spreadsheets</span></div><div class="pp-live dim"><i></i><span>Monthly support, if you want it</span></div></div>
               </div>
             </div>
+            <p class="pp-note"><span>We ask rather than guess</span><span>You see the product before the code</span><span>Progress is visible every week</span><span>We break it ourselves so your customers do not</span><span>We show you how to run it</span></p>
           </div>
-          <p class="pp-cap">Illustration: a conditional example, data is made up</p>
+          <p class="pp-cap">Illustration: conditional examples, data is made up. Your product will have its own stages.</p>
         </div>
       </div>
     </div>
@@ -4579,7 +4601,7 @@
 </script>
 
 <script>
-/* ПРОЦЕС: чотири кроки під прокрутку. Лінії біля кроків заповнюються, праворуч змінюється вікно проєкту. */
+/* ПРОЦЕС: п'ять кроків під прокрутку. Лінії біля кроків заповнюються, праворуч змінюється вікно проєкту, кнопки міняють приклад. */
 (function(){
   var sc = document.querySelector('.proc-scroll');
   if(!sc) return;
@@ -4588,12 +4610,19 @@
   var texts = [].slice.call(sc.querySelectorAll('.proc-text'));
   var views = [].slice.call(sc.querySelectorAll('.pp-view'));
   var badges = [].slice.call(sc.querySelectorAll('.pp-badge span'));
+  var notes = [].slice.call(sc.querySelectorAll('.pp-note span'));
+  var panel = sc.querySelector('.proc-panel');
+  var btns = [].slice.call(sc.querySelectorAll('.pp-switch button'));
   var hint = sc.querySelector('.proc-hint'), hn = document.getElementById('ph-n');
   var N = texts.length, ticking = false;
+  btns.forEach(function(b){
+    b.addEventListener('click', function(){
+      panel.setAttribute('data-pv', b.getAttribute('data-pv'));
+      btns.forEach(function(x){ x.classList.toggle('on', x === b); });
+    });
+  });
   function paint(i, p){
-    texts.forEach(function(t, k){ t.classList.toggle('on', k === i); });
-    views.forEach(function(t, k){ t.classList.toggle('on', k === i); });
-    badges.forEach(function(t, k){ t.classList.toggle('on', k === i); });
+    [texts, views, badges, notes].forEach(function(arr){ arr.forEach(function(t, k){ t.classList.toggle('on', k === i); }); });
     lis.forEach(function(li, k){
       li.classList.toggle('on', k === i);
       li.style.setProperty('--f', Math.max(0, Math.min(1, p * N - k)).toFixed(3));

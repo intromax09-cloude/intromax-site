@@ -1213,9 +1213,9 @@
   }
   @media (min-width:1001px) and (max-height:759px){ .case{position:relative;top:auto;} }
   @media (prefers-reduced-motion: reduce){ .case-shot img{transition:none !important;transform:none !important;} }
-  /* ---------- ПРОЦЕС: кроки загоряються під час прокрутки, праворуч вікно проєкту змінюється ---------- */
-  .proc-list{display:none;list-style:none;margin:0 0 36px;border-top:1px solid var(--line);}
-  .proc-list li{display:grid;grid-template-columns:38px auto minmax(0,1fr);align-items:center;gap:14px;padding:17px 0;border-bottom:1px solid var(--line);color:var(--text-dim);transition:color .4s var(--ease);}
+  /* ---------- ПРОЦЕС: п'ять кроків під прокрутку; праворуч вікно проєкту, приклад перемикається ---------- */
+  .proc-list{display:none;list-style:none;margin:0 0 32px;border-top:1px solid var(--line);}
+  .proc-list li{display:grid;grid-template-columns:38px auto minmax(0,1fr);align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid var(--line);color:var(--text-dim);transition:color .4s var(--ease);}
   .proc-list b{font-size:12.5px;font-weight:500;letter-spacing:.04em;}
   .proc-list span{font-size:12.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;}
   .proc-list i{position:relative;display:block;height:1px;background:var(--line-strong);}
@@ -1225,9 +1225,9 @@
   .proc-text{padding:24px 0;border-top:1px solid var(--line);}
   .proc-text:first-child{border-top:0;padding-top:0;}
   .pt-n{display:block;font-size:12.5px;letter-spacing:.04em;color:var(--amber);margin-bottom:10px;}
-  .proc-text h3{font-size:clamp(28px,3.4vw,46px);line-height:1.05;letter-spacing:-.035em;margin-bottom:14px;}
+  .proc-text h3{font-size:clamp(28px,3.2vw,44px);line-height:1.06;letter-spacing:-.035em;margin-bottom:14px;}
   .proc-text p{font-size:16.5px;line-height:1.62;color:var(--text-dim);max-width:46ch;}
-  .proc-hint{display:none;align-items:center;gap:10px;margin-top:30px;font-size:13px;color:var(--text-dim);}
+  .proc-hint{display:none;align-items:center;gap:10px;margin-top:26px;font-size:13px;color:var(--text-dim);}
   .proc-hint .mono{color:var(--amber);font-size:12px;}
   .proc-hint .ph-b{display:none;}
   .proc-hint.last .ph-a{display:none;}
@@ -1235,6 +1235,12 @@
   .proc-hint svg{width:18px;height:18px;fill:none;stroke:var(--amber);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;animation:fhBob 1.6s var(--ease) infinite;}
   @keyframes fhBob{0%,100%{transform:translateY(-2px);}50%{transform:translateY(3px);}}
   .proc-right{display:none;}
+  .pp-switch{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:14px;}
+  .pp-switch .mono{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim);margin-right:4px;}
+  .pp-switch button{font:inherit;font-size:13px;color:var(--text-dim);background:transparent;border:1px solid var(--line-strong);border-radius:100px;padding:7px 14px;cursor:pointer;transition:color .25s var(--ease),border-color .25s var(--ease),background .25s var(--ease);}
+  .pp-switch button:hover{color:var(--text);border-color:rgba(242,169,60,.5);}
+  .pp-switch button.on{color:#1a1206;background:var(--amber);border-color:var(--amber);font-weight:600;}
+  .pp-switch button:focus-visible{outline:2px solid var(--amber);outline-offset:2px;}
   .proc-panel{overflow:hidden;}
   .pp-head{display:flex;align-items:center;gap:12px;padding:14px 18px;border-bottom:1px solid var(--line);background:rgba(12,13,18,.45);}
   .pp-dots{display:flex;gap:6px;}
@@ -1243,28 +1249,32 @@
   .pp-badge{margin-left:auto;position:relative;display:grid;font-style:normal;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--amber);border:1px solid rgba(242,169,60,.45);border-radius:100px;padding:4px 12px;}
   .pp-badge span{grid-area:1/1;opacity:0;transition:opacity .35s var(--ease);text-align:center;}
   .pp-badge span.on{opacity:1;}
-  .pp-body{position:relative;display:grid;padding:26px 24px 22px;min-height:340px;background-image:radial-gradient(rgba(238,233,219,.07) 1px,transparent 1px);background-size:22px 22px;}
-  .pp-view{grid-area:1/1;display:flex;flex-direction:column;gap:12px;opacity:0;transform:translateY(12px);transition:opacity .45s var(--ease),transform .45s var(--ease);pointer-events:none;}
+  .pp-body{position:relative;display:grid;padding:24px 24px 14px;min-height:352px;background-image:radial-gradient(rgba(238,233,219,.07) 1px,transparent 1px);background-size:22px 22px;}
+  .pp-view{grid-area:1/1;opacity:0;transform:translateY(12px);transition:opacity .45s var(--ease),transform .45s var(--ease);pointer-events:none;}
   .pp-view.on{opacity:1;transform:none;}
+  .pp-var{display:none;flex-direction:column;gap:12px;}
+  .proc-panel[data-pv="a"] .pp-var[data-pv="a"],.proc-panel[data-pv="m"] .pp-var[data-pv="m"],.proc-panel[data-pv="i"] .pp-var[data-pv="i"]{display:flex;}
   .pp-field label{display:block;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px;}
   .pp-field div{padding:12px 14px;border-radius:12px;border:1px solid var(--line-strong);background:rgba(238,233,219,.04);font-size:14.5px;}
-  .pp-btn{align-self:flex-start;margin-top:4px;padding:11px 20px;border-radius:100px;background:var(--amber);color:#1a1206;font-weight:700;font-size:13.5px;}
-  .pp-note{margin-top:auto;font-size:12.5px;color:var(--text-dim);}
-  .pp-msg{max-width:84%;padding:12px 15px;border-radius:16px;font-size:14px;line-height:1.5;}
-  .pp-msg.in{align-self:flex-end;background:var(--amber);color:#1a1206;border-bottom-right-radius:5px;}
-  .pp-msg.out{align-self:flex-start;background:rgba(238,233,219,.08);border:1px solid var(--line);border-bottom-left-radius:5px;}
-  .pp-chips{display:flex;gap:8px;}
-  .pp-chips span{padding:8px 16px;border-radius:100px;border:1px solid rgba(242,169,60,.5);color:var(--amber);font-family:'JetBrains Mono',monospace;font-size:12.5px;}
   .pp-test{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:13px 15px;border-radius:12px;border:1px solid var(--line);background:rgba(238,233,219,.03);font-size:14px;}
   .pp-test b{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:rgba(123,201,154,.14);color:var(--green);font-size:13px;flex:none;}
+  .pp-test.dim{color:var(--text-dim);}
+  .pp-test.dim b{background:rgba(238,233,219,.06);color:var(--text-dim);}
   .pp-live{display:flex;align-items:center;gap:12px;padding:13px 15px;border-radius:12px;border:1px solid var(--line);background:rgba(238,233,219,.03);font-size:14px;}
   .pp-live i{width:9px;height:9px;border-radius:50%;background:var(--green);box-shadow:0 0 0 4px rgba(123,201,154,.16);flex:none;}
+  .pp-live em{margin-left:auto;font-style:normal;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--green);}
+  .pp-live.wip i{background:var(--amber);box-shadow:0 0 0 4px rgba(242,169,60,.18);}
+  .pp-live.wip em{color:var(--amber);}
   .pp-live.dim{color:var(--text-dim);}
   .pp-live.dim i{background:var(--line-strong);box-shadow:none;}
-  .pp-cap{margin-top:14px;font-size:12.5px;color:var(--text-dim);}
-  /* десктоп: сцена закріплена, поки йдуть чотири кроки; низький екран і телефон бачать усі кроки списком */
+  .pp-live.dim em{color:var(--text-dim);}
+  .pp-note{display:grid;padding:0 24px 20px;font-size:12.5px;color:var(--text-dim);}
+  .pp-note span{grid-area:1/1;opacity:0;transition:opacity .35s var(--ease);}
+  .pp-note span.on{opacity:1;}
+  .pp-cap{margin-top:14px;font-size:12.5px;color:var(--text-dim);max-width:60ch;}
+  /* десктоп: сцена закріплена, поки йдуть п'ять кроків; низький екран і телефон бачать усі кроки списком */
   @media (min-width:901px) and (min-height:760px){
-    .proc-scroll{height:250vh;}
+    .proc-scroll{height:300vh;}
     .proc-sticky{position:sticky;top:96px;min-height:calc(100vh - 150px);display:grid;grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr);gap:64px;align-items:center;}
     .proc-list,.proc-right{display:block;}
     .proc-hint{display:flex;}
@@ -1827,79 +1837,91 @@
 <section id="process" class="tint-plum tint-line">
   <div class="wrap">
     <div class="section-head">
-      <h2>Четыре шага от заявки до рабочей системы</h2>
+      <h2>Ваш продукт, ваш путь: от брифа до сдачи</h2>
+      <p class="lead">Идеи бывают разные, поэтому план составляем под вашу. Пять шагов те же, а содержание каждого своё: для приложения, маркетплейса или внутреннего инструмента оно разное.</p>
     </div>
     <div class="proc-scroll">
       <div class="proc-sticky">
         <div class="proc-left">
           <ol class="proc-list" aria-hidden="true">
-            <li><b class="mono">01</b><span>Заявка</span><i></i></li>
-            <li><b class="mono">02</b><span>Демо</span><i></i></li>
+            <li><b class="mono">01</b><span>Бриф</span><i></i></li>
+            <li><b class="mono">02</b><span>План и макет</span><i></i></li>
             <li><b class="mono">03</b><span>Сборка</span><i></i></li>
-            <li><b class="mono">04</b><span>Запуск</span><i></i></li>
+            <li><b class="mono">04</b><span>Тесты</span><i></i></li>
+            <li><b class="mono">05</b><span>Сдача</span><i></i></li>
           </ol>
           <div class="proc-texts">
             <div class="proc-text">
-              <span class="pt-n mono">01 / заявка</span>
-              <h3>Вы заполняете форму</h3>
-              <p>Две минуты, без звонка. Отвечаем в течение суток: что реально нужно, сколько это стоит и сколько займёт.</p>
+              <span class="pt-n mono">01 / бриф</span>
+              <h3>Рассказываете идею, мы задаём вопросы</h3>
+              <p>Без технического задания и сложных слов. Разговор или форма: для кого продукт, какую проблему он решает и что должна уметь первая версия. Отвечаем в течение суток.</p>
             </div>
             <div class="proc-text">
-              <span class="pt-n mono">02 / демо</span>
-              <h3>Показываем на примере</h3>
-              <p>Демо именно под вашу задачу: бот, с которым можно поговорить, страница, которую можно открыть, или схема цепочки, которую видно целиком.</p>
+              <span class="pt-n mono">02 / план и макет</span>
+              <h3>Считаем и рисуем до кода</h3>
+              <p>Фиксируем, что входит в первую версию, а что идёт потом. Делаем кликабельный макет: продукт виден до того, как началась разработка. Цена и срок записаны до старта.</p>
             </div>
             <div class="proc-text">
               <span class="pt-n mono">03 / сборка</span>
-              <h3>Собираем и намеренно ломаем</h3>
-              <p>Бота — опечатками и сообщениями в три часа ночи. Сайт — на старом телефоне и медленном интернете. Автоматизацию — на тестовых заявках.</p>
+              <h3>Собираем этапами, каждый можно потрогать</h3>
+              <p>Каждые несколько дней рабочая версия по ссылке. Вы видите прогресс и можете сменить курс, пока это недорого. Оплата этапами.</p>
             </div>
             <div class="proc-text">
-              <span class="pt-n mono">04 / запуск</span>
-              <h3>Передаём в работу</h3>
-              <p>Подключаем к вашим аккаунтам, домену и сервисам, проверяем вживую и показываем, как этим управлять. Дальше — ежемесячная поддержка, по желанию.</p>
+              <span class="pt-n mono">04 / тесты</span>
+              <h3>Ломаем сами, чтобы не сломали клиенты</h3>
+              <p>Проверяем те места, где именно ваш продукт может подвести: ошибочные данные, слабый интернет, старые устройства, два человека в одном месте.</p>
+            </div>
+            <div class="proc-text">
+              <span class="pt-n mono">05 / сдача</span>
+              <h3>Запуск и передача ключей</h3>
+              <p>Подключаем домен и аккаунты, передаём код и доступы вам, показываем, как этим управлять. Дальше поддержка ежемесячно, по желанию.</p>
             </div>
           </div>
-          <p class="proc-hint" aria-hidden="true"><span class="mono" id="ph-n">1 / 4</span><span class="ph-a">Крутите дальше</span><span class="ph-b">Дальше: условия</span><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></p>
+          <p class="proc-hint" aria-hidden="true"><span class="mono" id="ph-n">1 / 5</span><span class="ph-a">Крутите дальше</span><span class="ph-b">Дальше: условия</span><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></p>
         </div>
-        <div class="proc-right" aria-hidden="true">
-          <div class="proc-panel">
+        <div class="proc-right">
+          <div class="pp-switch" role="group" aria-label="Пример продукта">
+            <span class="mono">Пример</span>
+            <button type="button" class="on" data-pv="a">Приложение для записи</button>
+            <button type="button" data-pv="m">Маркетплейс</button>
+            <button type="button" data-pv="i">Внутренний инструмент</button>
+          </div>
+          <div class="proc-panel" data-pv="a" aria-hidden="true">
             <div class="pp-head">
               <span class="pp-dots"><i></i><i></i><i></i></span>
               <b class="mono">Intromax · ваш проект</b>
-              <em class="mono pp-badge"><span>Заявка</span><span>Демо</span><span>Тесты</span><span>Live</span></em>
+              <em class="mono pp-badge"><span>Бриф</span><span>Макет</span><span>Сборка</span><span>Тесты</span><span>Сдача</span></em>
             </div>
             <div class="pp-body">
               <div class="pp-view">
-                <div class="pp-field"><label>Ваше имя</label><div>Елена</div></div>
-                <div class="pp-field"><label>Ниша</label><div>Салон красоты</div></div>
-                <div class="pp-field"><label>Что нужно</label><div>Бот, который записывает на маникюр</div></div>
-                <div class="pp-btn">Отправить заявку</div>
-                <p class="pp-note">Ответим в течение суток</p>
+                <div class="pp-var" data-pv="a"><div class="pp-field"><label>Для кого</label><div>Клиенты тренера по йоге</div></div><div class="pp-field"><label>Какую проблему решает</label><div>Записи в мессенджерах, путаница со временем</div></div><div class="pp-field"><label>Первая версия умеет</label><div>Расписание, запись, напоминания</div></div></div>
+                <div class="pp-var" data-pv="m"><div class="pp-field"><label>Для кого</label><div>Мастера и те, кто их ищет</div></div><div class="pp-field"><label>Какую проблему решает</label><div>Мастеров ищут через знакомых</div></div><div class="pp-field"><label>Первая версия умеет</label><div>Каталог, заявка, отзывы</div></div></div>
+                <div class="pp-var" data-pv="i"><div class="pp-field"><label>Для кого</label><div>Менеджеры и склад магазина</div></div><div class="pp-field"><label>Какую проблему решает</label><div>Заказы в таблицах, данные расходятся</div></div><div class="pp-field"><label>Первая версия умеет</label><div>Один список заказов со статусами</div></div></div>
               </div>
               <div class="pp-view">
-                <div class="pp-msg in">Сколько стоит маникюр?</div>
-                <div class="pp-msg out">От 600 грн. Есть свободные окна: пятница 12:00 и 15:00. Записать вас?</div>
-                <div class="pp-chips"><span>12:00</span><span>15:00</span></div>
-                <p class="pp-note">Демо под вашу задачу</p>
+                <div class="pp-var" data-pv="a"><div class="pp-test"><span>Расписание занятий</span><b>✓</b></div><div class="pp-test"><span>Запись и отмена</span><b>✓</b></div><div class="pp-test"><span>Напоминания в Telegram</span><b>✓</b></div><div class="pp-test dim"><span>Оплата абонементов · потом</span><b>○</b></div></div>
+                <div class="pp-var" data-pv="m"><div class="pp-test"><span>Каталог мастеров и поиск</span><b>✓</b></div><div class="pp-test"><span>Заявка на услугу</span><b>✓</b></div><div class="pp-test"><span>Отзывы после работы</span><b>✓</b></div><div class="pp-test dim"><span>Оплата в сервисе · потом</span><b>○</b></div></div>
+                <div class="pp-var" data-pv="i"><div class="pp-test"><span>Список заказов</span><b>✓</b></div><div class="pp-test"><span>Статусы и ответственные</span><b>✓</b></div><div class="pp-test"><span>Импорт из таблицы</span><b>✓</b></div><div class="pp-test dim"><span>Отчёты для владельца · потом</span><b>○</b></div></div>
               </div>
               <div class="pp-view">
-                <div class="pp-test"><span>Опечатки в запросах</span><b>✓</b></div>
-                <div class="pp-test"><span>Сообщение в три часа ночи</span><b>✓</b></div>
-                <div class="pp-test"><span>Старый телефон и медленный интернет</span><b>✓</b></div>
-                <div class="pp-test"><span>Тестовые заявки</span><b>✓</b></div>
-                <p class="pp-note">Ломаем сами, чтобы не сломали ваши клиенты</p>
+                <div class="pp-var" data-pv="a"><div class="pp-live done"><i></i><span>Этап 1 · Расписание</span><em>готово</em></div><div class="pp-live done"><i></i><span>Этап 2 · Запись</span><em>готово</em></div><div class="pp-live wip"><i></i><span>Этап 3 · Напоминания</span><em>в работе</em></div><div class="pp-live dim"><i></i><span>Этап 4 · Кабинет тренера</span><em>дальше</em></div></div>
+                <div class="pp-var" data-pv="m"><div class="pp-live done"><i></i><span>Этап 1 · Каталог и поиск</span><em>готово</em></div><div class="pp-live done"><i></i><span>Этап 2 · Профиль мастера</span><em>готово</em></div><div class="pp-live wip"><i></i><span>Этап 3 · Заявки и чат</span><em>в работе</em></div><div class="pp-live dim"><i></i><span>Этап 4 · Отзывы</span><em>дальше</em></div></div>
+                <div class="pp-var" data-pv="i"><div class="pp-live done"><i></i><span>Этап 1 · Список заказов</span><em>готово</em></div><div class="pp-live done"><i></i><span>Этап 2 · Статусы</span><em>готово</em></div><div class="pp-live wip"><i></i><span>Этап 3 · Импорт из таблицы</span><em>в работе</em></div><div class="pp-live dim"><i></i><span>Этап 4 · Отчёты</span><em>дальше</em></div></div>
               </div>
               <div class="pp-view">
-                <div class="pp-live"><i></i><span>Бот отвечает клиентам</span></div>
-                <div class="pp-live"><i></i><span>Заявки приходят вам в Telegram</span></div>
-                <div class="pp-live"><i></i><span>Подключено к вашим аккаунтам</span></div>
-                <div class="pp-live dim"><i></i><span>Поддержка ежемесячно, по желанию</span></div>
-                <p class="pp-note">Показываем, как этим управлять</p>
+                <div class="pp-var" data-pv="a"><div class="pp-test"><span>Двое записываются на последнее место</span><b>✓</b></div><div class="pp-test"><span>Отмена за час до занятия</span><b>✓</b></div><div class="pp-test"><span>Старый телефон</span><b>✓</b></div><div class="pp-test"><span>Медленный интернет</span><b>✓</b></div></div>
+                <div class="pp-var" data-pv="m"><div class="pp-test"><span>Фото на 10 МБ в профиле</span><b>✓</b></div><div class="pp-test"><span>Две одинаковые заявки подряд</span><b>✓</b></div><div class="pp-test"><span>Мастер без единого отзыва</span><b>✓</b></div><div class="pp-test"><span>Медленный интернет</span><b>✓</b></div></div>
+                <div class="pp-var" data-pv="i"><div class="pp-test"><span>Таблица с ошибками в данных</span><b>✓</b></div><div class="pp-test"><span>Двое правят одну запись</span><b>✓</b></div><div class="pp-test"><span>Дубли заказов</span><b>✓</b></div><div class="pp-test"><span>Старый компьютер на складе</span><b>✓</b></div></div>
+              </div>
+              <div class="pp-view">
+                <div class="pp-var" data-pv="a"><div class="pp-live"><i></i><span>Приложение открывается из вашего бота</span></div><div class="pp-live"><i></i><span>Заявки и записи приходят вам</span></div><div class="pp-live"><i></i><span>Код и доступы переданы вам</span></div><div class="pp-live dim"><i></i><span>Поддержка ежемесячно, по желанию</span></div></div>
+                <div class="pp-var" data-pv="m"><div class="pp-live"><i></i><span>Сервис работает на вашем домене</span></div><div class="pp-live"><i></i><span>Управление каталогом у вас в админке</span></div><div class="pp-live"><i></i><span>Код и доступы переданы вам</span></div><div class="pp-live dim"><i></i><span>Поддержка ежемесячно, по желанию</span></div></div>
+                <div class="pp-var" data-pv="i"><div class="pp-live"><i></i><span>Инструмент работает в вашей команде</span></div><div class="pp-live"><i></i><span>Роли и доступы настроены</span></div><div class="pp-live"><i></i><span>Данные перенесены из таблиц</span></div><div class="pp-live dim"><i></i><span>Поддержка ежемесячно, по желанию</span></div></div>
               </div>
             </div>
+            <p class="pp-note"><span>Спрашиваем, а не угадываем</span><span>Видите продукт до кода</span><span>Прогресс виден каждую неделю</span><span>Ломаем сами, чтобы не сломали клиенты</span><span>Показываем, как этим управлять</span></p>
           </div>
-          <p class="pp-cap">Иллюстрация: условный пример, данные выдуманы</p>
+          <p class="pp-cap">Иллюстрация: условные примеры, данные выдуманы. У вас будет свой продукт и свои этапы.</p>
         </div>
       </div>
     </div>
@@ -4579,7 +4601,7 @@
 </script>
 
 <script>
-/* ПРОЦЕС: чотири кроки під прокрутку. Лінії біля кроків заповнюються, праворуч змінюється вікно проєкту. */
+/* ПРОЦЕС: п'ять кроків під прокрутку. Лінії біля кроків заповнюються, праворуч змінюється вікно проєкту, кнопки міняють приклад. */
 (function(){
   var sc = document.querySelector('.proc-scroll');
   if(!sc) return;
@@ -4588,12 +4610,19 @@
   var texts = [].slice.call(sc.querySelectorAll('.proc-text'));
   var views = [].slice.call(sc.querySelectorAll('.pp-view'));
   var badges = [].slice.call(sc.querySelectorAll('.pp-badge span'));
+  var notes = [].slice.call(sc.querySelectorAll('.pp-note span'));
+  var panel = sc.querySelector('.proc-panel');
+  var btns = [].slice.call(sc.querySelectorAll('.pp-switch button'));
   var hint = sc.querySelector('.proc-hint'), hn = document.getElementById('ph-n');
   var N = texts.length, ticking = false;
+  btns.forEach(function(b){
+    b.addEventListener('click', function(){
+      panel.setAttribute('data-pv', b.getAttribute('data-pv'));
+      btns.forEach(function(x){ x.classList.toggle('on', x === b); });
+    });
+  });
   function paint(i, p){
-    texts.forEach(function(t, k){ t.classList.toggle('on', k === i); });
-    views.forEach(function(t, k){ t.classList.toggle('on', k === i); });
-    badges.forEach(function(t, k){ t.classList.toggle('on', k === i); });
+    [texts, views, badges, notes].forEach(function(arr){ arr.forEach(function(t, k){ t.classList.toggle('on', k === i); }); });
     lis.forEach(function(li, k){
       li.classList.toggle('on', k === i);
       li.style.setProperty('--f', Math.max(0, Math.min(1, p * N - k)).toFixed(3));
