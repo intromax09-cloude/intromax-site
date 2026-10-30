@@ -35,18 +35,18 @@
 
 <style>
   :root{
-    --ink-0:#0c0d12;
-    --ink:#13141c;
-    --ink-2:#181a24;
-    --ink-3:#20222f;
+    --ink-0:#0e0f15;
+    --ink:#161824;
+    --ink-2:#1d2030;
+    --ink-3:#272b3e;
     --text:#eee9db;
-    --text-dim:#a6a195;
+    --text-dim:#b9b4a8;
     --amber:#f2a93c;
     --amber-dim:#8a6a2c;
     --plum:#a89aec;
     --plum-dim:#4a4270;
-    --line:rgba(238,233,219,.09);
-    --line-strong:rgba(238,233,219,.22);
+    --line:rgba(238,233,219,.12);
+    --line-strong:rgba(238,233,219,.27);
     --green:#7bc99a;
     --radius:16px;
     --ease:cubic-bezier(.32,.72,0,1);
@@ -265,18 +265,6 @@
   .price-row .desc{font-size:12.5px;color:var(--text-dim);margin-top:3px;}
   .price-row .amount{font-family:'JetBrains Mono',monospace;font-weight:500;font-size:14px;white-space:nowrap;text-align:right;}
   .price-row .amount .retainer{display:block;font-size:11.5px;color:var(--text-dim);margin-top:3px;}
-
-  /* ---------- PROCESS ---------- */
-  /* процес: нумерований список із лініями, крок читається зліва направо */
-  .process{display:flex;flex-direction:column;border-top:1px solid var(--line);}
-  .step{
-    display:grid;grid-template-columns:140px minmax(0,1fr) minmax(0,1.5fr);gap:12px 32px;align-items:baseline;
-    padding:30px 0;border-bottom:1px solid var(--line);
-  }
-  .step .num{font-family:'JetBrains Mono',monospace;color:var(--amber);font-size:12.5px;letter-spacing:.04em;}
-  .step h3{font-size:22px;letter-spacing:-.02em;}
-  .step p{color:var(--text-dim);font-size:15px;line-height:1.6;}
-  @media (max-width:860px){ .step{grid-template-columns:minmax(0,1fr);gap:8px;padding:24px 0;} .step h3{font-size:19px;} }
 
   /* ---------- REVIEWS ---------- */
   .reviews-empty{
@@ -542,18 +530,35 @@
      НОВЕ (вересень 2026): фон, навігація, послуги, пакети, FAQ, форми заявок
      ======================================================================= */
 
-  /* ---------- фон: одне тепле світло згори, без рухомих плям ---------- */
+  /* ---------- фон: статичний, три шари. Світло по кутах, сітка з точок, зерно. Нічого не рухається ---------- */
   .grain{
     position:fixed;inset:0;pointer-events:none;z-index:0;
     background:
-      radial-gradient(900px 520px at 50% -12%,rgba(242,169,60,.10),transparent 62%),
-      linear-gradient(180deg,rgba(255,255,255,.012),transparent 30%);
+      radial-gradient(1100px 700px at 100% -8%,rgba(168,154,236,.17),transparent 62%),
+      radial-gradient(900px 640px at -6% 38%,rgba(242,169,60,.11),transparent 64%),
+      radial-gradient(1000px 700px at 78% 108%,rgba(242,169,60,.09),transparent 62%),
+      linear-gradient(180deg,rgba(255,255,255,.02),transparent 40%);
   }
+  .grain::before{
+    content:'';position:absolute;inset:0;
+    background-image:radial-gradient(rgba(238,233,219,.16) 1px,transparent 1.3px);
+    background-size:30px 30px;
+    -webkit-mask-image:radial-gradient(ellipse 85% 75% at 50% 42%,#000 20%,transparent 78%);
+    mask-image:radial-gradient(ellipse 85% 75% at 50% 42%,#000 20%,transparent 78%);
+  }
+  .grain::after{
+    content:'';position:absolute;inset:0;opacity:.07;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  }
+  /* розділи чергуються відтінком, щоб сторінка не зливалась у суцільну темряву */
+  .tint-amber{background:linear-gradient(180deg,rgba(242,169,60,.06),rgba(242,169,60,.012) 45%,transparent 80%);}
+  .tint-plum{background:linear-gradient(180deg,rgba(168,154,236,.075),rgba(168,154,236,.015) 45%,transparent 80%);}
+  #order,#terms,#fit{background:linear-gradient(180deg,rgba(238,233,219,.03),transparent 70%);}
   .tint-line{position:relative;}
   .tint-line::before{
     content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);
     width:min(1240px,100%);height:1px;
-    background:linear-gradient(90deg,transparent,var(--line) 18%,var(--line) 82%,transparent);
+    background:linear-gradient(90deg,transparent,var(--line-strong) 18%,var(--line-strong) 82%,transparent);
   }
   section{position:relative;z-index:1;}
   header,footer{position:relative;z-index:50;}
@@ -630,8 +635,8 @@
   }
   .svc-ico svg{width:20px;height:20px;fill:none;stroke:var(--amber);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;}
   .svc h3{font-size:19px;margin-bottom:9px;line-height:1.22;letter-spacing:-.02em;}
-  .svc p{color:var(--text-dim);font-size:14px;margin-bottom:16px;flex:1;}
-  .svc ul{list-style:none;margin:0 0 18px;display:flex;flex-direction:column;gap:7px;}
+  .svc p{color:var(--text-dim);font-size:14px;margin-bottom:16px;flex:0 0 auto;}
+  .svc ul{list-style:none;margin:0 0 18px;flex:1 1 auto;display:flex;flex-direction:column;gap:7px;}
   .svc li{font-size:13.5px;color:var(--text-dim);padding-left:20px;position:relative;line-height:1.45;}
   .svc li::before{
     content:'';position:absolute;left:0;top:8px;width:5px;height:5px;border-radius:50%;
@@ -641,6 +646,12 @@
     border-top:1px solid var(--line);padding-top:16px;margin-top:auto;}
   .svc-cost{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:500;color:var(--text);}
   .svc-cost span{display:block;font-size:11px;color:var(--text-dim);margin-top:3px;font-weight:400;}
+  .svc-cost .svc-term{color:var(--amber);opacity:.9;}
+  .svc-vars{margin:14px 0 4px;padding-top:12px;border-top:1px dashed var(--line);display:flex;flex-direction:column;gap:7px;}
+  .svc-vars > div{display:flex;justify-content:space-between;align-items:baseline;gap:12px;font-size:12.5px;color:var(--text-dim);}
+  .svc-vars b{font-family:'JetBrains Mono',monospace;font-weight:500;font-size:12.5px;color:var(--text);white-space:nowrap;}
+  .svc-vars small{font-size:11px;color:var(--text-dim);font-weight:400;}
+  .vars-note{font-size:11.5px;color:var(--text-dim);margin:0;}
   .btn-sm{font-size:13px;padding:10px 16px;}
 
   /* ---------- ПАКЕТИ ---------- */
@@ -1107,7 +1118,7 @@
   /* ---------- ПОВЕРХНІ (жовтень 2026): одна мова для всіх карток ----------
      Матеріал задається тут, а не в кожному блоці: тонка лінія, ледь світліший
      верх і без тіней-плям. Так картки читаються як деталі одного корпусу. */
-  .svc,.pack,.case,.term,.niche,.sup,.price-block,.kit-main,.kit-sum,.notfit,.cta,.review-card,.reviews-empty,.review-modal,.flow-node,.calc-in,.calc-out{
+  .svc,.pack,.case,.term,.niche,.sup,.price-block,.kit-main,.kit-sum,.notfit,.cta,.review-card,.reviews-empty,.review-modal,.calc-in,.calc-out,.proc-panel{
     background:linear-gradient(180deg,rgba(238,233,219,.035),rgba(238,233,219,.012)),var(--ink-2);
     border:1px solid var(--line);border-radius:var(--radius);
     box-shadow:inset 0 1px 0 rgba(255,255,255,.05);
@@ -1121,79 +1132,6 @@
   .lang a[aria-current]{color:var(--text);background:rgba(238,233,219,.07);}
   .foot-row .lang{margin-left:auto;}
   @media (max-width:420px){ .foot-row .lang{margin-left:0;} }
-
-  /* ---------- ШЛЯХ ЗАЯВКИ: кроки загоряються під час прокрутки ---------- */
-  .flow-sticky{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:72px;align-items:center;}
-  .flow-left h2{font-size:clamp(30px,4.2vw,52px);line-height:1.05;max-width:16ch;}
-  .flow-left .lead{font-size:16.5px;line-height:1.6;color:var(--text-dim);margin-top:16px;max-width:46ch;}
-  .flow-list{list-style:none;margin:28px 0 22px;border-top:1px solid var(--line);}
-  .flow-list li{padding:13px 0;border-bottom:1px solid var(--line);color:var(--text-dim);transition:color .4s var(--ease);}
-  .flow-list b{display:block;font-size:16px;font-weight:700;letter-spacing:-.01em;}
-  .flow-list span{display:block;font-size:14px;line-height:1.55;margin-top:4px;}
-  .flow-list li.on{color:var(--text);}
-  .flow-list li.on b{color:var(--amber);}
-  .flow-cmp{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px;}
-  .flow-cmp > div{padding:14px 16px;border-radius:14px;border:1px solid var(--line);background:rgba(238,233,219,.02);}
-  .flow-cmp i{display:block;font-style:normal;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px;}
-  .flow-cmp-out{border-color:rgba(242,169,60,.35) !important;}
-  .flow-cmp-out i{color:var(--amber);}
-  .flow-cmp p{font-size:13px;line-height:1.5;color:var(--text-dim);}
-  .flow-nodes{list-style:none;position:relative;display:flex;flex-direction:column;gap:14px;}
-  .flow-nodes::before{content:'';position:absolute;left:37px;top:30px;bottom:30px;width:2px;background:var(--line-strong);border-radius:2px;}
-  .flow-nodes::after{content:'';position:absolute;left:37px;top:30px;width:2px;height:calc((100% - 60px) * var(--p,0));background:var(--amber);border-radius:2px;transition:height .5s var(--ease);}
-  .flow-node{position:relative;z-index:1;display:flex;align-items:center;gap:18px;padding:18px 22px;opacity:.42;transform:scale(.985);transition:opacity .45s var(--ease),transform .45s var(--ease),border-color .45s var(--ease);}
-  .flow-node .n{flex:none;width:34px;height:34px;border-radius:10px;border:1px solid var(--line-strong);background:var(--ink-2);display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--text-dim);transition:background .4s var(--ease),color .4s var(--ease),border-color .4s var(--ease);}
-  .flow-node b{display:block;font-size:18px;font-weight:700;letter-spacing:-.02em;}
-  .flow-node small{display:block;margin-top:3px;font-size:12px;line-height:1.5;color:var(--text-dim);}
-  .flow-node.done{opacity:.8;transform:none;}
-  .flow-node.done .n{border-color:var(--amber-dim);color:var(--amber);}
-  .flow-node.on{opacity:1;transform:none;border-color:rgba(242,169,60,.6);}
-  .flow-node.on .n{background:var(--amber);border-color:var(--amber);color:#1a1206;}
-  .flow-cap{margin-top:14px;font-size:12.5px;color:var(--text-dim);}
-  /* десктоп: сцена закріплена, поки йдуть п'ять кроків; низький екран і телефон бачать усе одразу */
-  @media (min-width:901px) and (min-height:820px){
-    .flow-scroll{height:280vh;}
-    .flow-scroll.live .flow-node,.flow-scroll.live .flow-list li{cursor:pointer;}
-    .flow-sticky{position:sticky;top:96px;min-height:calc(100vh - 150px);}
-    .flow-list span{display:block;max-height:0;overflow:hidden;margin-top:0;opacity:0;transition:max-height .45s var(--ease),opacity .45s var(--ease),margin-top .45s var(--ease);}
-        .flow-list li.on span{max-height:90px;opacity:1;margin-top:4px;}
-  }
-  @media (max-width:900px){
-    .flow-sticky{grid-template-columns:minmax(0,1fr);gap:22px;}
-    .flow-left h2{max-width:20ch;}
-    .flow-sticky{display:flex;flex-direction:column;}
-    .flow-left{display:contents;}
-    .flow-list{display:none;}
-    .flow-left .lead{margin-bottom:0;}
-    .flow-right{order:1;}
-    .flow-cmp{order:2;margin-bottom:0;}
-    .flow-left > .btn{order:3;align-self:flex-start;}
-    .flow-node{padding:15px 16px;}
-    .flow-nodes::before,.flow-nodes::after{left:31px;}
-  }
-  @media (max-width:520px){ .flow-cmp{grid-template-columns:1fr;} }
-  /* підказка «крутіть далі»: висить унизу екрана, поки йде закріплена сцена */
-  .flow-hint{
-    position:fixed;left:50%;bottom:26px;z-index:44;display:none;align-items:center;gap:12px;
-    padding:10px 18px 10px 14px;border-radius:100px;pointer-events:none;
-    background:rgba(24,26,36,.92);border:1px solid rgba(242,169,60,.45);
-    box-shadow:0 10px 30px rgba(0,0,0,.35);
-    transform:translate(-50%,16px);opacity:0;transition:opacity .4s var(--ease),transform .4s var(--ease);
-  }
-  @media (min-width:901px) and (min-height:820px){ .flow-hint{display:flex;} }
-  @media (max-width:1379px){ .flow-hint{bottom:92px;} }
-  .flow-hint.show{opacity:1;transform:translate(-50%,0);}
-  .fh-mouse{position:relative;width:18px;height:28px;border:1.5px solid var(--amber);border-radius:10px;flex:none;}
-  .fh-mouse i{position:absolute;left:50%;top:6px;width:3px;height:6px;margin-left:-1.5px;border-radius:2px;background:var(--amber);animation:fhWheel 1.6s var(--ease) infinite;}
-  .fh-t{font-size:13.5px;font-weight:700;color:var(--text);white-space:nowrap;}
-  .fh-b{display:none;}
-  .flow-hint.last .fh-a{display:none;}
-  .flow-hint.last .fh-b{display:inline;}
-  .fh-n{font-size:12px;color:var(--text-dim);}
-  .fh-chev{width:18px;height:18px;fill:none;stroke:var(--amber);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;animation:fhBob 1.6s var(--ease) infinite;}
-  @keyframes fhWheel{0%{transform:translateY(0);opacity:1;}70%{transform:translateY(9px);opacity:0;}100%{transform:translateY(9px);opacity:0;}}
-  @keyframes fhBob{0%,100%{transform:translateY(-2px);}50%{transform:translateY(3px);}}
-  @media (prefers-reduced-motion: reduce){ .fh-mouse i,.fh-chev{animation:none;} }
 
   /* ---------- КАЛЬКУЛЯТОР РУТИНИ ---------- */
   .calc{display:grid;grid-template-columns:minmax(0,1.02fr) minmax(0,.98fr);gap:22px;align-items:stretch;}
@@ -1212,7 +1150,11 @@
   .calc-cap{font-family:'JetBrains Mono',monospace;font-size:11.5px;letter-spacing:.03em;text-transform:uppercase;color:var(--text-dim);}
   .calc-big{font-size:clamp(40px,5.2vw,68px);font-weight:600;letter-spacing:-.04em;line-height:1.05;margin-top:14px;color:var(--amber);}
   .calc-sub{font-size:14px;color:var(--text-dim);margin-top:6px;}
-  .calc-stats{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:24px 0 20px;padding:18px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+  .calc-bar{height:10px;border-radius:6px;background:rgba(238,233,219,.14);margin:20px 0 10px;overflow:hidden;}
+  .calc-bar i{display:block;height:100%;width:50%;border-radius:6px;background:var(--amber);transition:width .35s var(--ease);}
+  .calc-legend{display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:13px;color:var(--text-dim);}
+  .calc-legend b{display:block;font-size:17px;font-weight:600;color:var(--text);margin-top:2px;}
+  .calc-stats{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0 20px;padding:18px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
   .calc-stats b{display:block;font-size:26px;font-weight:600;letter-spacing:-.03em;}
   .calc-stats span{font-size:13px;color:var(--text-dim);}
   .calc-save{font-size:15.5px;line-height:1.55;}
@@ -1221,13 +1163,13 @@
   .calc-note{margin-top:auto;padding-top:20px;font-size:12px;line-height:1.55;color:var(--text-dim);}
   @media (max-width:900px){ .calc{grid-template-columns:minmax(0,1fr);} .calc-in,.calc-out{padding:24px 20px;} }
 
-  /* ---------- КЕЙСИ-ВКЛАДКИ (десктоп): над вітриною ряд вкладок, на екрані один проєкт; на телефоні лишається стрічка ---------- */
+  /* ---------- КЕЙСИ-СЦЕНИ (десктоп): афіша проєкту на всю ширину, збоку коротка панель; сцени складаються стосом ---------- */
   @media (min-width:1001px){
-    .cases{display:block;}
-    .cases .case.tab-off{display:none;}
+    .cases{display:flex;flex-direction:column;gap:28px;padding-bottom:12px;}
     .case{
       display:grid;grid-template-columns:minmax(0,46fr) minmax(0,54fr);
       grid-template-areas:"shot bar" "shot body";grid-template-rows:auto 1fr;
+      position:sticky;top:calc(92px + var(--k,0) * 14px);
       border-radius:28px;
     }
     .case:nth-child(even){grid-template-areas:"bar shot" "body shot";grid-template-columns:minmax(0,54fr) minmax(0,46fr);}
@@ -1266,28 +1208,71 @@
     .case-next{align-self:flex-start;margin-top:14px;padding:6px 0;background:none;border:0;cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text-dim);transition:color .3s var(--ease);}
     .case-next b{font-weight:500;color:var(--text);transition:color .3s var(--ease);}
     .case-next:hover,.case-next:hover b{color:var(--amber);}
-    .case-tabs{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:8px;margin-bottom:18px;}
-    .case-tab{
-      position:relative;overflow:hidden;text-align:left;cursor:pointer;
-      padding:13px 16px 14px;border-radius:14px;border:1px solid var(--line);background:rgba(238,233,219,.02);
-      color:var(--text-dim);font-family:'Manrope',sans-serif;font-weight:700;font-size:14px;line-height:1.3;letter-spacing:-.01em;
-      transition:color .3s var(--ease),border-color .3s var(--ease),background .3s var(--ease);
-    }
-    .case-tab i{display:block;font-style:normal;font-family:'JetBrains Mono',monospace;font-weight:500;font-size:11px;letter-spacing:.04em;margin-bottom:5px;transition:color .3s var(--ease);}
-    .case-tab span{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
-    .case-tab:hover{color:var(--text);border-color:var(--line-strong);}
-    .case-tab[aria-selected="true"]{color:var(--text);border-color:rgba(242,169,60,.55);background:rgba(242,169,60,.06);}
-    .case-tab[aria-selected="true"] i{color:var(--amber);}
-    .case-tab::after{content:'';position:absolute;left:0;bottom:0;height:2px;width:0;background:var(--amber);transition:width .5s var(--ease);}
-    .case-tab[aria-selected="true"]::after{width:100%;}
-    .case-tab[hidden]{display:none;}
-    /* поява проєкту при перемиканні: анімуються частини картки, а не сама картка (на ній .bloom) */
-    .case.tab-in .case-shot,.case.tab-in .case-body,.case.tab-in .case-bar{animation:caseIn .55s var(--ease) both;}
-    .case.tab-in .case-body{animation-delay:.06s;}
+    .case:nth-child(1){--k:0;} .case:nth-child(2){--k:1;} .case:nth-child(3){--k:2;}
+    .case:nth-child(4){--k:3;} .case:nth-child(5){--k:4;} .case:nth-child(6){--k:5;}
   }
-  @keyframes caseIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
-  @media (prefers-reduced-motion: reduce){ .case.tab-in .case-shot,.case.tab-in .case-body,.case.tab-in .case-bar{animation:none;} }
+  @media (min-width:1001px) and (max-height:759px){ .case{position:relative;top:auto;} }
   @media (prefers-reduced-motion: reduce){ .case-shot img{transition:none !important;transform:none !important;} }
+  /* ---------- ПРОЦЕС: кроки загоряються під час прокрутки, праворуч вікно проєкту змінюється ---------- */
+  .proc-list{display:none;list-style:none;margin:0 0 36px;border-top:1px solid var(--line);}
+  .proc-list li{display:grid;grid-template-columns:38px auto minmax(0,1fr);align-items:center;gap:14px;padding:17px 0;border-bottom:1px solid var(--line);color:var(--text-dim);transition:color .4s var(--ease);}
+  .proc-list b{font-size:12.5px;font-weight:500;letter-spacing:.04em;}
+  .proc-list span{font-size:12.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;}
+  .proc-list i{position:relative;display:block;height:1px;background:var(--line-strong);}
+  .proc-list i::after{content:'';position:absolute;left:0;top:-.5px;height:2px;width:calc(var(--f,0) * 100%);background:var(--amber);}
+  .proc-list li.on{color:var(--text);}
+  .proc-list li.on b{color:var(--amber);}
+  .proc-text{padding:24px 0;border-top:1px solid var(--line);}
+  .proc-text:first-child{border-top:0;padding-top:0;}
+  .pt-n{display:block;font-size:12.5px;letter-spacing:.04em;color:var(--amber);margin-bottom:10px;}
+  .proc-text h3{font-size:clamp(28px,3.4vw,46px);line-height:1.05;letter-spacing:-.035em;margin-bottom:14px;}
+  .proc-text p{font-size:16.5px;line-height:1.62;color:var(--text-dim);max-width:46ch;}
+  .proc-hint{display:none;align-items:center;gap:10px;margin-top:30px;font-size:13px;color:var(--text-dim);}
+  .proc-hint .mono{color:var(--amber);font-size:12px;}
+  .proc-hint .ph-b{display:none;}
+  .proc-hint.last .ph-a{display:none;}
+  .proc-hint.last .ph-b{display:inline;}
+  .proc-hint svg{width:18px;height:18px;fill:none;stroke:var(--amber);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;animation:fhBob 1.6s var(--ease) infinite;}
+  @keyframes fhBob{0%,100%{transform:translateY(-2px);}50%{transform:translateY(3px);}}
+  .proc-right{display:none;}
+  .proc-panel{overflow:hidden;}
+  .pp-head{display:flex;align-items:center;gap:12px;padding:14px 18px;border-bottom:1px solid var(--line);background:rgba(12,13,18,.45);}
+  .pp-dots{display:flex;gap:6px;}
+  .pp-dots i{width:9px;height:9px;border-radius:50%;background:var(--line-strong);}
+  .pp-head b{font-size:12px;font-weight:500;color:var(--text-dim);}
+  .pp-badge{margin-left:auto;position:relative;display:grid;font-style:normal;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--amber);border:1px solid rgba(242,169,60,.45);border-radius:100px;padding:4px 12px;}
+  .pp-badge span{grid-area:1/1;opacity:0;transition:opacity .35s var(--ease);text-align:center;}
+  .pp-badge span.on{opacity:1;}
+  .pp-body{position:relative;display:grid;padding:26px 24px 22px;min-height:340px;background-image:radial-gradient(rgba(238,233,219,.07) 1px,transparent 1px);background-size:22px 22px;}
+  .pp-view{grid-area:1/1;display:flex;flex-direction:column;gap:12px;opacity:0;transform:translateY(12px);transition:opacity .45s var(--ease),transform .45s var(--ease);pointer-events:none;}
+  .pp-view.on{opacity:1;transform:none;}
+  .pp-field label{display:block;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px;}
+  .pp-field div{padding:12px 14px;border-radius:12px;border:1px solid var(--line-strong);background:rgba(238,233,219,.04);font-size:14.5px;}
+  .pp-btn{align-self:flex-start;margin-top:4px;padding:11px 20px;border-radius:100px;background:var(--amber);color:#1a1206;font-weight:700;font-size:13.5px;}
+  .pp-note{margin-top:auto;font-size:12.5px;color:var(--text-dim);}
+  .pp-msg{max-width:84%;padding:12px 15px;border-radius:16px;font-size:14px;line-height:1.5;}
+  .pp-msg.in{align-self:flex-end;background:var(--amber);color:#1a1206;border-bottom-right-radius:5px;}
+  .pp-msg.out{align-self:flex-start;background:rgba(238,233,219,.08);border:1px solid var(--line);border-bottom-left-radius:5px;}
+  .pp-chips{display:flex;gap:8px;}
+  .pp-chips span{padding:8px 16px;border-radius:100px;border:1px solid rgba(242,169,60,.5);color:var(--amber);font-family:'JetBrains Mono',monospace;font-size:12.5px;}
+  .pp-test{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:13px 15px;border-radius:12px;border:1px solid var(--line);background:rgba(238,233,219,.03);font-size:14px;}
+  .pp-test b{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:rgba(123,201,154,.14);color:var(--green);font-size:13px;flex:none;}
+  .pp-live{display:flex;align-items:center;gap:12px;padding:13px 15px;border-radius:12px;border:1px solid var(--line);background:rgba(238,233,219,.03);font-size:14px;}
+  .pp-live i{width:9px;height:9px;border-radius:50%;background:var(--green);box-shadow:0 0 0 4px rgba(123,201,154,.16);flex:none;}
+  .pp-live.dim{color:var(--text-dim);}
+  .pp-live.dim i{background:var(--line-strong);box-shadow:none;}
+  .pp-cap{margin-top:14px;font-size:12.5px;color:var(--text-dim);}
+  /* десктоп: сцена закріплена, поки йдуть чотири кроки; низький екран і телефон бачать усі кроки списком */
+  @media (min-width:901px) and (min-height:760px){
+    .proc-scroll{height:250vh;}
+    .proc-sticky{position:sticky;top:96px;min-height:calc(100vh - 150px);display:grid;grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr);gap:64px;align-items:center;}
+    .proc-list,.proc-right{display:block;}
+    .proc-hint{display:flex;}
+    .proc-scroll.live .proc-texts{display:grid;}
+    .proc-scroll.live .proc-text{grid-area:1/1;border-top:0;padding:0;opacity:0;transform:translateY(12px);transition:opacity .45s var(--ease),transform .45s var(--ease);pointer-events:none;}
+    .proc-scroll.live .proc-text.on{opacity:1;transform:none;}
+  }
+  @media (prefers-reduced-motion: reduce){ .proc-hint svg{animation:none;} }
 </style>
 <noscript><style>#intro{display:none}.bloom,.navlinks a,.nav-cta{opacity:1;transform:none}</style></noscript>
 </head>
@@ -1306,9 +1291,8 @@
   <nav>
     <div class="logo" id="brand-logo"><span class="logo-dot"></span><span class="logo-word" role="img" aria-label="Intromax"><i>I</i><i>n</i><i>t</i><i>r</i><i>o</i><i>m</i><i>a</i><i>x</i></span></div>
     <div class="navlinks">
-      <a href="#services" data-nav>Услуги</a>
+      <a href="#services" data-nav>Услуги и цены</a>
       <a href="#cases" data-nav>Кейсы</a>
-      <a href="#pricing" data-nav>Цены</a>
       <a href="#process" data-nav>Как работаем</a>
       <a href="#faq" data-nav>Вопросы</a>
       <a href="#reviews" data-nav>Отзывы</a>
@@ -1322,8 +1306,7 @@
     </div>
   </nav>
   <div class="mobile-menu" id="mobile-menu">
-    <a href="#services">Услуги</a>
-    <a href="#pricing">Цены</a>
+    <a href="#services">Услуги и цены</a>
     <a href="#process">Как работаем</a>
     <a href="#faq">Вопросы</a>
     <a href="#cases">Кейсы</a>
@@ -1379,8 +1362,8 @@
 <section id="services" class="tint-amber tint-line">
   <div class="wrap">
     <div class="section-head">
-      <h2>Семь услуг, из которых складывается ваша <em>система</em></h2>
-      <p class="lead">Каждая работает отдельно. Вместе они дают одну цепочку: клиент пишет, бот отвечает, сайт показывает цены, заявка попадает в вашу таблицу или CRM.</p>
+      <h2>Все услуги и их <em>цены</em></h2>
+      <p class="lead">Рядом с каждой услугой её цена, срок запуска и абонплата. Всё в одном месте, без отдельной таблицы цен. Точную цифру называем в течение суток после заявки, и после старта работы она не меняется.</p>
     </div>
 
     <p class="promo-note" data-promo>Цены запуска действуют до 1 ноября 2026. Дальше возвращаются обычные, они зачёркнуты рядом.</p>
@@ -1396,7 +1379,7 @@
           <li>Кнопка «позвать человека» — бот замолкает</li>
         </ul>
         <div class="svc-foot">
-          <div class="svc-cost"><b class="pr" data-full="$100–200"><s>$100–200</s>$70–140</b><span>+ от $10/мес</span></div>
+          <div class="svc-cost"><b class="pr" data-full="$100–200"><s>$100–200</s>$70–140</b><span>+ от $10/мес</span><span class="svc-term">запуск 2–3 дня</span></div>
           <button type="button" class="btn btn-ghost btn-sm" data-lead="ig-bot">Заявка</button>
         </div>
       </div>
@@ -1412,7 +1395,7 @@
           <li>Переносится из сценария Instagram за несколько часов</li>
         </ul>
         <div class="svc-foot">
-          <div class="svc-cost"><b class="pr" data-full="$100–180"><s>$100–180</s>$70–130</b><span>или <b class="pr" data-full="+$50–80">+$40–60</b> к боту</span></div>
+          <div class="svc-cost"><b class="pr" data-full="$100–180"><s>$100–180</s>$70–130</b><span>или <b class="pr" data-full="+$50–80">+$40–60</b> к боту</span><span class="svc-term">запуск 2–3 дня</span></div>
           <button type="button" class="btn btn-ghost btn-sm" data-lead="tg-bot">Заявка</button>
         </div>
       </div>
@@ -1428,7 +1411,7 @@
           <li>Обновление с базового бота без сборки с нуля</li>
         </ul>
         <div class="svc-foot">
-          <div class="svc-cost"><b class="pr" data-full="$250–400"><s>$250–400</s>$180–280</b><span>+ $40/мес</span></div>
+          <div class="svc-cost"><b class="pr" data-full="$250–400"><s>$250–400</s>$180–280</b><span>+ $40/мес</span><span class="svc-term">запуск 1–2 недели</span></div>
           <button type="button" class="btn btn-ghost btn-sm" data-lead="ai-agent">Заявка</button>
         </div>
       </div>
@@ -1443,8 +1426,12 @@
           <li>Свой домен и SSL, без чужого бренда в адресе</li>
           <li>Загружается за секунду даже с мобильного</li>
         </ul>
+        <div class="svc-vars">
+          <div><span>Свой домен</span><b>$10–15 <small>в год</small></b></div>
+          <p class="vars-note">Платите регистратору напрямую, не нам</p>
+        </div>
         <div class="svc-foot">
-          <div class="svc-cost"><b class="pr" data-full="$100–200"><s>$100–200</s>$70–140</b><span>+ от $10/мес</span></div>
+          <div class="svc-cost"><b class="pr" data-full="$100–200"><s>$100–200</s>$70–140</b><span>+ от $10/мес</span><span class="svc-term">запуск до недели</span></div>
           <button type="button" class="btn btn-ghost btn-sm" data-lead="site">Заявка</button>
         </div>
       </div>
@@ -1460,8 +1447,12 @@
           <li>Запись или бронирование с подтверждением</li>
           <li>Title, description, sitemap, Search Console</li>
         </ul>
+        <div class="svc-vars">
+          <div><span>Свой домен</span><b>$10–15 <small>в год</small></b></div>
+          <p class="vars-note">Платите регистратору напрямую, не нам</p>
+        </div>
         <div class="svc-foot">
-          <div class="svc-cost"><b class="pr" data-full="$200–350"><s>$200–350</s>$140–250</b><span>+ от $20/мес</span></div>
+          <div class="svc-cost"><b class="pr" data-full="$200–350"><s>$200–350</s>$140–250</b><span>+ от $20/мес</span><span class="svc-term">запуск 1–2 недели</span></div>
           <button type="button" class="btn btn-ghost btn-sm" data-lead="site-pro">Заявка</button>
         </div>
       </div>
@@ -1477,8 +1468,13 @@
           <li>Напоминание клиентам о записи за сутки</li>
           <li>Почта, календарь, таблицы, мессенджеры в одной цепочке</li>
         </ul>
+        <div class="svc-vars">
+          <div><span>Типовой сценарий</span><b class="pr" data-full="$100–200"><s>$100–200</s>$70–140</b></div>
+          <div><span>Индивидуальный сценарий</span><b class="pr" data-full="$200–300"><s>$200–300</s>$140–210</b></div>
+          <div><span>CRM / доска заявок</span><b class="pr" data-full="$50–100"><s>$50–100</s>$40–70</b></div>
+        </div>
         <div class="svc-foot">
-          <div class="svc-cost"><b class="pr" data-full="$100–300"><s>$100–300</s>$70–200</b><span>за сценарий</span></div>
+          <div class="svc-cost"><b class="pr" data-full="$100–300"><s>$100–300</s>$70–200</b><span>за сценарий</span><span class="svc-term">запуск от одного дня</span></div>
           <button type="button" class="btn btn-ghost btn-sm" data-lead="automation">Заявка</button>
         </div>
       </div>
@@ -1496,7 +1492,7 @@
           <li>Рассылки и уведомления из бота прямо в приложение</li>
         </ul>
         <div class="svc-foot">
-          <div class="svc-cost"><b class="pr" data-full="$250–400"><s>$250–400</s>$180–280</b><span>+ от $20/мес</span></div>
+          <div class="svc-cost"><b class="pr" data-full="$250–400"><s>$250–400</s>$180–280</b><span>+ от $20/мес</span><span class="svc-term">запуск 2–3 недели</span></div>
           <button type="button" class="btn btn-ghost btn-sm" data-lead="tma">Заявка</button>
         </div>
       </div>
@@ -1533,6 +1529,43 @@
         <button type="button" class="btn btn-primary btn-sm" data-lead="pack-system">Собрать пакет</button>
       </div>
     </div>
+
+    <div class="support bloom">
+        <h3>Ежемесячная поддержка — по желанию</h3>
+        <p>Бот и сайт ваши и работают без поддержки. Абонплата — для тех, кто не хочет держать это в голове: правки, присмотр за обновлениями платформ и ответ от нас в течение суток.</p>
+        <div class="support-grid">
+          <div class="sup">
+            <div class="t">Базовая</div>
+            <div class="c">$10–15 / мес</div>
+            <ul>
+              <li>Правки в сценарии, текстах и ценах</li>
+              <li>Присмотр, чтобы ничего не сломалось после обновлений Instagram, Telegram и сервисов</li>
+              <li>Ответ от нас в течение суток</li>
+            </ul>
+          </div>
+          <div class="sup">
+            <div class="t">Расширенная</div>
+            <div class="c">$25–30 / мес</div>
+            <span class="plus">Базовая +</span>
+            <ul>
+              <li>Ежемесячный отчёт в цифрах: сколько диалогов, заявок и сколько из них вне рабочего времени</li>
+              <li>Одна доработка в месяц без отдельного счёта — новая ветка, секция на сайте или сезонный режим</li>
+            </ul>
+          </div>
+          <div class="sup">
+            <div class="t">Полная</div>
+            <div class="c">$40–50 / мес</div>
+            <span class="plus">Расширенная +</span>
+            <ul>
+              <li>Доска заявок со статусами и присмотр за тем, чтобы они туда доходили</li>
+              <li>Приоритетный ответ в рабочий день</li>
+              <li>Сезонные обновления делаем сами, без напоминаний с вашей стороны</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+  
+      <p class="price-note"><b>От чего зависит цифра в диапазоне:</b> количество веток в сценарии, нужна ли интеграция с вашими сервисами, сколько страниц и есть ли готовые тексты и фото. Мелкие правки на этапе разработки не тарифицируются.</p>
   </div>
 </section>
 
@@ -1701,43 +1734,6 @@
   </div>
 </div>
 
-<section id="flow" class="tint-line">
-  <div class="wrap">
-    <div class="flow-scroll">
-      <div class="flow-sticky">
-        <div class="flow-left">
-          <h2>Заявка проходит <em>весь путь</em> без вашего участия</h2>
-          <p class="lead">Так выглядит типичная цепочка автоматизации. Прокручивайте, и шаги загораются один за другим.</p>
-          <ol class="flow-list">
-            <li><b>Клиент оставляет заявку</b><span>На сайте, в Direct или в Telegram. Ему не нужно ждать ответа человека.</span></li>
-            <li><b>Система проверяет данные</b><span>Пустые поля, дубли и спам отсеиваются ещё до того, как заявка дойдёт до вас.</span></li>
-            <li><b>Заявка ложится в CRM</b><span>Имя, контакт, источник и пожелания клиента попадают в CRM или таблицу.</span></li>
-            <li><b>Вам приходит сообщение</b><span>Карточка со всеми полями появляется в Telegram. Так работают и заявки на нашем сайте.</span></li>
-            <li><b>Отчёт обновляется сам</b><span>По желанию таблица сводит, сколько заявок пришло и откуда.</span></li>
-          </ol>
-          <div class="flow-cmp">
-            <div class="flow-cmp-in"><i>Вручную</i><p>Скопировать из письма, внести в таблицу, написать менеджеру, обновить отчёт.</p></div>
-            <div class="flow-cmp-out"><i>Автоматически</i><p>Все пять шагов происходят без вас, а до вас доходит готовая карточка.</p></div>
-          </div>
-          <button type="button" class="btn btn-primary" data-lead="automation">Автоматизировать свой процесс<span class="arr"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg></span></button>
-        </div>
-        <div class="flow-right">
-          <ol class="flow-nodes">
-            <li class="flow-node"><span class="n mono">01</span><div><b>Форма на сайте</b><small class="mono">Елена · +380 •• ••• 41 22 · «Нужна запись на пятницу»</small></div></li>
-            <li class="flow-node"><span class="n mono">02</span><div><b>Проверка</b><small class="mono">Телефон ✓ · Дубль: нет · Спам: нет</small></div></li>
-            <li class="flow-node"><span class="n mono">03</span><div><b>CRM</b><small class="mono">Новая заявка · источник: сайт · статус: новая</small></div></li>
-            <li class="flow-node"><span class="n mono">04</span><div><b>Telegram</b><small class="mono">🔔 Новая заявка от Елены · запись на пятницу</small></div></li>
-            <li class="flow-node"><span class="n mono">05</span><div><b>Отчёт</b><small class="mono">Заявок за неделю: +1 · источник: сайт</small></div></li>
-          </ol>
-          <p class="flow-cap">Условный пример типичной цепочки. Имена и данные выдуманы.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<div class="flow-hint" id="flow-hint" aria-hidden="true"><span class="fh-mouse"><i></i></span><b class="fh-t fh-a">Крутите вниз</b><b class="fh-t fh-b">Дальше: калькулятор</b><span class="fh-n mono" id="fh-n">1 / 5</span><svg class="fh-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
-
 <section id="routine" class="tint-amber tint-line">
   <div class="wrap">
     <div class="section-head">
@@ -1765,17 +1761,21 @@
         <p class="calc-hint">Рутина — это копирование между таблицами, ручные отчёты, перенос заявок, сверки, напоминания и повторяющиеся расчёты.</p>
       </div>
       <div class="calc-out" aria-live="polite">
-        <div class="calc-cap">Ориентировочная стоимость времени на рутину за год</div>
-        <div class="calc-big mono" id="rc-year">₴172 800</div>
-        <div class="calc-sub">оплачиваемое время, которое уходит на повторяющиеся действия</div>
-        <div class="calc-stats">
-          <div><b class="mono" id="rc-hrs">864</b><span>часов в год</span></div>
-          <div><b class="mono" id="rc-days">108</b><span>рабочих дней в год</span></div>
+        <div class="calc-cap">Ориентировочная экономия за год</div>
+        <div class="calc-big mono" id="rc-year">₴86 400</div>
+        <div class="calc-sub">оплачиваемого времени, которое больше не уходит на рутину</div>
+        <div class="calc-bar" aria-hidden="true"><i id="rc-bar"></i></div>
+        <div class="calc-legend">
+          <div><span>Сейчас вручную</span><b class="mono" id="rc-now">₴172 800</b></div>
+          <div><span>После автоматизации</span><b class="mono" id="rc-after">₴86 400</b></div>
         </div>
-        <p class="calc-save">Если автоматизировать <b id="rc-pct">50%</b>, это примерно <b class="mono" id="rc-save">₴86 400</b> в год.</p>
+        <div class="calc-stats">
+          <div><b class="mono" id="rc-hrs">432</b><span>часов экономии в год</span></div>
+          <div><b class="mono" id="rc-days">54</b><span>рабочих дней экономии в год</span></div>
+        </div>
         <div class="calc-actions">
           <button type="button" class="btn btn-primary" id="rc-go" data-lead="automation">Убрать эту рутину<span class="arr"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg></span></button>
-          <a href="#order" class="btn btn-ghost">Посмотреть цены</a>
+          <a href="#services" class="btn btn-ghost">Посмотреть цены</a>
         </div>
         <p class="calc-note">Расчёт: люди × часы × 48 рабочих недель × стоимость часа. Это ориентир, а не обещание экономии: он не учитывает стоимость внедрения и задачи, которые не стоит автоматизировать.</p>
       </div>
@@ -1829,26 +1829,78 @@
     <div class="section-head">
       <h2>Четыре шага от заявки до рабочей системы</h2>
     </div>
-    <div class="process four">
-      <div class="step bloom">
-        <span class="num">01 / заявка</span>
-        <h3>Вы заполняете форму</h3>
-        <p>Две минуты, без звонка. Отвечаем в течение суток: что реально нужно, сколько это стоит и сколько займёт.</p>
-      </div>
-      <div class="step bloom">
-        <span class="num">02 / демо</span>
-        <h3>Показываем на примере</h3>
-        <p>Демо именно под вашу задачу: бот, с которым можно поговорить, страница, которую можно открыть, или схема цепочки, которую видно целиком.</p>
-      </div>
-      <div class="step bloom">
-        <span class="num">03 / сборка</span>
-        <h3>Собираем и намеренно ломаем</h3>
-        <p>Бота — опечатками и сообщениями в три часа ночи. Сайт — на старом телефоне и медленном интернете. Автоматизацию — на тестовых заявках.</p>
-      </div>
-      <div class="step bloom">
-        <span class="num">04 / запуск</span>
-        <h3>Передаём в работу</h3>
-        <p>Подключаем к вашим аккаунтам, домену и сервисам, проверяем вживую и показываем, как этим управлять. Дальше — ежемесячная поддержка, по желанию.</p>
+    <div class="proc-scroll">
+      <div class="proc-sticky">
+        <div class="proc-left">
+          <ol class="proc-list" aria-hidden="true">
+            <li><b class="mono">01</b><span>Заявка</span><i></i></li>
+            <li><b class="mono">02</b><span>Демо</span><i></i></li>
+            <li><b class="mono">03</b><span>Сборка</span><i></i></li>
+            <li><b class="mono">04</b><span>Запуск</span><i></i></li>
+          </ol>
+          <div class="proc-texts">
+            <div class="proc-text">
+              <span class="pt-n mono">01 / заявка</span>
+              <h3>Вы заполняете форму</h3>
+              <p>Две минуты, без звонка. Отвечаем в течение суток: что реально нужно, сколько это стоит и сколько займёт.</p>
+            </div>
+            <div class="proc-text">
+              <span class="pt-n mono">02 / демо</span>
+              <h3>Показываем на примере</h3>
+              <p>Демо именно под вашу задачу: бот, с которым можно поговорить, страница, которую можно открыть, или схема цепочки, которую видно целиком.</p>
+            </div>
+            <div class="proc-text">
+              <span class="pt-n mono">03 / сборка</span>
+              <h3>Собираем и намеренно ломаем</h3>
+              <p>Бота — опечатками и сообщениями в три часа ночи. Сайт — на старом телефоне и медленном интернете. Автоматизацию — на тестовых заявках.</p>
+            </div>
+            <div class="proc-text">
+              <span class="pt-n mono">04 / запуск</span>
+              <h3>Передаём в работу</h3>
+              <p>Подключаем к вашим аккаунтам, домену и сервисам, проверяем вживую и показываем, как этим управлять. Дальше — ежемесячная поддержка, по желанию.</p>
+            </div>
+          </div>
+          <p class="proc-hint" aria-hidden="true"><span class="mono" id="ph-n">1 / 4</span><span class="ph-a">Крутите дальше</span><span class="ph-b">Дальше: условия</span><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></p>
+        </div>
+        <div class="proc-right" aria-hidden="true">
+          <div class="proc-panel">
+            <div class="pp-head">
+              <span class="pp-dots"><i></i><i></i><i></i></span>
+              <b class="mono">Intromax · ваш проект</b>
+              <em class="mono pp-badge"><span>Заявка</span><span>Демо</span><span>Тесты</span><span>Live</span></em>
+            </div>
+            <div class="pp-body">
+              <div class="pp-view">
+                <div class="pp-field"><label>Ваше имя</label><div>Елена</div></div>
+                <div class="pp-field"><label>Ниша</label><div>Салон красоты</div></div>
+                <div class="pp-field"><label>Что нужно</label><div>Бот, который записывает на маникюр</div></div>
+                <div class="pp-btn">Отправить заявку</div>
+                <p class="pp-note">Ответим в течение суток</p>
+              </div>
+              <div class="pp-view">
+                <div class="pp-msg in">Сколько стоит маникюр?</div>
+                <div class="pp-msg out">От 600 грн. Есть свободные окна: пятница 12:00 и 15:00. Записать вас?</div>
+                <div class="pp-chips"><span>12:00</span><span>15:00</span></div>
+                <p class="pp-note">Демо под вашу задачу</p>
+              </div>
+              <div class="pp-view">
+                <div class="pp-test"><span>Опечатки в запросах</span><b>✓</b></div>
+                <div class="pp-test"><span>Сообщение в три часа ночи</span><b>✓</b></div>
+                <div class="pp-test"><span>Старый телефон и медленный интернет</span><b>✓</b></div>
+                <div class="pp-test"><span>Тестовые заявки</span><b>✓</b></div>
+                <p class="pp-note">Ломаем сами, чтобы не сломали ваши клиенты</p>
+              </div>
+              <div class="pp-view">
+                <div class="pp-live"><i></i><span>Бот отвечает клиентам</span></div>
+                <div class="pp-live"><i></i><span>Заявки приходят вам в Telegram</span></div>
+                <div class="pp-live"><i></i><span>Подключено к вашим аккаунтам</span></div>
+                <div class="pp-live dim"><i></i><span>Поддержка ежемесячно, по желанию</span></div>
+                <p class="pp-note">Показываем, как этим управлять</p>
+              </div>
+            </div>
+          </div>
+          <p class="pp-cap">Иллюстрация: условный пример, данные выдуманы</p>
+        </div>
       </div>
     </div>
     <p class="price-note"><b>Сколько это занимает:</b> бот — 2–3 дня, сайт-визитка — до недели, AI-агент или расширенный сайт — 1–2 недели, Telegram Mini App — 2–3 недели, сценарий автоматизации — от одного дня, если доступы уже есть. От вас на всём пути нужно 10 минут на бриф и ответы на несколько уточнений.</p>
@@ -1889,141 +1941,6 @@
   </div>
 </section>
 
-<section id="pricing" class="tint-amber tint-line">
-  <div class="wrap">
-    <div class="section-head">
-      <h2>Цены, которые мы называем <em>до начала работы</em></h2>
-      <p class="lead">У каждого диапазона есть нижняя и верхняя граница. Точную цифру называем в течение суток после заявки, и после старта работы она не меняется.</p>
-    </div>
-
-    <p class="promo-note" data-promo>Цены запуска действуют до 1 ноября 2026. Дальше возвращаются обычные, они зачёркнуты рядом.</p>
-    <div class="price-tables three">
-      <div class="price-block bloom">
-        <div class="price-block-head">
-          <div class="label">Боты</div>
-          <h3>Ответы клиентам</h3>
-        </div>
-        <div class="price-rows">
-          <div class="price-row">
-            <div><div class="tier">Базовый бот</div><div class="desc">Сценарий, FAQ, прайс, сбор заявок</div></div>
-            <div class="amount"><b class="pr" data-full="$100–200"><s>$100–200</s>$70–140</b><span class="retainer">+ от $10/мес</span></div>
-          </div>
-          <div class="price-row">
-            <div><div class="tier">Telegram-бот</div><div class="desc">Отдельно или вторым каналом к существующему</div></div>
-            <div class="amount"><b class="pr" data-full="$100–180"><s>$100–180</s>$70–130</b><span class="retainer"><b class="pr" data-full="+$50–80">+$40–60</b> к боту</span></div>
-          </div>
-          <div class="price-row">
-            <div><div class="tier">AI-агент</div><div class="desc">Понимает произвольные вопросы, а не только кнопки</div></div>
-            <div class="amount"><b class="pr" data-full="$250–400"><s>$250–400</s>$180–280</b><span class="retainer">+ $40/мес</span></div>
-          </div>
-          <div class="price-row">
-            <div><div class="tier">Telegram Mini App</div><div class="desc">Приложение в Telegram: запись, каталог, кабинет, панель владельца</div></div>
-            <div class="amount"><b class="pr" data-full="$250–400"><s>$250–400</s>$180–280</b><span class="retainer">+ от $20/мес</span></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="price-block bloom">
-        <div class="price-block-head">
-          <div class="label">Сайты</div>
-          <h3>Присутствие в интернете</h3>
-        </div>
-        <div class="price-rows">
-          <div class="price-row">
-            <div><div class="tier">Визитка</div><div class="desc">До 5 секций, форма заявки, адаптация под телефон</div></div>
-            <div class="amount"><b class="pr" data-full="$100–200"><s>$100–200</s>$70–140</b><span class="retainer">+ от $10/мес</span></div>
-          </div>
-          <div class="price-row">
-            <div><div class="tier">Расширенный / магазин</div><div class="desc">Каталог или магазин с корзиной, несколько форм, запись, SEO-минимум</div></div>
-            <div class="amount"><b class="pr" data-full="$200–350"><s>$200–350</s>$140–250</b><span class="retainer">+ от $20/мес</span></div>
-          </div>
-          <div class="price-row">
-            <div><div class="tier">Свой домен</div><div class="desc">Платите регистратору напрямую, не нам</div></div>
-            <div class="amount">$10–15<span class="retainer">в год</span></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="price-block bloom">
-        <div class="price-block-head">
-          <div class="label">Автоматизация</div>
-          <h3>Связка систем</h3>
-        </div>
-        <div class="price-rows">
-          <div class="price-row">
-            <div><div class="tier">Типовой сценарий</div><div class="desc">Заявка → таблица или CRM → уведомление вам</div></div>
-            <div class="amount"><b class="pr" data-full="$100–200"><s>$100–200</s>$70–140</b><span class="retainer">+ от $10/мес</span></div>
-          </div>
-          <div class="price-row">
-            <div><div class="tier">Индивидуальный сценарий</div><div class="desc">Ваш процесс: несколько сервисов, условия, расписание</div></div>
-            <div class="amount"><b class="pr" data-full="$200–300"><s>$200–300</s>$140–210</b><span class="retainer">считаем после брифа</span></div>
-          </div>
-          <div class="price-row">
-            <div><div class="tier">CRM / доска заявок</div><div class="desc">Доска заявок со статусами и напоминание клиенту за сутки</div></div>
-            <div class="amount"><b class="pr" data-full="$50–100"><s>$50–100</s>$40–70</b><span class="retainer">+ $10/мес</span></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="support bloom">
-      <h3>Ежемесячная поддержка — по желанию</h3>
-      <p>Бот и сайт ваши и работают без поддержки. Абонплата — для тех, кто не хочет держать это в голове: правки, присмотр за обновлениями платформ и ответ от нас в течение суток.</p>
-      <div class="support-grid">
-        <div class="sup">
-          <div class="t">Базовая</div>
-          <div class="c">$10–15 / мес</div>
-          <ul>
-            <li>Правки в сценарии, текстах и ценах</li>
-            <li>Присмотр, чтобы ничего не сломалось после обновлений Instagram, Telegram и сервисов</li>
-            <li>Ответ от нас в течение суток</li>
-          </ul>
-        </div>
-        <div class="sup">
-          <div class="t">Расширенная</div>
-          <div class="c">$25–30 / мес</div>
-          <span class="plus">Базовая +</span>
-          <ul>
-            <li>Ежемесячный отчёт в цифрах: сколько диалогов, заявок и сколько из них вне рабочего времени</li>
-            <li>Одна доработка в месяц без отдельного счёта — новая ветка, секция на сайте или сезонный режим</li>
-          </ul>
-        </div>
-        <div class="sup">
-          <div class="t">Полная</div>
-          <div class="c">$40–50 / мес</div>
-          <span class="plus">Расширенная +</span>
-          <ul>
-            <li>Доска заявок со статусами и присмотр за тем, чтобы они туда доходили</li>
-            <li>Приоритетный ответ в рабочий день</li>
-            <li>Сезонные обновления делаем сами, без напоминаний с вашей стороны</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-
-    <p class="price-note"><b>От чего зависит цифра в диапазоне:</b> количество веток в сценарии, нужна ли интеграция с вашими сервисами, сколько страниц и есть ли готовые тексты и фото. Мелкие правки на этапе разработки не тарифицируются.</p>
-  </div>
-</section>
-
-<section id="niches" class="tint-line">
-  <div class="wrap">
-    <div class="section-head">
-      <h2>Ниши, где бот и сайт нужны больше всего</h2>
-      <p class="lead">Общее у них одно: в рабочее время руки заняты, а вопросы в Direct приходят именно тогда.</p>
-    </div>
-    <div class="niches">
-      <div class="niche bloom"><div class="t">Бьюти и косметология</div><p>Запись, цены на процедуры, напоминание за сутки до визита.</p></div>
-      <div class="niche bloom"><div class="t">Кондитерские и доставка</div><p>Меню, зоны доставки, приём заказа с адресом.</p></div>
-      <div class="niche bloom"><div class="t">Магазины и шоурумы</div><p>Наличие, размеры, цены, оформление без переписки на десять сообщений.</p></div>
-      <div class="niche bloom"><div class="t">Фитнес и тренеры</div><p>Расписание, абонементы, запись на пробное, возврат тех, кто пропал.</p></div>
-      <div class="niche bloom"><div class="t">Репетиторы и курсы</div><p>Программа, стоимость, свободные часы, запись на первое занятие.</p></div>
-      <div class="niche bloom"><div class="t">Фото и видео</div><p>Пакеты съёмки, занятые даты, бриф вместо двадцати уточнений.</p></div>
-      <div class="niche bloom"><div class="t">Сервис и СТО</div><p>Запись на диагностику, подбор по модели, статус заказа.</p></div>
-      <div class="niche bloom"><div class="t">Аренда и туризм</div><p>Свободные даты, условия, несколько языков в одном боте.</p></div>
-    </div>
-  </div>
-</section>
-
 <section id="faq" class="tint-plum tint-line">
   <div class="wrap">
     <div class="section-head">
@@ -2032,7 +1949,7 @@
     <div class="faq bloom">
       <details>
         <summary>Сколько это стоит и от чего зависит цена?</summary>
-        <div class="ans"><p data-promo>До 1 ноября 2026 действуют цены запуска: базовый бот — $70–140, AI-агент — $180–280, Telegram Mini App — $180–280, сайт — $70–250 в зависимости от объёма, сценарий автоматизации — $70–200. После этой даты возвращаются обычные цены: $100–200, $250–400, $250–400, $100–350 и $100–300.</p><p data-after hidden>Базовый бот — $100–200, AI-агент — $250–400, Telegram Mini App — $250–400, сайт — $100–350 в зависимости от объёма, сценарий автоматизации — $100–300.</p><p>В диапазоне цифра зависит от количества веток сценария, нужных интеграций и того, есть ли готовые тексты и фото. Точную сумму называем в течение суток после заявки, до начала работы.</p></div>
+        <div class="ans"><p>Цена каждой услуги указана на её карточке в разделе <a href="#services">«Услуги и цены»</a>. В диапазоне цифра зависит от количества веток сценария, нужных интеграций и того, готовы ли тексты и фото. Точную сумму называем в течение суток после заявки, до начала работы.</p></div>
       </details>
       <details>
         <summary>Сколько длится запуск?</summary>
@@ -2268,7 +2185,6 @@
       </div>
       <div class="foot-col">
         <div class="t">Информация</div>
-        <a href="#pricing">Цены</a>
         <a href="#process">Как работаем</a>
         <a href="#terms">Условия работы</a>
         <a href="#faq">Частые вопросы</a>
@@ -3424,7 +3340,7 @@
   "@context":"https://schema.org",
   "@type":"FAQPage",
   "mainEntity":[
-    {"@type":"Question","name":"Сколько это стоит и от чего зависит цена?","acceptedAnswer":{"@type":"Answer","text":"До 1 ноября 2026 действуют цены запуска: базовый бот — $70–140, AI-агент — $180–280, Telegram Mini App — $180–280, сайт — $70–250, сценарий автоматизации — $70–200. Обычные цены: $100–200, $250–400, $250–400, $100–350 и $100–300. Точную цену называем в течение суток после заявки, до начала работы."}},
+    {"@type":"Question","name":"Сколько это стоит и от чего зависит цена?","acceptedAnswer":{"@type":"Answer","text":"Цена каждой услуги указана на её карточке в разделе «Услуги и цены». В диапазоне цифра зависит от количества веток сценария, нужных интеграций и того, готовы ли тексты и фото. Точную сумму называем в течение суток после заявки, до начала работы."}},
     {"@type":"Question","name":"Сколько длится запуск?","acceptedAnswer":{"@type":"Answer","text":"Базовый бот — 2–3 дня, сайт-визитка — до недели, AI-агент или расширенный сайт — 1–2 недели, Telegram Mini App — 2–3 недели. От вас нужно 10 минут на бриф."}},
     {"@type":"Question","name":"Нужен ли вам пароль от моего Instagram?","acceptedAnswer":{"@type":"Answer","text":"Нет. Подключение официальное, через кнопку Instagram в самом сервисе: вы входите под своим аккаунтом и нажимаете «разрешить». Пароль мы не видим, и отключить доступ можно в любой момент одной кнопкой."}},
     {"@type":"Question","name":"Что будет, если бот не поймёт клиента?","acceptedAnswer":{"@type":"Answer","text":"Бот не выдумывает ответ: он говорит, что передаст вопрос человеку, и оставляет сообщение владельцу. В каждом боте есть кнопка «позвать человека»."}},
@@ -4603,109 +4519,42 @@
 </script>
 
 <script>
-/* КЕЙСИ-ВКЛАДКИ: на десктопі один проєкт на екрані, вкладки над ним, «Далі» перемикає на наступний.
-   Вкладки й номери будуються з карток, тож переклади та фільтр працюють без окремого коду. */
+/* КЕЙСИ-СЦЕНИ: номер проєкту й кнопка «Далі» (тільки десктоп, де сцени складаються стосом) */
 (function(){
   var grid = document.querySelector('.cases');
   if(!grid || !window.matchMedia('(min-width:1001px)').matches) return;
   var cards = [].slice.call(grid.querySelectorAll('.case'));
-  if(!cards.length) return;
   var pad = function(n){ return (n < 10 ? '0' : '') + n; };
-  var active = null;
-  var bar = document.createElement('div');
-  bar.className = 'case-tabs';
-  bar.setAttribute('role', 'tablist');
-  var h2 = document.querySelector('#cases h2');
-  if(h2) bar.setAttribute('aria-label', h2.textContent);
-  grid.parentNode.insertBefore(bar, grid);
-
-  function visible(){ return cards.filter(function(c){ return !c.classList.contains('is-off'); }); }
-  function show(c, user){
-    if(!c) return;
-    active = c;
-    cards.forEach(function(x, i){
-      var on = x === c;
-      x.classList.toggle('tab-off', !on);
-      tabs[i].setAttribute('aria-selected', on ? 'true' : 'false');
-      tabs[i].tabIndex = on ? 0 : -1;
-    });
-    c.classList.remove('tab-in');
-    if(user){ void c.offsetWidth; c.classList.add('tab-in', 'reveal'); }
-  }
-  function sync(){
-    var vis = visible();
-    cards.forEach(function(c, i){
-      var k = vis.indexOf(c);
-      tabs[i].hidden = k < 0;
-      if(k < 0) return;
-      tabs[i].querySelector('i').textContent = pad(k + 1);
-      c.querySelector('.case-no').textContent = pad(k + 1) + ' / ' + pad(vis.length);
-      var next = vis[k + 1], nx = c.querySelector('.case-next');
-      nx.querySelector('.cn-t').textContent = next ? 'Дальше:' : 'Дальше: путь заявки';
-      nx.querySelector('b').textContent = next ? next.querySelector('h3').textContent : '';
-      nx.querySelector('.cn-a').textContent = next ? '→' : '↓';
-    });
-    if(!active || vis.indexOf(active) < 0) show(vis[0], false);
-  }
-
-  var tabs = cards.map(function(c){
-    var t = document.createElement('button');
-    t.type = 'button';
-    t.className = 'case-tab';
-    t.id = 'tab-' + c.id;
-    t.setAttribute('role', 'tab');
-    t.setAttribute('aria-controls', c.id);
-    t.innerHTML = '<i></i><span></span>';
-    t.querySelector('span').textContent = c.querySelector('h3').textContent;
-    c.setAttribute('role', 'tabpanel');
-    c.setAttribute('aria-labelledby', t.id);
-    t.addEventListener('click', function(){ show(c, true); });
-    bar.appendChild(t);
-
+  cards.forEach(function(c){
     var meta = c.querySelector('.case-meta'), body = c.querySelector('.case-body');
-    var no = document.createElement('span');
-    no.className = 'case-no';
-    if(meta) meta.insertBefore(no, meta.firstChild);
-    var nx = document.createElement('button');
-    nx.type = 'button';
-    nx.className = 'case-next';
-    nx.innerHTML = '<span class="cn-t"></span> <b></b> <span class="cn-a"></span>';
-    if(body) body.appendChild(nx);
+    var no = document.createElement('span'); no.className = 'case-no'; if(meta) meta.insertBefore(no, meta.firstChild);
+    var nx = document.createElement('button'); nx.type = 'button'; nx.className = 'case-next';
+    nx.innerHTML = '<span class="cn-t"></span> <b></b> ↓'; if(body) body.appendChild(nx);
     nx.addEventListener('click', function(e){
       e.stopPropagation();
-      var vis = visible(), next = vis[vis.indexOf(c) + 1];
-      if(next){
-        show(next, true);
-        var top = bar.getBoundingClientRect().top;
-        if(top < 0 || top > innerHeight * 0.4) bar.scrollIntoView({behavior:'smooth', block:'start'});
-        return;
-      }
-      var f = document.getElementById('flow');
-      if(f) f.scrollIntoView({behavior:'smooth'});
+      var vis = cards.filter(function(x){ return !x.classList.contains('is-off'); });
+      var i = vis.indexOf(c), next = vis[i + 1];
+      if(!next){ var f = document.getElementById('routine'); if(f) f.scrollIntoView({behavior:'smooth'}); return; }
+      var gap = 28, y = grid.getBoundingClientRect().top + scrollY;
+      for(var k = 0; k < i + 1; k++) y += vis[k].offsetHeight + gap;
+      scrollTo({top: y - 92 - (i + 1) * 14, behavior:'smooth'});
     });
-    return t;
   });
-
-  /* стрілки на клавіатурі ходять по вкладках */
-  bar.addEventListener('keydown', function(e){
-    if(e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
-    var vis = visible(), i = vis.indexOf(active);
-    var n = vis[(i + (e.key === 'ArrowRight' ? 1 : -1) + vis.length) % vis.length];
-    show(n, true);
-    tabs[cards.indexOf(n)].focus();
-    e.preventDefault();
-  });
-  var fl = document.querySelector('.case-filter');
-  if(fl) fl.addEventListener('click', function(){ setTimeout(sync, 0); });
-  /* посилання #case-<id> одразу відкриває потрібну вкладку (вікно з розбором відкриває інший скрипт) */
-  function fromHash(){
-    var m = /^#(case-[a-z]+)$/.exec(location.hash), c = m && document.getElementById(m[1]);
-    if(c && cards.indexOf(c) >= 0) show(c, false);
+  function number(){
+    var vis = cards.filter(function(x){ return !x.classList.contains('is-off'); });
+    cards.forEach(function(c){
+      var i = vis.indexOf(c), no = c.querySelector('.case-no'), nx = c.querySelector('.case-next');
+      if(i < 0) return;
+      c.style.setProperty('--k', i);
+      no.textContent = pad(i + 1) + ' / ' + pad(vis.length);
+      var next = vis[i + 1];
+      nx.querySelector('.cn-t').textContent = next ? 'Дальше:' : 'Дальше: калькулятор';
+      var b = nx.querySelector('b'); b.textContent = next ? next.querySelector('h3').textContent : '';
+    });
   }
-  addEventListener('hashchange', fromHash);
-  show(cards[0], false);
-  fromHash();
-  sync();
+  number();
+  var fl = document.querySelector('.case-filter');
+  if(fl) fl.addEventListener('click', function(){ setTimeout(number, 0); });
 })();
 </script>
 
@@ -4730,65 +4579,48 @@
 </script>
 
 <script>
-/* ШЛЯХ ЗАЯВКИ + КАЛЬКУЛЯТОР РУТИНИ */
+/* ПРОЦЕС: чотири кроки під прокрутку. Лінії біля кроків заповнюються, праворуч змінюється вікно проєкту. */
 (function(){
-  /* ---- шлях заявки: який крок горить, залежить від прокрутки ---- */
-  var scroll = document.querySelector('.flow-scroll');
-  if(scroll){
-    var sticky = scroll.querySelector('.flow-sticky');
-    var nodes = [].slice.call(scroll.querySelectorAll('.flow-node'));
-    var items = [].slice.call(scroll.querySelectorAll('.flow-list li'));
-    var list = scroll.querySelector('.flow-nodes');
-    var N = nodes.length, last = -2, ticking = false;
-    var hint = document.getElementById('flow-hint'), hintN = document.getElementById('fh-n');
-    var paint = function(on, doneTo){
-      if(on === last + '' + doneTo) return;
-      last = on + '' + doneTo;
-      nodes.forEach(function(n, i){ n.classList.toggle('on', i === on); n.classList.toggle('done', i < doneTo); });
-      items.forEach(function(n, i){ n.classList.toggle('on', i === on); });
-      list.style.setProperty('--p', N > 1 ? Math.max(0, Math.min(on < 0 ? 0 : on, N - 1)) / (N - 1) : 0);
-    };
-    var update = function(){
-      ticking = false;
-      if(getComputedStyle(sticky).position === 'sticky'){
-        var r = scroll.getBoundingClientRect();
-        var run = r.height - sticky.offsetHeight;
-        var p = run > 0 ? (96 - r.top) / run : 0;
-        p = Math.max(0, Math.min(0.999, p));
-        var i = Math.floor(p * N);
-        paint(i, i);
-        scroll.classList.add('live');
-        if(hint){
-          /* показуємо, поки сцена на екрані і не дійшла до кінця */
-          var inScene = r.top < innerHeight * 0.45 && r.bottom > sticky.offsetHeight + 140;
-          hint.classList.toggle('show', inScene);
-          hint.classList.toggle('last', i === N - 1);
-          hintN.textContent = (i + 1) + ' / ' + N;
-        }
-      } else {
-        scroll.classList.remove('live');
-        if(hint) hint.classList.remove('show');
-        /* без закріплення: крок загорається, коли доходить до середини екрана */
-        var on = -1;
-        nodes.forEach(function(n, i){ if(n.getBoundingClientRect().top < innerHeight * 0.62) on = i; });
-        paint(on, on < 0 ? 0 : on);
-      }
-    };
-    var req = function(){ if(!ticking){ ticking = true; requestAnimationFrame(update); } };
-    addEventListener('scroll', req, {passive:true});
-    addEventListener('resize', req);
-    /* клік по кроку переносить сцену до цього кроку */
-    var jump = function(i){
-      if(getComputedStyle(sticky).position !== 'sticky') return;
-      var run = scroll.offsetHeight - sticky.offsetHeight;
-      var y = scroll.getBoundingClientRect().top + scrollY - 96 + run * (i + 0.5) / N;
-      scrollTo({top: y, behavior: 'smooth'});
-    };
-    nodes.forEach(function(n, i){ n.addEventListener('click', function(){ jump(i); }); });
-    items.forEach(function(n, i){ n.addEventListener('click', function(){ jump(i); }); });
-    update();
+  var sc = document.querySelector('.proc-scroll');
+  if(!sc) return;
+  var st = sc.querySelector('.proc-sticky');
+  var lis = [].slice.call(sc.querySelectorAll('.proc-list li'));
+  var texts = [].slice.call(sc.querySelectorAll('.proc-text'));
+  var views = [].slice.call(sc.querySelectorAll('.pp-view'));
+  var badges = [].slice.call(sc.querySelectorAll('.pp-badge span'));
+  var hint = sc.querySelector('.proc-hint'), hn = document.getElementById('ph-n');
+  var N = texts.length, ticking = false;
+  function paint(i, p){
+    texts.forEach(function(t, k){ t.classList.toggle('on', k === i); });
+    views.forEach(function(t, k){ t.classList.toggle('on', k === i); });
+    badges.forEach(function(t, k){ t.classList.toggle('on', k === i); });
+    lis.forEach(function(li, k){
+      li.classList.toggle('on', k === i);
+      li.style.setProperty('--f', Math.max(0, Math.min(1, p * N - k)).toFixed(3));
+    });
+    if(hint){ hint.classList.toggle('last', i === N - 1); hn.textContent = (i + 1) + ' / ' + N; }
   }
+  function update(){
+    ticking = false;
+    var pinned = getComputedStyle(st).position === 'sticky';
+    sc.classList.toggle('live', pinned);
+    if(!pinned){ lis.forEach(function(li){ li.style.setProperty('--f', 1); }); return; }
+    var r = sc.getBoundingClientRect();
+    var run = r.height - st.offsetHeight;
+    var p = run > 0 ? (96 - r.top) / run : 0;
+    p = Math.max(0, Math.min(0.999, p));
+    paint(Math.floor(p * N), p);
+  }
+  function req(){ if(!ticking){ ticking = true; requestAnimationFrame(update); } }
+  addEventListener('scroll', req, {passive:true});
+  addEventListener('resize', req);
+  update();
+})();
+</script>
 
+<script>
+/* КАЛЬКУЛЯТОР РУТИНИ */
+(function(){
   /* ---- калькулятор рутини ---- */
   var ids = ['people', 'hours', 'rate', 'share'];
   var el = {};
@@ -4805,15 +4637,17 @@
     var hrs = v.people * v.hours * 48;
     var year = hrs * v.rate;
     var save = year * v.share / 100;
+    var saveHrs = hrs * v.share / 100;
     document.getElementById('rc-people-v').textContent = v.people;
     document.getElementById('rc-hours-v').textContent = v.hours;
     document.getElementById('rc-rate-v').textContent = money(v.rate);
     document.getElementById('rc-share-v').textContent = v.share + '%';
-    document.getElementById('rc-year').textContent = money(year);
-    document.getElementById('rc-hrs').textContent = hrs.toLocaleString('uk-UA');
-    document.getElementById('rc-days').textContent = Math.round(hrs / 8).toLocaleString('uk-UA');
-    document.getElementById('rc-pct').textContent = v.share + '%';
-    document.getElementById('rc-save').textContent = money(save);
+    document.getElementById('rc-year').textContent = money(save);
+    document.getElementById('rc-now').textContent = money(year);
+    document.getElementById('rc-after').textContent = money(year - save);
+    document.getElementById('rc-bar').style.width = v.share + '%';
+    document.getElementById('rc-hrs').textContent = Math.round(saveHrs).toLocaleString('uk-UA');
+    document.getElementById('rc-days').textContent = Math.round(saveHrs / 8).toLocaleString('uk-UA');
     return {v:v, hrs:hrs, year:year, save:save};
   };
   ids.forEach(function(k){ el[k].addEventListener('input', calc); });
@@ -5432,7 +5266,18 @@ window.IMX3D = {
       models.forEach(function(h, i){
         var m = h.userData.m, on = i === cur, sc = on ? 1 : 0.56;
         h.scale.x += (sc - h.scale.x) * Math.min(1, dt * 8); h.scale.y = h.scale.z = h.scale.x;
-        m.rotation.y += dt * (reduced ? 0.12 : (on ? 0.7 + fx.spin : 0.25));
+        /* модель завжди починає з лицьової сторони: неактивні стоять до камери обличчям, активна хитається навколо неї,
+           а після тапу крутиться й повертається до обличчя */
+        var ud = m.userData, TAU = Math.PI * 2;
+        if(ud.base === undefined){ ud.base = 0; ud.ta = 0; }
+        if(on){
+          ud.ta += dt; ud.base += dt * fx.spin;
+          if(fx.spin < 0.4) ud.base += (Math.round(ud.base / TAU) * TAU - ud.base) * Math.min(1, dt * 3);
+          m.rotation.y = ud.base + (reduced ? 0 : Math.sin(ud.ta * 0.8) * 0.6);
+        } else {
+          ud.ta = 0; ud.base += (Math.round(ud.base / TAU) * TAU - ud.base) * Math.min(1, dt * 4);
+          m.rotation.y = ud.base;
+        }
         h.position.y = (reduced ? 0 : Math.sin(t * 1.1 + i * 1.7) * 0.07) + (on ? Math.sin(fx.jump * Math.PI) * 0.45 : 0);
         h.visible = Math.abs(h.position.x + row.position.x) < S * 1.6;
         if(m.userData.tick) m.userData.tick(t);
@@ -5466,8 +5311,8 @@ window.IMX3D = {
    =========================================================================== */
 (function(){
   var SECTIONS = [
-    ['services','Услуги'], ['cases','Кейсы'], ['flow','Путь заявки'], ['routine','Калькулятор'], ['order','Конструктор'],
-    ['process','Процесс'], ['terms','Условия'], ['pricing','Цены'], ['niches','Ниши'],
+    ['services','Услуги и цены'], ['cases','Кейсы'], ['routine','Калькулятор'], ['order','Конструктор'],
+    ['process','Процесс'], ['terms','Условия'], 
     ['faq','Вопросы'], ['fit','Кому подходит'], ['reviews','Отзывы'], ['cta','Заявка']
   ].filter(function(s){ var el = document.getElementById(s[0]); return el && !el.hidden; })
   /* порядок точок — як розділи стоять на сторінці, навіть якщо їх переставлять */
@@ -5525,7 +5370,7 @@ window.IMX3D = {
 <script>
 /* Стрічки на телефоні: крапки під кожною показують, скільки карток і де ви зараз */
 (function(){
-  var SEL = '.svc-grid,.packs,.price-tables.three,.cases,.niches,.terms-grid,.support-grid';
+  var SEL = '.svc-grid,.packs,.cases,.terms-grid,.support-grid';
   [].forEach.call(document.querySelectorAll(SEL), function(row){
     var n = row.children.length;
     if(n < 2) return;
