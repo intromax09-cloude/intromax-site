@@ -20,8 +20,8 @@ function text(part){
     // ціна запуску із закресленою звичайною: <b class="pr" data-full="$100–200"><s>$100–200</s>$70–140</b>
     .replace(/<b class="pr" data-full="([^"]*)">(?:<s>[^<]*<\/s>)?([^<]*)<\/b>/g, '$2 (ціна запуску; звичайна $1)')
     // блоки, що діють лише до акції або лише після неї
-    .replace(/(<[a-z0-9]+\b[^>]*\sdata-promo\b[^>]*>)/gi, '$1[до 1 листопада 2026] ')
-    .replace(/(<[a-z0-9]+\b[^>]*\sdata-after\b[^>]*>)/gi, '$1[з 1 листопада 2026] ')
+    .replace(/(<[a-z0-9]+\b[^>]*\sdata-promo\b[^>]*>)/gi, '$1[до 31 грудня 2026] ')
+    .replace(/(<[a-z0-9]+\b[^>]*\sdata-after\b[^>]*>)/gi, '$1[з 1 січня 2027] ')
     .replace(/<h2\b[^>]*>/gi, '\n\n## ').replace(/<h3\b[^>]*>/gi, '\n### ')
     .replace(/<(li)\b[^>]*>/gi, '\n- ')
     .replace(/<(br|\/p|\/h\d|\/div|\/tr|\/summary|\/li|\/details)\b[^>]*>/gi, '\n')
