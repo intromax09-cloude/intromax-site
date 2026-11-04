@@ -1,0 +1,13 @@
+{
+  "name": "client-bot-template",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Шаблон Telegram-бота записи и заявок для клиентов Intromax (Cloudflare Pages Functions + D1)",
+  "type": "module",
+  "engines": { "node": ">=22.13" },
+  "scripts": {
+    "test": "node --disable-warning=ExperimentalWarning --test \"test/*.test.js\"",
+    "check-config": "node scripts/check-config.mjs",
+    "set-webhook": "node scripts/set-webhook.mjs"
+  }
+}

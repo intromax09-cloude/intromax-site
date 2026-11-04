@@ -1,0 +1,97 @@
+{
+  "$comment": "Приклад: усі назви, ціни й номери вигадані. Замініть своїми. Перевірка: npm run check-config",
+  "business": {
+    "name": "Dental Care Demo",
+    "niche": "dental",
+    "address": "м. Одеса, вул. Приклада, 21",
+    "phone": "+380931234567",
+    "language": "uk"
+  },
+  "hours": {
+    "mon-fri": {
+      "open": "09:00",
+      "close": "18:00",
+      "breaks": [
+        {
+          "from": "13:00",
+          "to": "14:00"
+        }
+      ]
+    },
+    "sat": {
+      "open": "10:00",
+      "close": "14:00"
+    },
+    "sun": null
+  },
+  "booking": {
+    "stepMin": 30,
+    "minLeadMin": 180,
+    "horizonDays": 60,
+    "chooseMaster": true,
+    "autoConfirm": false,
+    "clientChangeMinHours": 12
+  },
+  "services": [
+    {
+      "id": "consult",
+      "name": "Консультація",
+      "durationMin": 30,
+      "price": 0
+    },
+    {
+      "id": "clean",
+      "name": "Професійна чистка",
+      "durationMin": 60,
+      "price": 1500
+    },
+    {
+      "id": "filling",
+      "name": "Лікування карієсу",
+      "durationMin": 90,
+      "price": 2200
+    },
+    {
+      "id": "whiten",
+      "name": "Відбілювання",
+      "durationMin": 90,
+      "price": 4500,
+      "masters": [
+        "maria"
+      ]
+    }
+  ],
+  "masters": [
+    {
+      "id": "maria",
+      "name": "Марія Іванівна"
+    },
+    {
+      "id": "oleg",
+      "name": "Олег Петрович",
+      "hours": {
+        "sat": null
+      }
+    }
+  ],
+  "owner": {
+    "chatIds": []
+  },
+  "reminders": {
+    "beforeHours": [
+      24,
+      2
+    ],
+    "reviewUrl": "https://g.page/r/EXAMPLE/review"
+  },
+  "faq": [
+    {
+      "q": "Чи є знеболення?",
+      "a": "Так, лікування проводиться під місцевою анестезією."
+    },
+    {
+      "q": "Скільки триває консультація?",
+      "a": "Близько 30 хвилин."
+    }
+  ]
+}

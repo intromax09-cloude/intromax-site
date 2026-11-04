@@ -1,0 +1,119 @@
+{
+  "$comment": "Приклад: усі назви, ціни й номери вигадані. Замініть своїми. Перевірка: npm run check-config",
+  "business": {
+    "name": "Barber Kyiv Demo",
+    "niche": "barbershop",
+    "address": "м. Київ, вул. Прикладна, 10",
+    "phone": "+380501234567",
+    "timezone": "Europe/Kyiv",
+    "language": "uk",
+    "currency": "грн"
+  },
+  "hours": {
+    "mon-fri": {
+      "open": "10:00",
+      "close": "20:00",
+      "breaks": [
+        {
+          "from": "14:00",
+          "to": "14:30"
+        }
+      ]
+    },
+    "sat": {
+      "open": "10:00",
+      "close": "18:00"
+    },
+    "sun": null
+  },
+  "booking": {
+    "stepMin": 30,
+    "minLeadMin": 60,
+    "horizonDays": 30,
+    "chooseMaster": true,
+    "autoConfirm": false,
+    "clientChangeMinHours": 2
+  },
+  "services": [
+    {
+      "id": "cut",
+      "name": "Чоловіча стрижка",
+      "durationMin": 45,
+      "price": 500
+    },
+    {
+      "id": "beard",
+      "name": "Моделювання бороди",
+      "durationMin": 30,
+      "price": 350
+    },
+    {
+      "id": "combo",
+      "name": "Стрижка + борода",
+      "durationMin": 75,
+      "price": 800
+    },
+    {
+      "id": "kids",
+      "name": "Дитяча стрижка",
+      "durationMin": 30,
+      "price": 400,
+      "masters": [
+        "petro",
+        "andriy"
+      ]
+    }
+  ],
+  "masters": [
+    {
+      "id": "ivan",
+      "name": "Іван"
+    },
+    {
+      "id": "petro",
+      "name": "Петро",
+      "hours": {
+        "sat": null
+      }
+    },
+    {
+      "id": "andriy",
+      "name": "Андрій",
+      "hours": {
+        "mon-fri": {
+          "open": "12:00",
+          "close": "21:00"
+        }
+      }
+    }
+  ],
+  "owner": {
+    "chatIds": []
+  },
+  "reminders": {
+    "enabled": true,
+    "beforeHours": [
+      24,
+      2
+    ],
+    "reviewAfterMin": 120,
+    "reviewUrl": "https://g.page/r/EXAMPLE/review"
+  },
+  "limits": {
+    "perMinute": 30
+  },
+  "privacy": {
+    "retentionDays": 730
+  },
+  "faq": [
+    {
+      "q": "Чи потрібно приходити заздалегідь?",
+      "a": "Приходьте за 5 хвилин до запису. Якщо запізнюєтесь більше ніж на 15 хвилин — зателефонуйте нам."
+    },
+    {
+      "q": "Як оплатити?",
+      "a": "Карткою або готівкою після послуги."
+    }
+  ],
+  "texts": {}
+}

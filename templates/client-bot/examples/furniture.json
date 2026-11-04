@@ -1,0 +1,65 @@
+{
+  "$comment": "Приклад: усі назви, ціни й номери вигадані. Замініть своїми. Перевірка: npm run check-config",
+  "business": {
+    "name": "Меблі на замовлення Demo",
+    "niche": "furniture",
+    "address": "м. Запоріжжя, вул. Прикладна, 2 (шоурум)",
+    "phone": "+380971234567",
+    "language": "uk"
+  },
+  "hours": {
+    "mon-fri": {
+      "open": "10:00",
+      "close": "18:00"
+    },
+    "sat": {
+      "open": "10:00",
+      "close": "15:00"
+    },
+    "sun": null
+  },
+  "booking": {
+    "stepMin": 60,
+    "minLeadMin": 240,
+    "horizonDays": 30,
+    "autoConfirm": false,
+    "clientChangeMinHours": 6
+  },
+  "services": [
+    {
+      "id": "measure",
+      "name": "Безкоштовний замір",
+      "durationMin": 60
+    },
+    {
+      "id": "showroom",
+      "name": "Консультація в шоурумі",
+      "durationMin": 45
+    },
+    {
+      "id": "design",
+      "name": "Узгодження проєкту",
+      "durationMin": 60
+    }
+  ],
+  "owner": {
+    "chatIds": []
+  },
+  "reminders": {
+    "beforeHours": [
+      24,
+      2
+    ],
+    "reviewUrl": "https://g.page/r/EXAMPLE/review"
+  },
+  "faq": [
+    {
+      "q": "Скільки коштує замір?",
+      "a": "Виїзд замірника безкоштовний у межах міста."
+    },
+    {
+      "q": "Скільки триває виготовлення?",
+      "a": "Зазвичай 3–5 тижнів залежно від складності."
+    }
+  ]
+}

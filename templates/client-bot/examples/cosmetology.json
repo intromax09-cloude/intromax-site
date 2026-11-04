@@ -1,0 +1,84 @@
+{
+  "$comment": "Приклад: усі назви, ціни й номери вигадані. Замініть своїми. Перевірка: npm run check-config",
+  "business": {
+    "name": "Skin Clinic Demo",
+    "niche": "cosmetology",
+    "address": "м. Київ, вул. Прикладна, 15",
+    "phone": "+380501112233",
+    "language": "uk"
+  },
+  "hours": {
+    "mon-fri": {
+      "open": "10:00",
+      "close": "20:00"
+    },
+    "sat": {
+      "open": "10:00",
+      "close": "16:00"
+    },
+    "sun": null
+  },
+  "booking": {
+    "stepMin": 30,
+    "minLeadMin": 180,
+    "horizonDays": 60,
+    "chooseMaster": true,
+    "autoConfirm": false,
+    "clientChangeMinHours": 24
+  },
+  "services": [
+    {
+      "id": "consult",
+      "name": "Консультація косметолога",
+      "durationMin": 30,
+      "price": 300
+    },
+    {
+      "id": "peel",
+      "name": "Хімічний пілінг",
+      "durationMin": 60,
+      "price": 1800
+    },
+    {
+      "id": "clean",
+      "name": "Комбінована чистка обличчя",
+      "durationMin": 90,
+      "price": 1500
+    },
+    {
+      "id": "inject",
+      "name": "Біоревіталізація",
+      "durationMin": 60,
+      "price": 4500,
+      "masters": [
+        "anna"
+      ]
+    }
+  ],
+  "masters": [
+    {
+      "id": "anna",
+      "name": "Анна"
+    },
+    {
+      "id": "vira",
+      "name": "Віра"
+    }
+  ],
+  "owner": {
+    "chatIds": []
+  },
+  "reminders": {
+    "beforeHours": [
+      24,
+      2
+    ],
+    "reviewUrl": "https://g.page/r/EXAMPLE/review"
+  },
+  "faq": [
+    {
+      "q": "Чи є протипоказання?",
+      "a": "Перед процедурою косметолог проведе консультацію й підбере безпечний варіант."
+    }
+  ]
+}

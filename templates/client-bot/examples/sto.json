@@ -1,0 +1,90 @@
+{
+  "$comment": "Приклад: усі назви, ціни й номери вигадані. Замініть своїми. Перевірка: npm run check-config",
+  "business": {
+    "name": "AutoServis Demo",
+    "niche": "sto",
+    "address": "м. Дніпро, вул. Прикладна, 3",
+    "phone": "+380991234567",
+    "language": "uk"
+  },
+  "hours": {
+    "mon-fri": {
+      "open": "09:00",
+      "close": "19:00",
+      "breaks": [
+        {
+          "from": "13:00",
+          "to": "14:00"
+        }
+      ]
+    },
+    "sat": {
+      "open": "09:00",
+      "close": "15:00"
+    },
+    "sun": null
+  },
+  "booking": {
+    "stepMin": 30,
+    "minLeadMin": 120,
+    "horizonDays": 30,
+    "chooseMaster": false,
+    "autoConfirm": false,
+    "bufferMin": 15
+  },
+  "services": [
+    {
+      "id": "diag",
+      "name": "Комп'ютерна діагностика",
+      "durationMin": 60,
+      "price": 600
+    },
+    {
+      "id": "oil",
+      "name": "Заміна оливи й фільтра",
+      "durationMin": 60,
+      "price": 450
+    },
+    {
+      "id": "tire",
+      "name": "Шиномонтаж (4 колеса)",
+      "durationMin": 60,
+      "price": 800
+    },
+    {
+      "id": "susp",
+      "name": "Діагностика ходової",
+      "durationMin": 45
+    },
+    {
+      "id": "brake",
+      "name": "Заміна гальмівних колодок",
+      "durationMin": 120
+    }
+  ],
+  "masters": [
+    {
+      "id": "post1",
+      "name": "Пост 1"
+    },
+    {
+      "id": "post2",
+      "name": "Пост 2"
+    }
+  ],
+  "owner": {
+    "chatIds": []
+  },
+  "reminders": {
+    "beforeHours": [
+      24,
+      2
+    ],
+    "reviewUrl": "https://g.page/r/EXAMPLE/review"
+  },
+  "texts": {
+    "pick_master": "Оберіть пост:",
+    "master_nom": "Пост",
+    "master_acc": "пост"
+  }
+}

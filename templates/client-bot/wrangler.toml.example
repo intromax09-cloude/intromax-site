@@ -1,0 +1,11 @@
+# Скопируйте в wrangler.toml и заполните. Деплой Pages: npx wrangler pages deploy . --project-name <проект>
+# Токены и секреты в этот файл НЕ пишем — только через `wrangler pages secret put` (см. README).
+name = "client-bot"                       # имя проекта Cloudflare Pages
+pages_build_output_dir = "public"         # в проекте нет статики, но Pages требует папку (public/.gitkeep)
+compatibility_date = "2025-01-01"
+
+[[d1_databases]]
+binding = "DB"                            # это имя использует код — не менять
+database_name = "client-bot-db"           # поменяйте на <клиент>-bot-db
+database_id = "00000000-0000-0000-0000-000000000000"   # выдаст `wrangler d1 create`
+migrations_dir = "migrations"
