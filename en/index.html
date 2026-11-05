@@ -17,6 +17,8 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/favicon-180.png">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="en_US">
+<meta property="og:locale:alternate" content="uk_UA">
+<meta property="og:locale:alternate" content="ru_RU">
 <meta property="og:site_name" content="Intromax">
 <meta property="og:title" content="Intromax — bots, websites and automation for small business">
 <meta property="og:description" content="Bots in Direct and Telegram, websites and n8n process automation. Customers get an answer in a second, every lead lands in your CRM. Launch from 2 days.">
@@ -29,6 +31,7 @@
 <meta name="twitter:title" content="Intromax — bots, websites and automation for small business">
 <meta name="twitter:description" content="Bots in Direct and Telegram, websites and n8n process automation. Launch from 2 days.">
 <meta name="twitter:image" content="https://intromax.com.ua/og-image.png">
+<meta name="twitter:image:alt" content="Intromax — bots, websites and automation for small business">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@1,500&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -43,6 +46,7 @@
     --text-dim:#b9b4a8;
     --amber:#f2a93c;
     --amber-dim:#8a6a2c;
+    --amber-dim-text:#a8843f;
     --plum:#a89aec;
     --plum-dim:#4a4270;
     --line:rgba(238,233,219,.12);
@@ -236,7 +240,7 @@
   }
   input.field{min-width:0;border:0;outline:none;color:var(--text);font:inherit;font-size:12.5px;}
   input.field::placeholder{color:var(--text-dim);opacity:1;}
-  input.field:focus-visible{box-shadow:0 0 0 2px rgba(242,169,60,.55);}
+  input.field:focus-visible{outline:2px solid var(--amber);outline-offset:2px;box-shadow:0 0 0 2px rgba(242,169,60,.55);}
   .chat-send{
     width:34px;height:34px;flex-shrink:0;border:0;border-radius:50%;cursor:pointer;
     background:var(--amber);color:#1a1206;display:grid;place-items:center;
@@ -387,6 +391,7 @@
   }
   .field select option{background:var(--ink);color:var(--text);}
   .field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--amber);}
+  .field input:focus-visible{outline:2px solid var(--amber);outline-offset:2px;}
   .field.invalid input,.field.invalid select,.field.invalid textarea{border-color:#e08a8a;}
   .field .hint{display:block;font-size:11.5px;color:var(--text-dim);margin-top:6px;}
   .field .hint.count{text-align:right;}
@@ -795,6 +800,7 @@
   .dock-caret{font-size:10px;color:var(--text-dim);transition:transform .25s ease;}
   .dock-where[aria-expanded="true"] .dock-caret{transform:rotate(180deg);}
   .dock-cta{background:var(--amber);color:#1a1206;font-weight:700;font-size:14px;padding:10px 18px;border-radius:100px;white-space:nowrap;}
+  @media (max-width:760px){ .dock-cta{display:inline-flex;align-items:center;min-height:44px;} }
   .dock-veil{position:fixed;inset:0;z-index:43;background:rgba(10,10,16,.55);opacity:0;pointer-events:none;transition:opacity .25s ease;}
   .dock-veil.open{opacity:1;pointer-events:auto;}
   .dock-sheet{
@@ -811,7 +817,7 @@
   .dock-sheet a em{margin-left:auto;font-style:normal;font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--amber);opacity:0;}
   .dock-sheet a.on{background:rgba(242,169,60,.08);color:var(--amber);}
   .dock-sheet a.on em{opacity:1;}
-  .dock-sheet a.seen b{color:var(--amber-dim);}
+  .dock-sheet a.seen b{color:var(--amber-dim-text);}
   @media (prefers-reduced-motion: reduce){
     .dock,.dock-sheet,.rail a span,.rail a i{transition:none;}
   }
@@ -1131,6 +1137,7 @@
   .lang a:hover{color:var(--text);}
   .lang a[aria-current]{color:var(--text);background:rgba(238,233,219,.07);}
   .foot-row .lang{margin-left:auto;}
+  @media (max-width:760px){ .lang a{position:relative;} .lang a::after{content:"";position:absolute;inset:-8px -7px;} }
   @media (max-width:420px){ .foot-row .lang{margin-left:0;} }
 
   /* ---------- КАЛЬКУЛЯТОР РУТИНИ ---------- */
@@ -1241,6 +1248,7 @@
   .pp-switch button:hover{color:var(--text);border-color:rgba(242,169,60,.5);}
   .pp-switch button.on{color:#1a1206;background:var(--amber);border-color:var(--amber);font-weight:600;}
   .pp-switch button:focus-visible{outline:2px solid var(--amber);outline-offset:2px;}
+  @media (max-width:760px){ .pp-switch button{min-height:44px;} }
   .proc-panel{overflow:hidden;}
   .pp-head{display:flex;align-items:center;gap:12px;padding:14px 18px;border-bottom:1px solid var(--line);background:rgba(12,13,18,.45);}
   .pp-dots{display:flex;gap:6px;}
@@ -1575,7 +1583,7 @@
         </div>
       </div>
   
-      <p class="price-note"><b>What decides the figure within the range:</b> the number of branches in the script, whether integration with your services is needed, how many pages there are and whether texts and photos are ready. Minor changes during development are not charged.</p>
+      <p class="price-note"><b>What decides the final amount (counted from the starting price “from $X”):</b> the number of branches in the script, whether integration with your services is needed, how many pages there are and whether texts and photos are ready. Minor changes during development are not charged.</p>
   </div>
 </section>
 
@@ -1625,7 +1633,7 @@
           <button type="button" class="btn btn-ghost btn-sm case-open" aria-haspopup="dialog">Details<span class="arr" aria-hidden="true">→</span></button>
         </div>
         <div class="case-more" hidden>
-          <div class="cm-media"><img class="cm-main" src="/img/work-lavka-1.jpg" alt="Lavka marketplace: home, catalog, product, gift finder" width="1200" height="750" loading="lazy" decoding="async"><div class="cm-thumbs"><button type="button" data-src="/img/work-lavka-1.jpg" class="on"><img src="/img/work-lavka-1.jpg" alt="" width="1200" height="750" loading="lazy" decoding="async"></button><button type="button" data-src="/img/work-lavka-2.jpg"><img src="/img/work-lavka-2.jpg" alt="" width="1200" height="750" loading="lazy" decoding="async"></button><button type="button" data-src="/img/work-lavka-3.jpg"><img src="/img/work-lavka-3.jpg" alt="" width="1200" height="750" loading="lazy" decoding="async"></button><button type="button" data-src="/img/work-lavka-4.jpg"><img src="/img/work-lavka-4.jpg" alt="" width="1200" height="750" loading="lazy" decoding="async"></button></div></div>
+          <div class="cm-media"><img class="cm-main" src="/img/work-lavka-1.jpg" alt="Lavka marketplace: home, catalog, product, gift finder" width="1200" height="750" loading="lazy" decoding="async"><div class="cm-thumbs"><button type="button" aria-label="Screenshot 1" data-src="/img/work-lavka-1.jpg" class="on"><img src="/img/work-lavka-1.jpg" alt="" width="1200" height="750" loading="lazy" decoding="async"></button><button type="button" aria-label="Screenshot 2" data-src="/img/work-lavka-2.jpg"><img src="/img/work-lavka-2.jpg" alt="" width="1200" height="750" loading="lazy" decoding="async"></button><button type="button" aria-label="Screenshot 3" data-src="/img/work-lavka-3.jpg"><img src="/img/work-lavka-3.jpg" alt="" width="1200" height="750" loading="lazy" decoding="async"></button><button type="button" aria-label="Screenshot 4" data-src="/img/work-lavka-4.jpg"><img src="/img/work-lavka-4.jpg" alt="" width="1200" height="750" loading="lazy" decoding="async"></button></div></div>
           <div class="cm-text">
             <div class="case-meta">Marketplace · web platform · 2026</div>
             <h3 class="cm-title">Lavka</h3>
@@ -1971,7 +1979,7 @@
     <div class="faq bloom">
       <details>
         <summary>How much does it cost and what does the price depend on?</summary>
-        <div class="ans"><p>The price of every service is shown on its card in the section <a href="#services">“Services and prices”</a>. Within a range, the figure depends on the number of scenario branches, the integrations needed and whether texts and photos are ready. We name the exact amount within a day of your request, before work starts.</p></div>
+        <div class="ans"><p>The price of every service is shown on its card in the section <a href="#services">“Services and prices”</a>. It is quoted “from $X” — that is the starting amount, and the final figure depends on the number of scenario branches, the integrations needed and whether texts and photos are ready. We name the exact amount within a day of your request, before work starts.</p></div>
       </details>
       <details>
         <summary>How long does the launch take?</summary>
@@ -2071,7 +2079,7 @@
       <h3 id="review-modal-title">Leave a review</h3>
       <p class="review-modal-sub">It takes one minute. We publish after a short check, usually within a day.</p>
 
-      <form id="review-form" name="review" method="POST" data-netlify="true" netlify-honeypot="bot-field" novalidate>
+      <form id="review-form" name="review" method="POST" novalidate>
         <input type="hidden" name="form-name" value="review">
         <p class="hp"><label>Leave this field empty: <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
 
@@ -2258,9 +2266,8 @@
 
   var DIRECT_URL = 'https://ig.me/m/intromax.tech';
 
-  /* Cloudflare Pages -> /api/review (функція шле відгук у Telegram).
-     Дзеркало на Netlify продовжує працювати через Netlify Forms. */
-  var REVIEW_ENDPOINT = /netlify\.app$/.test(location.hostname) ? '/' : '/api/review';
+  /* Cloudflare Pages -> /api/review (функція шле відгук у Telegram). */
+  var REVIEW_ENDPOINT = '/api/review';
 
   var MONTHS = ['January','February','March','April','May','June',
                 'July','August','September','October','November','December'];
@@ -3347,13 +3354,13 @@
   "areaServed":{"@type":"Country","name":"UA"},
   "sameAs":["https://www.instagram.com/intromax.tech/","https://t.me/Intromax_tech"],
   "makesOffer":[
-    {"@type":"Offer","name":"Instagram Direct bot","priceSpecification":{"@type":"PriceSpecification","priceCurrency":"USD","minPrice":70,"maxPrice":140,"validThrough":"2026-12-31T23:59:59+02:00"}},
-    {"@type":"Offer","name":"Telegram bot","priceSpecification":{"@type":"PriceSpecification","priceCurrency":"USD","minPrice":70,"maxPrice":130,"validThrough":"2026-12-31T23:59:59+02:00"}},
-    {"@type":"Offer","name":"AI agent","priceSpecification":{"@type":"PriceSpecification","priceCurrency":"USD","minPrice":180,"maxPrice":280,"validThrough":"2026-12-31T23:59:59+02:00"}},
-    {"@type":"Offer","name":"Telegram Mini App","priceSpecification":{"@type":"PriceSpecification","priceCurrency":"USD","minPrice":180,"maxPrice":280,"validThrough":"2026-12-31T23:59:59+02:00"}},
-    {"@type":"Offer","name":"One-page website","priceSpecification":{"@type":"PriceSpecification","priceCurrency":"USD","minPrice":70,"maxPrice":140,"validThrough":"2026-12-31T23:59:59+02:00"}},
-    {"@type":"Offer","name":"Extended website or online shop","priceSpecification":{"@type":"PriceSpecification","priceCurrency":"USD","minPrice":140,"maxPrice":250,"validThrough":"2026-12-31T23:59:59+02:00"}},
-    {"@type":"Offer","name":"n8n process automation","priceSpecification":{"@type":"PriceSpecification","priceCurrency":"USD","minPrice":70,"maxPrice":200,"validThrough":"2026-12-31T23:59:59+02:00"}}
+    {"@type":"Offer","name":"Instagram Direct bot","priceSpecification":{"@type":"PriceSpecification","priceCurrency":"USD","minPrice":70,"validThrough":"2026-12-31T23:59:59+02:00"}},
+    {"@type":"Offer","name":"Telegram bot","priceSpecification":{"@type":"PriceSpecification","priceCurrency":"USD","minPrice":70,"validThrough":"2026-12-31T23:59:59+02:00"}},
+    {"@type":"Offer","name":"AI agent","priceSpecification":{"@type":"PriceSpecification","priceCurrency":"USD","minPrice":180,"validThrough":"2026-12-31T23:59:59+02:00"}},
+    {"@type":"Offer","name":"Telegram Mini App","priceSpecification":{"@type":"PriceSpecification","priceCurrency":"USD","minPrice":180,"validThrough":"2026-12-31T23:59:59+02:00"}},
+    {"@type":"Offer","name":"One-page website","priceSpecification":{"@type":"PriceSpecification","priceCurrency":"USD","minPrice":70,"validThrough":"2026-12-31T23:59:59+02:00"}},
+    {"@type":"Offer","name":"Extended website or online shop","priceSpecification":{"@type":"PriceSpecification","priceCurrency":"USD","minPrice":140,"validThrough":"2026-12-31T23:59:59+02:00"}},
+    {"@type":"Offer","name":"n8n process automation","priceSpecification":{"@type":"PriceSpecification","priceCurrency":"USD","minPrice":70,"validThrough":"2026-12-31T23:59:59+02:00"}}
   ]
 }
 </script>
@@ -3362,7 +3369,7 @@
   "@context":"https://schema.org",
   "@type":"FAQPage",
   "mainEntity":[
-    {"@type":"Question","name":"How much does it cost and what does the price depend on?","acceptedAnswer":{"@type":"Answer","text":"The price of every service is shown on its card in the “Services and prices” section. Within a range, the figure depends on the number of scenario branches, the integrations needed and whether texts and photos are ready. We name the exact amount within a day of your request, before work starts."}},
+    {"@type":"Question","name":"How much does it cost and what does the price depend on?","acceptedAnswer":{"@type":"Answer","text":"The price of every service is shown on its card in the “Services and prices” section. It is quoted “from $X” — that is the starting amount, and the final figure depends on the number of scenario branches, the integrations needed and whether texts and photos are ready. We name the exact amount within a day of your request, before work starts."}},
     {"@type":"Question","name":"How long does the launch take?","acceptedAnswer":{"@type":"Answer","text":"A basic bot takes 2–3 days, a one-page website up to a week, an AI agent or extended website 1–2 weeks, a Telegram Mini App 2–3 weeks. All we need from you is 10 minutes for a brief."}},
     {"@type":"Question","name":"Do you need my Instagram password?","acceptedAnswer":{"@type":"Answer","text":"No. The connection is official, through the Instagram button inside the service: you log in with your own account and press “allow”. We never see the password, and you can revoke access at any moment with one button."}},
     {"@type":"Question","name":"What happens if the bot does not understand a customer?","acceptedAnswer":{"@type":"Answer","text":"The bot does not invent an answer: it says it will pass the question to a human and leaves the message for the owner. Every bot has a “call a human” button."}},

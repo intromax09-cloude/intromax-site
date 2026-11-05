@@ -56,6 +56,10 @@ function localize(html, lang){
   rep(`<link rel="canonical" href="${SITE}/">`, `<link rel="canonical" href="${SITE}/${L.dir}/">`);
   rep(`<meta property="og:url" content="${SITE}/">`, `<meta property="og:url" content="${SITE}/${L.dir}/">`);
   rep('<meta property="og:locale" content="uk_UA">', `<meta property="og:locale" content="${L.locale}">`);
+  // og:locale:alternate: усі мови, крім поточної (у джерелі — en_US і ru_RU для uk_UA)
+  const alts = ['uk_UA', ...Object.values(LANGS).map(l => l.locale)].filter(x => x !== L.locale);
+  rep('<meta property="og:locale:alternate" content="en_US">\n<meta property="og:locale:alternate" content="ru_RU">',
+      alts.map(x => `<meta property="og:locale:alternate" content="${x}">`).join('\n'));
   // перемикач мов: поточна мова підсвічена
   s = s.replace(/ aria-current="page"/g, '');
   const cur = `href="/${L.dir}/" hreflang="${lang}"`;

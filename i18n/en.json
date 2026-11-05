@@ -161,7 +161,7 @@
 "Дошка заявок зі статусами й нагляд за тим, щоб вони туди доходили":"A lead board with statuses and making sure leads actually get there",
 "Пріоритетна відповідь у робочий день":"Priority reply on a working day",
 "Сезонні оновлення робимо самі, без нагадувань з вашого боку":"We do seasonal updates ourselves, without reminders from you",
-"Від чого залежить цифра в діапазоні:":"What decides the figure within the range:",
+"Від чого залежить підсумкова сума (рахуємо від стартової ціни «від $X»):":"What decides the final amount (counted from the starting price “from $X”):",
 "кількість гілок у сценарії, чи потрібна інтеграція з вашими сервісами, скільки сторінок і чи є готові тексти й фото. Дрібні правки на етапі розробки не тарифікуються.":"the number of branches in the script, whether integration with your services is needed, how many pages there are and whether texts and photos are ready. Minor changes during development are not charged.",
 "Бʼюті та косметологія":"Beauty and cosmetology",
 "Кондитерські й доставка":"Bakeries and delivery",
@@ -975,7 +975,7 @@
 "Калькулятор":"Calculator",
 "Далі: калькулятор":"Next: calculator",
 "Далі:":"Next:",
-". У діапазоні цифра залежить від кількості гілок сценарію, потрібних інтеграцій і того, чи є готові тексти й фото. Точну суму називаємо протягом доби після заявки, до початку роботи.":". Within a range, the figure depends on the number of scenario branches, the integrations needed and whether texts and photos are ready. We name the exact amount within a day of your request, before work starts.",
+". Вона вказана «від $X» — це стартова сума, а підсумок залежить від кількості гілок сценарію, потрібних інтеграцій і того, чи є готові тексти й фото. Точну суму називаємо протягом доби після заявки, до початку роботи.":". It is quoted “from $X” — that is the starting amount, and the final figure depends on the number of scenario branches, the integrations needed and whether texts and photos are ready. We name the exact amount within a day of your request, before work starts.",
 "«Послуги й ціни»":"“Services and prices”",
 "Ціна кожної послуги вказана в її картці в розділі":"The price of every service is shown on its card in the section",
 "Показуємо, як цим керувати":"We show you how to run it",
@@ -998,7 +998,7 @@
 "Біля кожної послуги її ціна, строк запуску й абонплата. Усе в одному місці, без окремої таблиці цін. Точну цифру називаємо протягом доби після заявки, і після старту роботи вона не змінюється.":"Every service shows its price, launch time and monthly fee right next to it. All in one place, no separate price table. We name the exact figure within a day of your request, and it does not change once work starts.",
 "ціни":"prices",
 "Усі послуги та їхні":"All services and their",
-"Ціна кожної послуги вказана в її картці в розділі «Послуги й ціни». У діапазоні цифра залежить від кількості гілок сценарію, потрібних інтеграцій і того, чи є готові тексти й фото. Точну суму називаємо протягом доби після заявки, до початку роботи.":"The price of every service is shown on its card in the “Services and prices” section. Within a range, the figure depends on the number of scenario branches, the integrations needed and whether texts and photos are ready. We name the exact amount within a day of your request, before work starts.",
+"Ціна кожної послуги вказана в її картці в розділі «Послуги й ціни». Вона вказана «від $X» — це стартова сума, а підсумок залежить від кількості гілок сценарію, потрібних інтеграцій і того, чи є готові тексти й фото. Точну суму називаємо протягом доби після заявки, до початку роботи.":"The price of every service is shown on its card in the “Services and prices” section. It is quoted “from $X” — that is the starting amount, and the final figure depends on the number of scenario branches, the integrations needed and whether texts and photos are ready. We name the exact amount within a day of your request, before work starts.",
 "Ваш продукт, ваш шлях: від брифу до здачі":"Your product, your path: from brief to handover",
 "Бриф":"Brief",
 "План і макет":"Plan and mockup",
@@ -1123,5 +1123,9 @@
 "від $120":"from $120",
 "від $440":"from $440",
 "від $310":"from $310",
-"від $550":"from $550"
+"від $550":"from $550",
+"Скріншот 1":"Screenshot 1",
+"Скріншот 2":"Screenshot 2",
+"Скріншот 3":"Screenshot 3",
+"Скріншот 4":"Screenshot 4"
 }
