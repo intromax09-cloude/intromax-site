@@ -1,0 +1,87 @@
+{
+  "$comment": "Приклад: усі назви, ціни й номери вигадані. Замініть своїми. Перевірка: npm run check-config",
+  "business": {
+    "name": "VetCare Demo",
+    "niche": "vet",
+    "address": "м. Харків, вул. Прикладна, 8",
+    "phone": "+380631234567",
+    "language": "uk"
+  },
+  "hours": {
+    "mon-fri": {
+      "open": "09:00",
+      "close": "19:00"
+    },
+    "sat": {
+      "open": "10:00",
+      "close": "16:00"
+    },
+    "sun": {
+      "open": "11:00",
+      "close": "15:00"
+    }
+  },
+  "booking": {
+    "stepMin": 15,
+    "minLeadMin": 60,
+    "horizonDays": 30,
+    "chooseMaster": true,
+    "autoConfirm": true,
+    "clientChangeMinHours": 3
+  },
+  "services": [
+    {
+      "id": "exam",
+      "name": "Первинний огляд",
+      "durationMin": 30,
+      "price": 400
+    },
+    {
+      "id": "vacc",
+      "name": "Вакцинація",
+      "durationMin": 15,
+      "price": 350
+    },
+    {
+      "id": "usg",
+      "name": "УЗД",
+      "durationMin": 30,
+      "price": 600,
+      "masters": [
+        "dr_k"
+      ]
+    },
+    {
+      "id": "dent",
+      "name": "Чистка зубів тварині",
+      "durationMin": 90,
+      "price": 2500,
+      "masters": [
+        "dr_k"
+      ]
+    }
+  ],
+  "masters": [
+    {
+      "id": "dr_k",
+      "name": "Др. Ковальчук"
+    },
+    {
+      "id": "dr_s",
+      "name": "Др. Савчук",
+      "hours": {
+        "sun": null
+      }
+    }
+  ],
+  "owner": {
+    "chatIds": []
+  },
+  "reminders": {
+    "beforeHours": [
+      24,
+      2
+    ],
+    "reviewUrl": "https://g.page/r/EXAMPLE/review"
+  }
+}

@@ -1,0 +1,9 @@
+# Локальный запуск: скопируйте в .dev.vars (файл в .gitignore) и запустите
+#   npx wrangler d1 migrations apply client-bot-db --local
+#   npx wrangler pages dev public
+# Значения ниже — заглушки для проверки; настоящий токен в локальный файл лучше не класть.
+TG_TOKEN=TEST_TOKEN_NOT_REAL
+WEBHOOK_SECRET=local_test_secret_0123456789abcdef
+TICK_SECRET=local_tick_secret_0123456789
+# TG_CHAT_ID=123456789          # владелец (если не задан в config.json)
+# TG_API_BASE=http://127.0.0.1:8799   # адрес мок-сервера вместо api.telegram.org: тогда в настоящий Telegram ничего не уходит

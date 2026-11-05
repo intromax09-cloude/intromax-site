@@ -1,0 +1,11 @@
+# Крон-воркер напоминаний. Деплой: cd cron-worker && npx wrangler deploy
+# Секрет задаётся командой: npx wrangler secret put TICK_SECRET   (то же значение, что в Pages)
+name = "client-bot-tick"                 # поменяйте на <клиент>-bot-tick
+main = "index.js"
+compatibility_date = "2025-01-01"
+
+[triggers]
+crons = ["*/5 * * * *"]
+
+[vars]
+TICK_URL = "https://CHANGE-ME.pages.dev/api/tick"

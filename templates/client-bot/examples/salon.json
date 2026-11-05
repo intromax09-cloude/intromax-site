@@ -1,0 +1,115 @@
+{
+  "$comment": "Приклад: усі назви, ціни й номери вигадані. Замініть своїми. Перевірка: npm run check-config",
+  "business": {
+    "name": "Beauty Studio Demo",
+    "niche": "salon",
+    "address": "м. Львів, пр. Прикладний, 5",
+    "phone": "+380671234567",
+    "timezone": "Europe/Kyiv",
+    "language": "uk"
+  },
+  "hours": {
+    "mon-fri": {
+      "open": "09:00",
+      "close": "20:00",
+      "breaks": [
+        {
+          "from": "14:00",
+          "to": "15:00"
+        }
+      ]
+    },
+    "sat": {
+      "open": "10:00",
+      "close": "17:00"
+    },
+    "sun": null
+  },
+  "booking": {
+    "stepMin": 30,
+    "minLeadMin": 120,
+    "horizonDays": 45,
+    "bufferMin": 0,
+    "chooseMaster": true,
+    "autoConfirm": false
+  },
+  "services": [
+    {
+      "id": "cutw",
+      "name": "Жіноча стрижка",
+      "durationMin": 60,
+      "price": 700,
+      "masters": [
+        "olena",
+        "kateryna"
+      ]
+    },
+    {
+      "id": "color",
+      "name": "Фарбування у один тон",
+      "durationMin": 150,
+      "price": 1800,
+      "masters": [
+        "olena"
+      ]
+    },
+    {
+      "id": "mani",
+      "name": "Манікюр із покриттям",
+      "durationMin": 120,
+      "price": 600,
+      "masters": [
+        "iryna"
+      ]
+    },
+    {
+      "id": "pedi",
+      "name": "Педикюр",
+      "durationMin": 90,
+      "price": 700,
+      "masters": [
+        "iryna"
+      ]
+    },
+    {
+      "id": "brows",
+      "name": "Корекція брів",
+      "durationMin": 30,
+      "price": 250
+    }
+  ],
+  "masters": [
+    {
+      "id": "olena",
+      "name": "Олена"
+    },
+    {
+      "id": "kateryna",
+      "name": "Катерина",
+      "hours": {
+        "mon": null,
+        "tue": null
+      }
+    },
+    {
+      "id": "iryna",
+      "name": "Ірина"
+    }
+  ],
+  "owner": {
+    "chatIds": []
+  },
+  "reminders": {
+    "beforeHours": [
+      24,
+      2
+    ],
+    "reviewUrl": "https://g.page/r/EXAMPLE/review"
+  },
+  "faq": [
+    {
+      "q": "Чи можна перенести запис?",
+      "a": "Так, у розділі «Мої записи» — не пізніше ніж за 2 години до візиту."
+    }
+  ]
+}
