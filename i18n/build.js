@@ -1,5 +1,6 @@
-// Збирає en/index.html і ru/index.html з index.html (українська версія — джерело).
-// Словники: i18n/en.json, i18n/ru.json — ключ = точний рядок з української версії.
+// Збирає en/ і ru/ версії з українських джерел: index.html і privacy.html (українська версія — джерело).
+// Словники: i18n/en.json, i18n/ru.json (головна) та i18n/privacy.en.json, i18n/privacy.ru.json (політика) —
+// ключ = точний рядок з української версії.
 // Падає, якщо для якогось рядка нема перекладу, і друкує список: так нова фраза
 // на сайті не вийде в інші мови непоміченою. Використання: node i18n/build.js
 'use strict';
@@ -8,7 +9,6 @@ const path = require('path');
 const {segments, runsOf, collect} = require('./extract.js');
 
 const ROOT = path.join(__dirname, '..');
-const SRC = path.join(ROOT, 'index.html');
 const SITE = 'https://intromax.com.ua';
 const LANGS = {
   en:{html:'en', locale:'en_US', dir:'en'},
@@ -44,7 +44,7 @@ function translate(html, dict, lang){
   return {out, missing:[...missing], unused:Object.keys(dict).filter(k => !used.has(k))};
 }
 
-function localize(html, lang){
+function localizeIndex(html, lang){
   const L = LANGS[lang];
   let s = html;
   const rep = (a, b, n = 1) => {
@@ -68,40 +68,77 @@ function localize(html, lang){
   s = s.split(cur).join(cur + ' aria-current="page"');
   // JSON-LD: адреса сторінки
   rep(`"url":"${SITE}/",`, `"url":"${SITE}/${L.dir}/",`);
+  // посилання на політику конфіденційності (футер і згоди у формі та чаті) — на мовну версію
+  rep('href="/privacy"', `href="/${L.dir}/privacy"`, 3);
   return s;
 }
 
+// Політика конфіденційності: canonical + hreflang-пара, посилання на головну ведуть на мовну головну.
+// Українську privacy.html не чіпаємо, тому зворотні hreflang для неї — у sitemap.xml, не в її <head>.
+function localizePrivacy(html, lang){
+  const L = LANGS[lang];
+  let s = html;
+  const rep = (a, b, n = 1) => {
+    const c = s.split(a).length - 1;
+    if(c !== n) throw new Error(`[${lang}] якір x${c}, очікував ${n}: ${a.slice(0, 80)}`);
+    s = s.split(a).join(b);
+  };
+  rep('<html lang="uk">', `<html lang="${L.html}">`);
+  rep(`<link rel="canonical" href="${SITE}/privacy">`, [
+    `<link rel="canonical" href="${SITE}/${L.dir}/privacy">`,
+    `<link rel="alternate" hreflang="uk" href="${SITE}/privacy">`,
+    `<link rel="alternate" hreflang="en" href="${SITE}/en/privacy">`,
+    `<link rel="alternate" hreflang="ru" href="${SITE}/ru/privacy">`,
+    `<link rel="alternate" hreflang="x-default" href="${SITE}/privacy">`
+  ].join('\n'));
+  rep('href="/"', `href="/${L.dir}/"`, 3); // логотип, «на головну», посилання в контактах
+  // Open Graph, якщо він є в джерелі: мова й адреса мають бути мовними, інакше лишаться uk_UA і /privacy
+  const og = (from, to) => { if(s.includes(from)) s = s.split(from).join(to); };
+  og('<meta property="og:locale" content="uk_UA">', `<meta property="og:locale" content="${L.locale}">`);
+  og(`<meta property="og:url" content="${SITE}/privacy">`, `<meta property="og:url" content="${SITE}/${L.dir}/privacy">`);
+  return s;
+}
+
+// Джерела: українська сторінка → файл у en/ і ru/, свої словники й своя локалізація.
+const PAGES = [
+  {src:'index.html',   file:'index.html',   dict: l => l + '.json',          localize: localizeIndex, checkImages:true},
+  {src:'privacy.html', file:'privacy.html', dict: l => 'privacy.' + l + '.json', localize: localizePrivacy}
+];
+
 function main(){
-  const html = fs.readFileSync(SRC, 'utf8');
-  if(/src="img\//.test(html) || /href="favicon-180\.png"/.test(html)){
-    throw new Error('у index.html є відносні шляхи до картинок: зроби їх абсолютними (/img/..., /favicon-180.png)');
-  }
   let failed = false;
-  for(const lang of Object.keys(LANGS)){
-    const dict = JSON.parse(fs.readFileSync(path.join(__dirname, lang + '.json'), 'utf8'));
-    const {out, missing, unused} = translate(html, dict, lang);
-    if(missing.length){
-      failed = true;
-      console.error(`\n[${lang}] без перекладу: ${missing.length}`);
-      missing.forEach(m => console.error('  ' + JSON.stringify(m)));
+  for(const page of PAGES){
+    const html = fs.readFileSync(path.join(ROOT, page.src), 'utf8');
+    if(page.checkImages && (/src="img\//.test(html) || /href="favicon-180\.png"/.test(html))){
+      throw new Error('у index.html є відносні шляхи до картинок: зроби їх абсолютними (/img/..., /favicon-180.png)');
     }
-    if(unused.length){
-      console.error(`\n[${lang}] у словнику є, на сторінці нема (застарілі ключі): ${unused.length}`);
-      unused.forEach(m => console.error('  ' + JSON.stringify(m)));
-    }
-    if(lang === 'en'){
-      const left = [...collect(out).keys()];
-      if(left.length){
+    for(const lang of Object.keys(LANGS)){
+      const dictFile = page.dict(lang);
+      const dict = JSON.parse(fs.readFileSync(path.join(__dirname, dictFile), 'utf8'));
+      const {out, missing, unused} = translate(html, dict, lang);
+      if(missing.length){
         failed = true;
-        console.error(`\n[en] кирилиця лишилась у результаті: ${left.length}`);
-        left.forEach(m => console.error('  ' + JSON.stringify(m)));
+        console.error(`\n[${lang}] ${page.src}: без перекладу: ${missing.length}`);
+        missing.forEach(m => console.error('  ' + JSON.stringify(m)));
       }
+      if(unused.length){
+        console.error(`\n[${lang}] ${dictFile}: у словнику є, на сторінці нема (застарілі ключі): ${unused.length}`);
+        unused.forEach(m => console.error('  ' + JSON.stringify(m)));
+      }
+      if(lang === 'en'){
+        const left = [...collect(out).keys()];
+        if(left.length){
+          failed = true;
+          console.error(`\n[en] ${page.src}: кирилиця лишилась у результаті: ${left.length}`);
+          left.forEach(m => console.error('  ' + JSON.stringify(m)));
+        }
+      }
+      if(missing.length) continue;
+      const dir = path.join(ROOT, LANGS[lang].dir);
+      fs.mkdirSync(dir, {recursive:true});
+      fs.writeFileSync(path.join(dir, page.file), page.localize(out, lang));
+      console.log(`${lang}/${page.file} зібрано, рядків перекладено: ${Object.keys(dict).length - unused.length}`);
     }
-    if(missing.length) continue;
-    const dir = path.join(ROOT, LANGS[lang].dir);
-    fs.mkdirSync(dir, {recursive:true});
-    fs.writeFileSync(path.join(dir, 'index.html'), localize(out, lang));
-    console.log(`${lang}/index.html зібрано, рядків перекладено: ${Object.keys(dict).length - unused.length}`);
   }
   if(failed) process.exit(1);
 }

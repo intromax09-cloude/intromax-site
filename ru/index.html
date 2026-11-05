@@ -2224,7 +2224,7 @@
     </div>
     <div class="foot-row">
       <div>© 2026 Intromax</div>
-      <div><a href="/privacy">Политика конфиденциальности</a></div>
+      <div><a href="/ru/privacy">Политика конфиденциальности</a></div>
       <nav class="lang" aria-label="Язык сайта"><a href="/" hreflang="uk">UA</a><a href="/en/" hreflang="en">EN</a><a href="/ru/" hreflang="ru" aria-current="page">RU</a></nav>
     </div>
   </div>
@@ -3095,7 +3095,7 @@
     html +=
         '<button type="submit" class="btn btn-primary lead-submit" id="lead-submit">Отправить заявку →</button>' +
         '<div id="lead-status" role="status" aria-live="polite"></div>' +
-        '<p class="lead-legal">Отправляя форму, вы соглашаетесь с <a href="/privacy" target="_blank" rel="noopener">политикой конфиденциальности</a>.</p>' +
+        '<p class="lead-legal">Отправляя форму, вы соглашаетесь с <a href="/ru/privacy" target="_blank" rel="noopener">политикой конфиденциальности</a>.</p>' +
       '</form>';
     pane.innerHTML = html;
     var pre = window.IMX_LEADPRE && window.IMX_LEADPRE[key];
@@ -4208,7 +4208,7 @@
     st.step = 'contact';
     setPh('+380… или @ник');
     return bot(['Куда ответить? Напишите телефон или @ник в Telegram.' +
-      '<span class="fine">Отправляя контакт, вы соглашаетесь с <a href="/privacy" target="_blank" rel="noopener">политикой конфиденциальности</a>.</span>'], [BACK]);
+      '<span class="fine">Отправляя контакт, вы соглашаетесь с <a href="/ru/privacy" target="_blank" rel="noopener">политикой конфиденциальности</a>.</span>'], [BACK]);
   }
   function validContact(v){
     return (v.replace(/\D/g, '').length >= 9 && v.replace(/[\d\s()+\-.]/g, '').length <= 3) || /@[A-Za-z0-9_]{4,}/.test(v) || /\S+@\S+\.\S+/.test(v);

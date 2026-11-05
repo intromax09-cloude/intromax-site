@@ -1,6 +1,7 @@
 // Витягує з index.html усі рядки з кирилицею, які треба перекласти:
 // текстові вузли HTML, значення атрибутів, рядкові літерали в <script>, JSON-LD.
 // Стилі (<style>) і коментарі не чіпає. Використання: node i18n/extract.js > i18n/strings.json
+// (для іншого джерела: node i18n/extract.js privacy.html > i18n/privacy.strings.json)
 'use strict';
 const fs = require('fs');
 const path = require('path');
@@ -114,7 +115,7 @@ function collect(html){
 module.exports = {segments, runsOf, collect};
 
 if(require.main === module){
-  const html = fs.readFileSync(SRC, 'utf8');
+  const html = fs.readFileSync(process.argv[2] ? path.resolve(process.argv[2]) : SRC, 'utf8');
   const map = collect(html);
   const obj = {};
   for(const [k] of map) obj[k] = '';
