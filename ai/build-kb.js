@@ -17,7 +17,7 @@ function text(part){
   return part
     .replace(/<(script|style|svg|button|form|canvas|template)\b[\s\S]*?<\/\1>/gi, '')
     .replace(/<!--[\s\S]*?-->/g, '')
-    // ціна запуску із закресленою звичайною: <b class="pr" data-full="$100–200"><s>$100–200</s>$70–140</b>
+    // ціна запуску із закресленою звичайною: <b class="pr" data-full="від 4 500 грн"><s>від 4 500 грн</s>від 3 100 грн</b>
     .replace(/<b class="pr" data-full="([^"]*)">(?:<s>[^<]*<\/s>)?([^<]*)<\/b>/g, '$2 (ціна запуску; звичайна $1)')
     // блоки, що діють лише до акції або лише після неї
     .replace(/(<[a-z0-9]+\b[^>]*\sdata-promo\b[^>]*>)/gi, '$1[до 31 грудня 2026] ')
@@ -31,7 +31,7 @@ function text(part){
     .replace(/[ \t]+/g, ' ')
     .split('\n').map(function(l){ return l.trim(); }).filter(Boolean)
     // одинокі цифри й службові підписи конструктора не несуть змісту
-    .filter(function(l){ return !/^(\$0|\d{2} \/ [a-zа-яі]+|Додати в комплект|Ваш комплект|Заявка|Зібрати пакет|Відкрити живий сайт ↗)$/i.test(l); })
+    .filter(function(l){ return !/^(0 грн|\d{2} \/ [a-zа-яі]+|Додати в комплект|Ваш комплект|Заявка|Зібрати пакет|Відкрити живий сайт ↗)$/i.test(l); })
     .join('\n')
     .replace(/\n(## |### )/g, '\n\n$1')
     .trim();
