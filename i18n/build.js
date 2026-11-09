@@ -7,6 +7,7 @@
 const fs = require('fs');
 const path = require('path');
 const {segments, runsOf, collect} = require('./extract.js');
+const currency = require('./currency.js');
 
 const ROOT = path.join(__dirname, '..');
 const SITE = 'https://intromax.com.ua';
@@ -70,6 +71,8 @@ function localizeIndex(html, lang){
   rep(`"url":"${SITE}/",`, `"url":"${SITE}/${L.dir}/",`);
   // посилання на політику конфіденційності (футер і згоди у формі та чаті) — на мовну версію
   rep('href="/privacy"', `href="/${L.dir}/privacy"`, 3);
+  // ціни: українська версія в гривні, en/ і ru/ — у доларах (правило й курс — i18n/currency.js)
+  s = currency.offersToUsd(currency.toUsd(s, lang));
   return s;
 }
 

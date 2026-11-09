@@ -1544,7 +1544,7 @@
         </div>
         <div class="cost pack-site"><b class="pr" data-full="від 4 900 грн">від 3 600 грн</b></div>
         <div class="was" data-promo>звичайна ціна <s>від 4 900 грн</s> · запуск до тижня</div>
-        <div class="was" data-after hidden>окремо вийшло б <s>від 6 700 грн</s> · запуск до тижня</div>
+        <div class="was" data-after hidden>окремо вийшло б <s>від 6 800 грн</s> · запуск до тижня</div>
         <button type="button" class="btn btn-primary btn-sm" data-lead="pack-site">Зібрати пакет</button>
       </div>
 
@@ -2247,6 +2247,19 @@
   </div>
 </footer>
 
+<script>
+/* ЦІНИ ЗА МОВОЮ. Єдина таблиця цін — у доларах (ITEMS конструктора); українська версія показує гривню
+   за курсом НБУ з округленням донизу (сума до тисячі — кроком 50, більша — кроком 100), en/ і ru/ — долари.
+   Курс читає й i18n/currency.js: ціни в текстах української версії мусять дорівнювати IMX_MONEY від доларової ціни,
+   тоді i18n/build.js сам перетворить їх на долари для en/ і ru/. */
+window.IMX_RATE = 45.4123;
+window.IMX_MONEY = function(usd){
+  if(!/^uk/.test(document.documentElement.lang || 'uk')) return '$' + usd;
+  var v = usd * window.IMX_RATE, s = v < 1000 ? 50 : 100;
+  v = Math.floor(v / s + 1e-9) * s;
+  return String(v).replace(/\B(?=(\d{3})+(?!\d))/g, '\u00a0') + '\u00a0\u0433\u0440\u043d';
+};
+</script>
 <script>
 /* ===========================================================================
    ВІДГУКИ
@@ -3485,9 +3498,8 @@
 
   function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
   function fmt(s, o){ return s.replace(/\{(\w+)\}/g, function(m, k){ return o[k] != null ? o[k] : m; }); }
-  /* суми в гривні: 14000 → «14 000» з нерозривним пробілом */
-  function uah(x){ return String(x).replace(/\B(?=(\d{3})+(?!\d))/g, '\u00a0'); }
-  function sums(r){ if(!r) return r; var o = {}; for(var k in r) o[k] = r[k]; ['lo','hi','wasLo','wasHi'].forEach(function(k){ if(o[k] != null) o[k] = uah(o[k]); }); return o; }
+  /* суми набору у валюті сторінки */
+  function sums(r){ if(!r) return r; var o = {}; for(var k in r) o[k] = r[k]; ['lo','hi','wasLo','wasHi'].forEach(function(k){ if(o[k] != null) o[k] = window.IMX_MONEY(o[k]); }); return o; }
   function pad(n){ n = +n; return (n < 10 ? '0' : '') + n; }
 
   /* ціни беремо з карток на сторінці: після 31 грудня там уже звичайні */
@@ -3831,7 +3843,7 @@
     var lines = set.map(function(k){ return '• ' + WHY[k]; }).join('\n');
     var texts = ['Ось що вам підійде:\n' + lines];
     var r = quote(set);
-    if(r) texts.push(fmt('Разом: від {lo} грн, запуск {term}.', sums(r)) + priceNote(r));
+    if(r) texts.push(fmt('Разом: від {lo}, запуск {term}.', sums(r)) + priceNote(r));
     texts.push('Це перший погляд. Точний склад і ціну назвемо після короткого брифу, разом із безкоштовним демо.');
     return bot(texts, [
       {t:'✍️ Замовити цей набір', go:'lead', topic:'Підбір: ' + names(set).join(', '), wide:true},
@@ -3850,8 +3862,8 @@
   }
   function priceNote(r){
     if(window.IMX_PROMO) return r.pack ? fmt(' Це ціна пакета «{pack}» до 31 грудня.', r)
-      : fmt(' Звичайна ціна від {wasLo} грн, ціна запуску діє до 31 грудня.', sums(r));
-    return r.pct ? fmt(' Окремо вийшло б від {wasLo} грн, економія до {pct}%.', sums(r)) : '';
+      : fmt(' Звичайна ціна від {wasLo}, ціна запуску діє до 31 грудня.', sums(r));
+    return r.pct ? fmt(' Окремо вийшло б від {wasLo}, економія до {pct}%.', sums(r)) : '';
   }
   function calcStart(pre){
     var K = kit();
@@ -3870,11 +3882,11 @@
         el.classList.toggle('on', st.calc[it.k]);
         el.setAttribute('aria-pressed', st.calc[it.k] ? 'true' : 'false');
         var sum = el.parentNode.querySelector('[data-sum]'), r = quote(chosen());
-        if(sum) sum.textContent = r ? fmt('✅ Порахувати: від {lo} грн', sums(r)) : '✅ Порахувати';
+        if(sum) sum.textContent = r ? fmt('✅ Порахувати: від {lo}', sums(r)) : '✅ Порахувати';
       }, k:it.k};
     });
     var r0 = quote(chosen());
-    btns.push({t: r0 ? fmt('✅ Порахувати: від {lo} грн', sums(r0)) : '✅ Порахувати', go:'calc-done', wide:true, sum:true});
+    btns.push({t: r0 ? fmt('✅ Порахувати: від {lo}', sums(r0)) : '✅ Порахувати', go:'calc-done', wide:true, sum:true});
     btns.push(BACK);
     return bot(['Позначте потрібні послуги, і я порахую ціну набору з урахуванням знижки.'], btns);
   }
@@ -3883,7 +3895,7 @@
     var set = chosen(), r = quote(set);
     if(!r) return bot(['Позначте хоча б одну послугу.'], null).then(function(){ return calcStart(); });
     remember('keys', set);
-    return bot([fmt('Набір: {list}.\nРазом: від {lo} грн, запуск {term}.', {list:names(set).join(', '), lo:uah(r.lo), hi:uah(r.hi), term:r.term}) + priceNote(r)], [
+    return bot([fmt('Набір: {list}.\nРазом: від {lo}, запуск {term}.', {list:names(set).join(', '), lo:window.IMX_MONEY(r.lo), hi:window.IMX_MONEY(r.hi), term:r.term}) + priceNote(r)], [
       {t:'✍️ Замовити цей набір', go:'lead', topic:'Набір: ' + names(set).join(', '), wide:true},
       {t:'🧮 Відкрити в конструкторі', go:'kit', keys:set},
       {t:'✏️ Змінити набір', go:'calc', keys:set},
@@ -3901,7 +3913,7 @@
     var set = NICHE_SET[st.niche], r = quote(set);
     remember('keys', set);
     var texts = ['Для ніші «' + nicheName(st.niche) + '» зазвичай починають із цього:\n' + set.map(function(x){ return '• ' + WHY[x]; }).join('\n')];
-    if(r) texts.push(fmt('Разом: від {lo} грн, запуск {term}.', sums(r)) + priceNote(r));
+    if(r) texts.push(fmt('Разом: від {lo}, запуск {term}.', sums(r)) + priceNote(r));
     return bot(texts, [
       {t:'✍️ Замовити цей набір', go:'lead', topic:'Набір для ніші: ' + names(set).join(', '), wide:true},
       {t:'🧮 Відкрити в конструкторі', go:'kit', keys:set},
@@ -5028,25 +5040,25 @@ window.IMX3D = {
 
   /* ціни — ті самі, що в секціях «Послуги» та «Ціни» */
   var ITEMS = [
-    {k:'ig-bot', n:'Бот у Direct', lo:3100, hi:6300, flo:4500, fhi:9000, term:'2–3 дні', extra:'+ від 450 грн/міс',
+    {k:'ig-bot', n:'Бот у Direct', lo:70, hi:140, flo:100, fhi:200, term:'2–3 дні', extra:'+ від 450 грн/міс',
       d:'Відповідає на часті запитання, показує ціни й записує контакт, поки у вас зайняті руки.',
       ico:'<rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/>'},
-    {k:'tg-bot', n:'Telegram-бот', lo:3100, hi:5900, flo:4500, fhi:8100, term:'2–3 дні', extra:'або від +1 800 грн до бота в Direct', fextra:'або від +2 200 грн до бота в Direct',
+    {k:'tg-bot', n:'Telegram-бот', lo:70, hi:130, flo:100, fhi:180, term:'2–3 дні', extra:'або від +1 800 грн до бота в Direct', fextra:'або від +2 200 грн до бота в Direct',
       d:'Меню, прайс, запис і розсилка клієнтам із вашої бази без ризику блокування. Заявки надходять у робочий чат.',
       ico:'<path d="M21 4.5 3.5 11l5 1.8L19 6.8l-7.8 7.3.4 5 2.6-3.3 4.2 3.1z"/>'},
-    {k:'ai-agent', n:'AI-агент', lo:8100, hi:12700, flo:11300, fhi:18100, term:'1–2 тижні', extra:'+ 1 800 грн/міс',
+    {k:'ai-agent', n:'AI-агент', lo:180, hi:280, flo:250, fhi:400, term:'1–2 тижні', extra:'+ 1 800 грн/міс',
       d:'Розуміє живу мову і голосові з помилками. Відповідає за вашим прайсом, а чого не знає, передає вам.',
       ico:'<rect x="4" y="7" width="16" height="12" rx="4"/><path d="M12 3v4M9 13h.01M15 13h.01M9.5 16.5h5"/>'},
-    {k:'site', n:'Сайт-візитка', lo:3100, hi:6300, flo:4500, fhi:9000, term:'до тижня', extra:'+ від 450 грн/міс',
+    {k:'site', n:'Сайт-візитка', lo:70, hi:140, flo:100, fhi:200, term:'до тижня', extra:'+ від 450 грн/міс',
       d:'Послуги, ціни, відповіді на питання і форма заявки, яка надходить вам у Telegram.',
       ico:'<rect x="3" y="4" width="18" height="16" rx="3"/><path d="M3 9h18M7 6.5h.01M10 6.5h.01"/>'},
-    {k:'site-pro', n:'Розширений сайт / магазин', lo:6300, hi:11300, flo:9000, fhi:15800, term:'1–2 тижні', extra:'+ від 900 грн/міс',
+    {k:'site-pro', n:'Розширений сайт / магазин', lo:140, hi:250, flo:200, fhi:350, term:'1–2 тижні', extra:'+ від 900 грн/міс',
       d:'Каталог або магазин із кошиком і оплатою, окремі форми під кожну послугу, запис із підтвердженням і базове SEO.',
       ico:'<rect x="3" y="4" width="18" height="16" rx="3"/><path d="M3 9h18M7.5 13h4M7.5 16.5h9M14.5 13h2"/>'},
-    {k:'automation', n:'Автоматизація процесів', lo:3100, hi:9000, flo:4500, fhi:13600, term:'від 1 дня', extra:'за сценарій',
+    {k:'automation', n:'Автоматизація процесів', lo:70, hi:200, flo:100, fhi:300, term:'від 1 дня', extra:'за сценарій',
       d:'Заявка сама потрапляє в CRM, таблицю або дошку зі статусами, вам надходить сповіщення, клієнт отримує нагадування за добу.',
       ico:'<circle cx="6" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><circle cx="6" cy="18" r="2.5"/><path d="M8.5 6h5a4 4 0 0 1 4 4v5.5M6 8.5v7"/>'},
-    {k:'tma', n:'Telegram Mini App', lo:8100, hi:12700, flo:11300, fhi:18100, term:'2–3 тижні', extra:'+ від 900 грн/міс',
+    {k:'tma', n:'Telegram Mini App', lo:180, hi:280, flo:250, fhi:400, term:'2–3 тижні', extra:'+ від 900 грн/міс',
       d:'Застосунок усередині Telegram: запис, каталог із кошиком і оплатою, кабінет клієнта з бонусами, панель власника.',
       ico:'<rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M10.5 5h3M9.5 13l5-2.2-2.2 5-0.6-2.2z"/>'},
     {k:'support', n:'Підтримка вже готового', direct:true, price:'450–2 200 грн / міс', term:'щомісяця, за бажанням',
@@ -5075,8 +5087,9 @@ window.IMX3D = {
     dots.appendChild(document.createElement('i'));
   });
 
-  function round100(x){ return Math.floor(x / 100) * 100; }
-  function uah(x){ return String(x).replace(/\B(?=(\d{3})+(?!\d))/g, '\u00a0'); }
+  function round10(x){ return Math.round(x / 10) * 10; }
+  /* ціна у валюті сторінки: таблиця в доларах, українська версія — гривня (див. «ЦІНИ ЗА МОВОЮ») */
+  function showPrice(x){ return window.IMX_MONEY(x); }
   function keys(){ return ITEMS.filter(function(it){ return picked[it.k]; }); }
 
   /* знижка росте з кількістю послуг: 2 — до 15%, далі +5% за кожну наступну (3 — 20%, 4 — 25%, 5 — 30%).
@@ -5094,23 +5107,23 @@ window.IMX3D = {
     if(n === 2 && has('ig-bot') && has('tg-bot')){
       /* Telegram як доповнення до бота в Direct — окрема ціна, без відсотка */
       r.term = '3–5 днів';
-      if(PROMO){ r.lo = 4900; r.hi = 9000; r.note = 'Telegram до бота в Direct: від +1 800 грн'; }
-      else { r.lo = 6800; r.hi = 12700; r.note = 'Telegram-бот до бота в Direct: від +2 200 грн'; }
+      if(PROMO){ r.lo = 110; r.hi = 200; r.note = 'Telegram до бота в Direct: від +1 800 грн'; }
+      else { r.lo = 150; r.hi = 280; r.note = 'Telegram-бот до бота в Direct: від +2 200 грн'; }
       return r;
     }
     if(PROMO){
       /* до 31 грудня: ціни запуску на кожну послугу і ще 10% за дві й більше.
          Комплекти, що збігаються з пакетами «Старт» і «Система», коштують як ці пакети */
       r.pct = 10;
-      r.lo = round100(lo * 0.9); r.hi = round100(hi * 0.9);
-      if(n === 2 && has('ig-bot') && has('site')){ r.lo = 5400; r.hi = 10800; r.pack = 'Старт'; }
-      if(n === 3 && has('ai-agent') && has('site-pro') && has('automation')){ r.lo = 14000; r.hi = 26300; r.pack = 'Система'; }
+      r.lo = round10(lo * 0.9); r.hi = round10(hi * 0.9);
+      if(n === 2 && has('ig-bot') && has('site')){ r.lo = 120; r.hi = 240; r.pack = 'Старт'; }
+      if(n === 3 && has('ai-agent') && has('site-pro') && has('automation')){ r.lo = 310; r.hi = 580; r.pack = 'Система'; }
       return r;
     }
     r.pct = Math.min(30, 15 + (n - 2) * 5);
-    r.lo = round100(lo * (1 - r.pct / 100));
-    r.hi = round100(hi * (1 - r.pct / 100));
-    if(n === 2 && has('ig-bot') && has('site')){ r.lo = 7700; r.hi = 14900; }
+    r.lo = round10(lo * (1 - r.pct / 100));
+    r.hi = round10(hi * (1 - r.pct / 100));
+    if(n === 2 && has('ig-bot') && has('site')){ r.lo = 170; r.hi = 330; }
     return r;
   }
 
@@ -5119,7 +5132,7 @@ window.IMX3D = {
     elList.innerHTML = '';
     sel.forEach(function(it){
       var li = document.createElement('li');
-      li.innerHTML = it.n + '<span>від ' + uah(it.lo) + ' грн</span>';
+      li.innerHTML = it.n + '<span>від ' + showPrice(it.lo) + '</span>';
       var x = document.createElement('button');
       x.type = 'button'; x.setAttribute('aria-label', 'Прибрати: ' + it.n); x.innerHTML = '&times;';
       x.addEventListener('click', function(){ toggle(it.k); });
@@ -5127,20 +5140,20 @@ window.IMX3D = {
       elList.appendChild(li);
     });
     if(!r){
-      elTotal.textContent = '0 грн';
+      elTotal.textContent = showPrice(0);
       elWas.textContent = 'Додайте першу послугу, і тут зʼявиться ціна.';
       elSave.hidden = true;
       btnGo.disabled = true; btnGo.removeAttribute('data-lead'); btnGo.removeAttribute('data-items');
       return;
     }
-    elTotal.textContent = 'від ' + uah(r.lo) + ' грн';
+    elTotal.textContent = 'від ' + showPrice(r.lo);
     if(PROMO){
-      elWas.innerHTML = 'звичайна ціна <s>від ' + uah(r.wasLo) + ' грн</s> · запуск ' + r.term;
+      elWas.innerHTML = 'звичайна ціна <s>від ' + showPrice(r.wasLo) + '</s> · запуск ' + r.term;
       elSave.textContent = r.note || (r.pack ? 'ціна пакета «' + r.pack + '» до 31 грудня'
         : (r.pct ? 'ціна запуску та ще −' + r.pct + '% за комплект' : 'ціна запуску до 31 грудня'));
       elSave.hidden = false;
     } else if(r.pct){
-      elWas.innerHTML = 'окремо вийшло б <s>від ' + uah(r.wasLo) + ' грн</s> · запуск ' + r.term;
+      elWas.innerHTML = 'окремо вийшло б <s>від ' + showPrice(r.wasLo) + '</s> · запуск ' + r.term;
       elSave.textContent = 'економія до ' + r.pct + '%'; elSave.hidden = false;
     } else {
       elWas.textContent = (r.note ? r.note + ' · ' : '') + 'запуск ' + r.term;
@@ -5160,8 +5173,8 @@ window.IMX3D = {
     elTitle.textContent = it.n;
     elDesc.textContent = it.d;
     if(it.direct) elPrice.textContent = it.price;
-    else if(PROMO) elPrice.innerHTML = '<s>від ' + uah(it.flo) + ' грн</s>від ' + uah(it.lo) + ' грн';
-    else elPrice.textContent = 'від ' + uah(it.lo) + ' грн';
+    else if(PROMO) elPrice.innerHTML = '<s>від ' + showPrice(it.flo) + '</s>від ' + showPrice(it.lo);
+    else elPrice.textContent = 'від ' + showPrice(it.lo);
     elTerm.textContent = (it.extra ? it.extra + ' · ' : '') + (it.direct ? it.term : 'запуск ' + it.term);
     fallback.innerHTML = '<svg viewBox="0 0 24 24">' + it.ico + '</svg>';
     if(it.direct){

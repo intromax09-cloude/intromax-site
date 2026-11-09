@@ -37,7 +37,18 @@ function text(part){
     .trim();
 }
 
-const site = text(html.slice(from, to));
+// ціни в базі — гривня з української версії, а поруч у квадратних дужках долари для en/ і ru/
+// (правило й курс — i18n/currency.js): «від 3 100 грн» → «від 3 100 грн [$70]»;
+// сума без доларового відповідника лишається як є
+const currency = require('../i18n/currency.js');
+function withUsd(t){
+  return t.replace(currency.PRICE, function(all, sign, a, b){
+    const x = currency.uahToUsd(+a.replace(/\D/g, '')), y = b ? currency.uahToUsd(+b.replace(/\D/g, '')) : 0;
+    return x == null || y == null ? all : all + ' [' + sign + '$' + x + (b ? '–' + y : '') + ']';
+  });
+}
+
+const site = withUsd(text(html.slice(from, to)));
 const about = fs.readFileSync(path.join(__dirname, 'about.md'), 'utf8')
   .replace(/^# .*\n+[\s\S]*?\n(?=## )/, ''); // без заголовка й службового пояснення
 
