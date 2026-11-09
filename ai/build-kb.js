@@ -26,6 +26,8 @@ function text(part){
     .replace(/<(li)\b[^>]*>/gi, '\n- ')
     .replace(/<(br|\/p|\/h\d|\/div|\/tr|\/summary|\/li|\/details)\b[^>]*>/gi, '\n')
     .replace(/<td\b[^>]*>/gi, ' | ')
+    // підписи біля ціни (<b>ціна</b><span>…</span>) — через пробіл, інакше «300 грнзараховуємо»
+    .replace(/<\/(b|span)>(?=<span\b)/gi, '</$1> ')
     .replace(/<[^>]+>/g, '')
     .replace(/&[#a-z0-9]+;/gi, function(e){ return e in ENT ? ENT[e] : e; })
     .replace(/[ \t]+/g, ' ')

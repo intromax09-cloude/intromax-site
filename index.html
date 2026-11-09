@@ -1515,6 +1515,23 @@
           <button type="button" class="btn btn-ghost btn-sm" data-lead="tma">Заявка</button>
         </div>
       </div>
+
+      <div class="svc bloom" data-svc="audit">
+        <div class="svc-ico"><svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 20.5 20.5M7.5 10.5h6M10.5 7.5v6"/></svg></div>
+        <h3>Аудит Instagram і сайту</h3>
+        <p>Дивимось на ваш бізнес очима клієнта: тільки те, що видно ззовні. Доступи й вивантаження від вас не потрібні.</p>
+        <ul>
+          <li>Як швидко відповідаєте в Direct: пишемо вам як звичайний клієнт</li>
+          <li>Чи є в шапці профілю посилання на запис і ціни</li>
+          <li>Що бачить клієнт уночі та у вихідні</li>
+          <li>Порівняння з трьома конкурентами у вашому місті</li>
+          <li>Результат на одному екрані: де губляться заявки і що поправити</li>
+        </ul>
+        <div class="svc-foot">
+          <div class="svc-cost"><b class="pr">від 300 грн</b><span>зараховуємо в проєкт, якщо замовите його в нас</span><span class="svc-term">готово за 1 день</span></div>
+          <button type="button" class="btn btn-ghost btn-sm" data-lead="audit">Заявка</button>
+        </div>
+      </div>
     </div>
 
     <div class="packs">
@@ -2132,6 +2149,7 @@
                 <option>Автоматизація процесів (n8n)</option>
               </optgroup>
               <optgroup label="Пакети">
+                <option>Аудит Instagram і сайту</option>
                 <option>Пакет «Старт»</option>
                 <option>Пакет «Сайт + панель заявок»</option>
                 <option>Пакет «Система»</option>
@@ -2987,6 +3005,17 @@ window.IMX_MONEY = function(usd){
         {t:'text', name:'example', label:'Сайт, який вам подобається', ph:'Посилання — необов\u2019язково'}
       ]
     },
+    'audit':{
+      title:'Аудит Instagram і сайту',
+      sub:'Дайте посилання, решту подивимось самі: за день покажемо, де губляться заявки.',
+      icon:'<circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 20.5 20.5M7.5 10.5h6M10.5 7.5v6"/>',
+      fields:[
+        {t:'text', name:'niche', label:'Сфера бізнесу й місто', ph:'Наприклад: салон краси, Львів', req:true},
+        {t:'text', name:'ig', label:'Ваш Instagram', ph:'@назва або посилання', req:true},
+        {t:'text', name:'site', label:'Сайт', ph:'Посилання — необов\u2019язково'},
+        {t:'text', name:'rivals', label:'Конкуренти, з якими порівняти', ph:'Необов\u2019язково — підберемо самі'}
+      ]
+    },
     'automation':{
       title:'Автоматизація процесів',
       sub:'Опишіть ланцюжок, який зараз робиться вручну — з нього й почнемо.',
@@ -3391,6 +3420,7 @@ window.IMX_MONEY = function(usd){
     {"@type":"Offer","name":"Telegram Mini App","priceSpecification":{"@type":"PriceSpecification","priceCurrency":"UAH","minPrice":8100,"validThrough":"2026-12-31T23:59:59+02:00"}},
     {"@type":"Offer","name":"Сайт-візитка","priceSpecification":{"@type":"PriceSpecification","priceCurrency":"UAH","minPrice":3100,"validThrough":"2026-12-31T23:59:59+02:00"}},
     {"@type":"Offer","name":"Розширений сайт або магазин","priceSpecification":{"@type":"PriceSpecification","priceCurrency":"UAH","minPrice":6300,"validThrough":"2026-12-31T23:59:59+02:00"}},
+    {"@type":"Offer","name":"Аудит Instagram і сайту","priceSpecification":{"@type":"PriceSpecification","priceCurrency":"UAH","minPrice":300}},
     {"@type":"Offer","name":"Пакет «Сайт + панель заявок»","priceSpecification":{"@type":"PriceSpecification","priceCurrency":"UAH","minPrice":3600,"validThrough":"2026-12-31T23:59:59+02:00"}},
     {"@type":"Offer","name":"Автоматизація процесів на n8n","priceSpecification":{"@type":"PriceSpecification","priceCurrency":"UAH","minPrice":3100,"validThrough":"2026-12-31T23:59:59+02:00"}}
   ]
@@ -3622,6 +3652,7 @@ window.IMX_MONEY = function(usd){
       '\nСайт-візитка: ' + svc('site') +
       '\nРозширений сайт / магазин: ' + svc('site-pro') +
       '\nАвтоматизація: ' + svc('automation') + ' за сценарій' +
+      '\nАудит Instagram і сайту: ' + svc('audit') + ', готово за 1 день' +
       '\nПакет «Старт»: ' + packStart() +
       '\nПакет «Сайт + панель заявок»: ' + pr('.packs .pack-site .pr'),
       'Оплата етапами: частина на старті, решта після робочого результату. Позначте потрібні послуги, і я порахую ціну набору зі знижкою.'

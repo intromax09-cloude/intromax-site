@@ -1515,6 +1515,23 @@
           <button type="button" class="btn btn-ghost btn-sm" data-lead="tma">Request</button>
         </div>
       </div>
+
+      <div class="svc bloom" data-svc="audit">
+        <div class="svc-ico"><svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 20.5 20.5M7.5 10.5h6M10.5 7.5v6"/></svg></div>
+        <h3>Instagram and website audit</h3>
+        <p>We look at your business through a customer’s eyes: only what is visible from the outside. No access or data exports needed from you.</p>
+        <ul>
+          <li>How fast you reply in Direct: we message you as an ordinary customer</li>
+          <li>Whether the profile bio has a booking link and prices</li>
+          <li>What a customer sees at night and on weekends</li>
+          <li>Comparison with three competitors in your city</li>
+          <li>The result fits on one screen: where leads get lost and what to fix</li>
+        </ul>
+        <div class="svc-foot">
+          <div class="svc-cost"><b class="pr">from $7</b><span>credited towards the project if you order it from us</span><span class="svc-term">ready in 1 day</span></div>
+          <button type="button" class="btn btn-ghost btn-sm" data-lead="audit">Request</button>
+        </div>
+      </div>
     </div>
 
     <div class="packs">
@@ -2132,6 +2149,7 @@
                 <option>Process automation (n8n)</option>
               </optgroup>
               <optgroup label="Packages">
+                <option>Instagram and website audit</option>
                 <option>“Start” package</option>
                 <option>“Website + lead panel” package</option>
                 <option>“System” package</option>
@@ -2987,6 +3005,17 @@ window.IMX_MONEY = function(usd){
         {t:'text', name:'example', label:'A website you like', ph:'Link, optional'}
       ]
     },
+    'audit':{
+      title:'Instagram and website audit',
+      sub:'Give us the links and we will check the rest ourselves: within a day we will show where leads get lost.',
+      icon:'<circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 20.5 20.5M7.5 10.5h6M10.5 7.5v6"/>',
+      fields:[
+        {t:'text', name:'niche', label:'Business type and city', ph:'For example: beauty salon, Lviv', req:true},
+        {t:'text', name:'ig', label:'Your Instagram', ph:'@name or link', req:true},
+        {t:'text', name:'site', label:'Website', ph:'Link, optional'},
+        {t:'text', name:'rivals', label:'Competitors to compare with', ph:'Optional — we will pick them ourselves'}
+      ]
+    },
     'automation':{
       title:'Process automation',
       sub:'Describe the chain that is done by hand now; that is where we start.',
@@ -3391,6 +3420,7 @@ window.IMX_MONEY = function(usd){
     {"@type":"Offer","name":"Telegram Mini App","priceSpecification":{"@type":"PriceSpecification","priceCurrency":"USD","minPrice":180,"validThrough":"2026-12-31T23:59:59+02:00"}},
     {"@type":"Offer","name":"One-page website","priceSpecification":{"@type":"PriceSpecification","priceCurrency":"USD","minPrice":70,"validThrough":"2026-12-31T23:59:59+02:00"}},
     {"@type":"Offer","name":"Extended website or online shop","priceSpecification":{"@type":"PriceSpecification","priceCurrency":"USD","minPrice":140,"validThrough":"2026-12-31T23:59:59+02:00"}},
+    {"@type":"Offer","name":"Instagram and website audit","priceSpecification":{"@type":"PriceSpecification","priceCurrency":"USD","minPrice":7}},
     {"@type":"Offer","name":"“Website + lead panel” package","priceSpecification":{"@type":"PriceSpecification","priceCurrency":"USD","minPrice":80,"validThrough":"2026-12-31T23:59:59+02:00"}},
     {"@type":"Offer","name":"n8n process automation","priceSpecification":{"@type":"PriceSpecification","priceCurrency":"USD","minPrice":70,"validThrough":"2026-12-31T23:59:59+02:00"}}
   ]
@@ -3622,6 +3652,7 @@ window.IMX_MONEY = function(usd){
       '\nOne-page website: ' + svc('site') +
       '\nExtended website / shop: ' + svc('site-pro') +
       '\nAutomation: ' + svc('automation') + ' per scenario' +
+      '\nInstagram and website audit: ' + svc('audit') + ', ready in 1 day' +
       '\n“Start” package: ' + packStart() +
       '\n“Website + lead panel” package: ' + pr('.packs .pack-site .pr'),
       'Payment in stages: part up front, the rest after a working result. Select the services you need and I will price the bundle with the discount.'

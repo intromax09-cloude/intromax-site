@@ -18,10 +18,12 @@ function usdToUah(usd){
   const v = usd * RATE, s = v < 1000 ? 50 : 100;
   return Math.floor(v / s + 1e-9) * s;
 }
-// найменша доларова сума, кратна 5, що дає саме цю гривневу
+// доларова сума, що дає саме цю гривневу: спершу найменша кратна 5 (так записані майже всі ціни),
+// інакше найменша ціла (дрібні послуги на кшталт аудиту: $7 → 300 грн)
 function uahToUsd(uah){
   if(uah === 0) return 0;
   for(let x = 5; x <= 20000; x += 5) if(usdToUah(x) === uah) return x;
+  for(let x = 1; x <= 20000; x++) if(usdToUah(x) === uah) return x;
   return null;
 }
 const num = s => +s.replace(/[\s ]/g, '');
