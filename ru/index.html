@@ -555,6 +555,10 @@
     content:'';position:absolute;inset:0;opacity:.07;
     background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
   }
+
+  /* точки під курсором: полотно над сіткою .grain, малює лише точки біля миші, на телефоні вимкнено */
+  #dot-glow{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;}
+  @media (hover:none),(pointer:coarse),(prefers-reduced-motion:reduce){#dot-glow{display:none;}}
   /* розділи чергуються відтінком, щоб сторінка не зливалась у суцільну темряву */
   .tint-amber{background:linear-gradient(180deg,rgba(242,169,60,.06),rgba(242,169,60,.012) 45%,transparent 80%);}
   .tint-plum{background:linear-gradient(180deg,rgba(168,154,236,.075),rgba(168,154,236,.015) 45%,transparent 80%);}
@@ -1297,6 +1301,7 @@
 </head>
 <body>
 <div class="grain"></div>
+<canvas id="dot-glow" aria-hidden="true"></canvas>
 
 <div id="intro">
   <div id="intro-logo">
@@ -5502,6 +5507,81 @@ window.IMX3D = {
     row.addEventListener('scroll', function(){ if(!tick){ tick = true; requestAnimationFrame(upd); } }, {passive:true});
     upd();
   });
+})();
+</script>
+<script>
+/* ТОЧКИ ПІД КУРСОРОМ. Сітка .grain::before: крок 30px, центри точок у (15+30i, 15+30j) від кута екрана.
+   Точки біля миші розгораються й гаснуть шлейфом. Колір — протилежний фону: на синьому фоні бурштин,
+   у розділах з бурштиновим відтінком (.tint-amber) — бузковий. Лише миша; телефон і reduced-motion — вимкнено. */
+(function(){
+  var cv = document.getElementById('dot-glow');
+  if (!cv || !cv.getContext) return;
+  var mq = window.matchMedia('(hover:hover) and (pointer:fine) and (prefers-reduced-motion:no-preference)');
+  if (!mq.matches) return;
+  var ctx = cv.getContext('2d');
+  var STEP = 30, OFF = 15, R = 170, DPR = 1;
+  var AMBER = [242,169,60], PLUM = [176,160,255];
+  var col = AMBER.slice(), target = AMBER;
+  var mx = -9999, my = -9999, sx = -9999, sy = -9999, on = false, raf = 0;
+  var energy = new Map();
+  function size(){
+    DPR = Math.min(window.devicePixelRatio || 1, 2);
+    cv.width = Math.round(innerWidth * DPR); cv.height = Math.round(innerHeight * DPR);
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  }
+  size(); addEventListener('resize', size);
+  function pickColor(){
+    var el = document.elementFromPoint(mx, my);
+    var sec = el && el.closest ? el.closest('section') : null;
+    target = sec && sec.classList.contains('tint-amber') ? PLUM : AMBER;
+  }
+  var lastPick = 0;
+  addEventListener('mousemove', function(e){
+    mx = e.clientX; my = e.clientY;
+    if (!on){ sx = mx; sy = my; on = true; }
+    var t = performance.now();
+    if (t - lastPick > 120){ lastPick = t; pickColor(); }
+    if (!raf) raf = requestAnimationFrame(frame);
+  }, {passive:true});
+  addEventListener('scroll', function(){ if (on){ pickColor(); if (!raf) raf = requestAnimationFrame(frame); } }, {passive:true});
+  document.addEventListener('mouseleave', function(){ on = false; if (!raf) raf = requestAnimationFrame(frame); });
+  function frame(){
+    raf = 0;
+    ctx.clearRect(0, 0, innerWidth, innerHeight);
+    for (var k = 0; k < 3; k++) col[k] += (target[k] - col[k]) * 0.08;
+    var c = Math.round(col[0]) + ',' + Math.round(col[1]) + ',' + Math.round(col[2]);
+    var fresh = 0;
+    if (on){
+      sx += (mx - sx) * 0.22; sy += (my - sy) * 0.22;
+      var i0 = Math.floor((sx - R - OFF) / STEP), i1 = Math.ceil((sx + R - OFF) / STEP);
+      var j0 = Math.floor((sy - R - OFF) / STEP), j1 = Math.ceil((sy + R - OFF) / STEP);
+      for (var i = i0; i <= i1; i++) for (var j = j0; j <= j1; j++){
+        var dx = OFF + i * STEP - sx, dy = OFF + j * STEP - sy;
+        var d = Math.sqrt(dx * dx + dy * dy);
+        if (d > R) continue;
+        var f = 1 - d / R; f = f * f * (3 - 2 * f);
+        var key = i + ':' + j;
+        if ((energy.get(key) || 0) < f) energy.set(key, f);
+        fresh++;
+      }
+    }
+    var alive = false;
+    energy.forEach(function(e, key){
+      var p = key.indexOf(':'), x = OFF + (+key.slice(0, p)) * STEP, y = OFF + (+key.slice(p + 1)) * STEP;
+      if (e > 0.35){
+        ctx.fillStyle = 'rgba(' + c + ',' + (e * 0.16).toFixed(3) + ')';
+        ctx.beginPath(); ctx.arc(x, y, 2 + e * 5, 0, 6.2832); ctx.fill();
+      }
+      ctx.fillStyle = 'rgba(' + c + ',' + Math.min(1, e * 1.1).toFixed(3) + ')';
+      ctx.beginPath(); ctx.arc(x, y, 1 + e * 1.6, 0, 6.2832); ctx.fill();
+      e *= 0.93;
+      if (e < 0.02) energy.delete(key); else { energy.set(key, e); alive = true; }
+    });
+    var moving = on && (Math.abs(mx - sx) > 0.3 || Math.abs(my - sy) > 0.3);
+    var tinting = Math.abs(col[0] - target[0]) + Math.abs(col[1] - target[1]) + Math.abs(col[2] - target[2]) > 1;
+    var steady = on && !moving && !tinting && energy.size <= fresh;
+    if (!steady && (alive || moving || (on && tinting))) raf = requestAnimationFrame(frame);
+  }
 })();
 </script>
 </body>
