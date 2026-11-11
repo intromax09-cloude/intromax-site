@@ -1,10 +1,14 @@
 /**
- * Тик по расписанию: напоминания клиентам (за 24 ч и за 2 ч), просьба об отзыве после визита, уборка старых данных.
+ * Тик по расписанию: напоминания клиентам (за 24 ч и за 2 ч), просьба об отзыве после визита, уборка старых данных,
+ * а для поддержки Intromax — проверка сайта клиента (monitor.js) и ежемесячный отчёт владельцу 1-го числа (report.js).
  * Запускается кроном (см. cron-worker/) каждые 5 минут: POST /api/tick с заголовком X-Tick-Secret.
  * Повторов нет: каждое напоминание сначала «захватывается» в reminders_log, и только потом отправляется.
  */
 import { planReminders, tickWindow } from './reminders.js';
-import { appointmentsForTick, logFor, claimReminder, finishReminder, purge } from './store.js';
+import { appointmentsForTick, logFor, claimReminder, finishReminder, purge, purgeSupport } from './store.js';
+import { runMonitor } from './monitor.js';
+import { runReport } from './report.js';
+import { safeError } from './bot.js';
 import { purgeOld } from './ratelimit.js';
 import { createCtx } from './ctx.js';
 import { dateLabel, hm, dateOf, relativeDay } from './format.js';
@@ -12,8 +16,12 @@ import { localDate } from './time.js';
 import { raw } from './texts.js';
 import { safeEqual } from './telegram.js';
 
-export async function runTick({ cfg, db, tg, now, doPurge }) {
-  const c = createCtx({ cfg, db, tg, now: () => now });
+/**
+ * fetchImpl — для проверки сайта (по умолчанию глобальный fetch); ownerExtra — chat id владельцев из TG_CHAT_ID.
+ * Блоки поддержки (сайт, отчёт, их уборка) изолированы: их сбой (например, не применена миграция 0002) не мешает напоминаниям.
+ */
+export async function runTick({ cfg, db, tg, now, doPurge, fetchImpl, ownerExtra }) {
+  const c = createCtx({ cfg, db, tg, now: () => now, ownerExtra });
   const out = { checked: 0, sent: 0, failed: 0, purged: false };
 
   if (cfg.reminders.enabled) {
@@ -32,9 +40,15 @@ export async function runTick({ cfg, db, tg, now, doPurge }) {
     }
   }
 
+  if (cfg.monitor.url) {
+    try { out.site = (await runMonitor(c, fetchImpl || ((...a) => fetch(...a)), now)).state; } catch (e) { console.error('tick monitor', safeError(e)); }
+  }
+  try { const r = await runReport(c, now); if (r) out.report = r; } catch (e) { console.error('tick report', safeError(e)); }
+
   if (doPurge) {
     await purge(db, now, cfg.privacy.retentionDays);
     await purgeOld(db, now);
+    try { await purgeSupport(db, now, cfg.privacy.retentionDays); } catch (e) { console.error('tick purge support', safeError(e)); }
     out.purged = true;
   }
   return out;
@@ -48,12 +62,13 @@ function reminderText(c, a, kind, now) {
   return c.t('reminder', { when, time: hm(cfg, a.start_ts), details: raw(c.details(a)) });
 }
 
-export async function handleTick({ request, env, cfg, tg, now }) {
+export async function handleTick({ request, env, cfg, tg, now, fetchImpl }) {
   if (request.method !== 'POST') return new Response('Method not allowed', { status: 405 });
   if (!env.TG_TOKEN || !env.TICK_SECRET || !env.DB) return new Response('Not configured', { status: 500 });
   const got = request.headers.get('X-Tick-Secret') || '';
   if (!(await safeEqual(got, env.TICK_SECRET))) return new Response('Forbidden', { status: 403 });
   const t = now();
-  const out = await runTick({ cfg, db: env.DB, tg, now: t, doPurge: new Date(t).getUTCMinutes() < 5 });
+  const ownerExtra = env.TG_CHAT_ID ? String(env.TG_CHAT_ID).split(',').map((x) => Number(x.trim())).filter(Boolean) : [];
+  const out = await runTick({ cfg, db: env.DB, tg, now: t, doPurge: new Date(t).getUTCMinutes() < 5, ownerExtra, fetchImpl });
   return new Response(JSON.stringify(out), { status: 200, headers: { 'Content-Type': 'application/json' } });
 }

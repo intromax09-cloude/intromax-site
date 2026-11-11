@@ -104,7 +104,7 @@ export function parseConfig(raw) {
   const errs = [];
   if (!isObj(raw)) throw new ConfigError(['корень config.json должен быть объектом { ... }']);
 
-  const known = ['business', 'hours', 'booking', 'services', 'masters', 'owner', 'reminders', 'limits', 'privacy', 'faq', 'texts'];
+  const known = ['business', 'hours', 'booking', 'services', 'masters', 'owner', 'reminders', 'limits', 'privacy', 'faq', 'texts', 'support', 'monitor', 'handoff'];
   for (const k of Object.keys(raw)) {
     if (k !== '$comment' && !known.includes(k)) errs.push(k + ': неизвестный раздел (возможна опечатка). Допустимы: ' + known.join(', '));
   }
@@ -247,6 +247,45 @@ export function parseConfig(raw) {
   const pv = isObj(raw.privacy) ? raw.privacy : {};
   const privacy = { retentionDays: num(pv.retentionDays, 'privacy.retentionDays', errs, { def: 730, min: 30, max: 3650, name: 'сколько дней хранить прошедшие записи' }) };
 
+  /* --- support: Intromax на поддержке (ежемесячный отчёт, копии тревог о сайте) --- */
+  const sp = isObj(raw.support) ? raw.support : {};
+  if (raw.support !== undefined && !isObj(raw.support)) errs.push('support: ожидается объект {"chatIds":[...],"report":true}');
+  if (sp.contact !== undefined && (typeof sp.contact !== 'string' || sp.contact.length > 60)) errs.push('support.contact: строка до 60 символов (например "@intromax_support"), или уберите поле');
+  const support = {
+    chatIds: parseChatIds(sp.chatIds, 'support.chatIds', errs),
+    contact: typeof sp.contact === 'string' ? sp.contact.trim().slice(0, 60) : '',
+    report: sp.report === undefined ? true : sp.report,
+    reportHour: num(sp.reportHour, 'support.reportHour', errs, { def: 10, min: 0, max: 23, name: 'час отправки отчёта 1-го числа' })
+  };
+  if (typeof support.report !== 'boolean') { errs.push('support.report: true или false'); support.report = true; }
+
+  /* --- monitor: проверка доступности сайта клиента из тика --- */
+  const mo = isObj(raw.monitor) ? raw.monitor : {};
+  if (raw.monitor !== undefined && !isObj(raw.monitor)) errs.push('monitor: ожидается объект {"url":"https://…"}');
+  let monUrl = '';
+  if (mo.url !== undefined && mo.url !== null && mo.url !== '') {
+    if (typeof mo.url !== 'string' || !/^https?:\/\/[^\s/]+\.[^\s]+$/.test(mo.url)) errs.push('monitor.url: адрес сайта вида https://example.com (или уберите поле, чтобы не проверять)');
+    else monUrl = mo.url;
+  }
+  let expectText = null;
+  if (mo.expectText !== undefined && mo.expectText !== null && mo.expectText !== '') {
+    if (typeof mo.expectText !== 'string' || mo.expectText.length > 100) errs.push('monitor.expectText: строка до 100 символов, которая должна быть на странице (или уберите поле)');
+    else expectText = mo.expectText;
+  }
+  const monitor = {
+    url: monUrl, expectText,
+    failAfter: num(mo.failAfter, 'monitor.failAfter', errs, { def: 2, min: 1, max: 10, name: 'сколько неудачных проверок подряд считать падением' }),
+    timeoutSec: num(mo.timeoutSec, 'monitor.timeoutSec', errs, { def: 10, min: 3, max: 25, name: 'сколько секунд ждать ответа сайта' }),
+    notifyOwner: mo.notifyOwner === undefined ? true : mo.notifyOwner
+  };
+  if (typeof monitor.notifyOwner !== 'boolean') { errs.push('monitor.notifyOwner: true или false'); monitor.notifyOwner = true; }
+
+  /* --- handoff: «Звʼязатися з адміністратором» --- */
+  const ho = isObj(raw.handoff) ? raw.handoff : {};
+  if (raw.handoff !== undefined && !isObj(raw.handoff)) errs.push('handoff: ожидается объект {"enabled":true}');
+  const handoff = { enabled: ho.enabled === undefined ? true : ho.enabled };
+  if (typeof handoff.enabled !== 'boolean') { errs.push('handoff.enabled: true или false'); handoff.enabled = true; }
+
   /* --- faq --- */
   const faq = [];
   if (raw.faq !== undefined && !Array.isArray(raw.faq)) errs.push('faq: ожидается список {"q":"…","a":"…"}');
@@ -273,7 +312,7 @@ export function parseConfig(raw) {
 
   /* ресурсы: мастера либо один безымянный «_» со своими (общими) часами */
   const cfg = {
-    business, hours, booking, masters, services, owner, reminders, limits, privacy, faq,
+    business, hours, booking, masters, services, owner, reminders, limits, privacy, faq, support, monitor, handoff,
     texts: buildTexts(language, niche, overrides),
     servicesById: Object.fromEntries(services.map((s) => [s.id, s])),
     mastersById: Object.fromEntries(masters.map((m) => [m.id, m])),

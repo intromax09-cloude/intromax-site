@@ -149,3 +149,59 @@ export async function purge(db, now, retentionDays) {
   await db.prepare('DELETE FROM clients WHERE tg_id NOT IN (SELECT client_id FROM appointments) AND updated_at < ?').bind(cut).run();
   await db.prepare('DELETE FROM sessions WHERE updated_at < ?').bind(now - SESSION_TTL_MS).run();
 }
+
+/* ---------- журнал событий для ежемесячного отчёта ---------- */
+const QUESTION_MAX = 300;
+const PERSONAL_KEEP_MS = 100 * 86400000;       // текст вопросов и chat id в журнале событий — не дольше 100 дней
+
+/** Вопрос клиента для журнала: обрезан, номера телефонов и длинные числа замаскированы. */
+export function maskQuestion(text) {
+  return String(text || '').replace(/\+?\d[\d\s()-]{5,}\d/g, '…').replace(/\s+/g, ' ').trim().slice(0, QUESTION_MAX);
+}
+
+/**
+ * Записать событие. Отчёт — не главное: если таблицы нет (миграция 0002 не применена) или база сбоит,
+ * основной сценарий (отмена, перенос, ответ клиенту) не должен падать.
+ */
+export async function logEvent(db, kind, now, { appointmentId = null, actor = null, chatId = null, text = null } = {}) {
+  try {
+    await db.prepare('INSERT INTO events (ts, kind, appointment_id, actor, chat_id, text) VALUES (?, ?, ?, ?, ?, ?)')
+      .bind(now, kind, appointmentId, actor, chatId, text == null ? null : maskQuestion(text)).run();
+  } catch (e) {
+    console.error('events', e && e.name);
+  }
+}
+
+/** Последний «неотвеченный вопрос» клиента не старше since — для выжимки при передаче человеку. */
+export async function lastQuestion(db, chatId, since) {
+  try {
+    const r = await db.prepare("SELECT text FROM events WHERE kind='unanswered' AND chat_id=? AND ts >= ? ORDER BY ts DESC, id DESC LIMIT 1").bind(chatId, since).first();
+    return r ? r.text : null;
+  } catch (e) { return null; }
+}
+
+/* ---------- передача человеку: сообщение у персонала → клиент ---------- */
+export async function saveRelay(db, chatId, messageId, clientId, now) {
+  if (!messageId) return;
+  await db.prepare('INSERT OR REPLACE INTO relays (chat_id, message_id, client_id, ts) VALUES (?, ?, ?, ?)').bind(chatId, messageId, clientId, now).run();
+}
+export async function relayTarget(db, chatId, messageId) {
+  const r = await db.prepare('SELECT client_id FROM relays WHERE chat_id=? AND message_id=?').bind(chatId, messageId).first();
+  return r ? r.client_id : null;
+}
+
+/** Ближайшая активная запись клиента (для выжимки оператору). */
+export async function nextForClient(db, clientId, now) {
+  return db.prepare(APPT_SELECT + "WHERE a.client_id=? AND a.status IN ('pending','confirmed') AND a.end_ts > ? ORDER BY a.start_ts LIMIT 1").bind(clientId, now).first();
+}
+
+/** Уборка таблиц поддержки: отдельно от purge(), чтобы бот без миграции 0002 продолжал работать. */
+export async function purgeSupport(db, now, retentionDays) {
+  const cut = now - retentionDays * 86400000;
+  const personal = now - PERSONAL_KEEP_MS;
+  await db.prepare('DELETE FROM events WHERE ts < ?').bind(cut).run();
+  await db.prepare('UPDATE events SET text=NULL, chat_id=NULL WHERE ts < ? AND (text IS NOT NULL OR chat_id IS NOT NULL)').bind(personal).run();
+  await db.prepare('DELETE FROM relays WHERE ts < ?').bind(now - 30 * 86400000).run();
+  await db.prepare('DELETE FROM uptime_checks WHERE ts < ?').bind(personal).run();
+  await db.prepare('DELETE FROM uptime_incidents WHERE end_ts IS NOT NULL AND end_ts < ?').bind(cut).run();
+}

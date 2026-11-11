@@ -105,6 +105,21 @@
   "privacy": {
     "retentionDays": 730
   },
+  "support": {
+    "chatIds": [],
+    "contact": "",
+    "report": true,
+    "reportHour": 10
+  },
+  "monitor": {
+    "url": "",
+    "failAfter": 2,
+    "timeoutSec": 10,
+    "notifyOwner": true
+  },
+  "handoff": {
+    "enabled": true
+  },
   "faq": [
     {
       "q": "Чи потрібно приходити заздалегідь?",

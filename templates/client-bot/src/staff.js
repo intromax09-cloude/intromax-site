@@ -4,7 +4,7 @@
  * Права: владелец (config.owner.chatIds + TG_CHAT_ID) управляет всем; мастер — только своими записями и своим временем.
  */
 import { getAppointment, updateAppointment, appointmentsInRange, blocksInRange, insertBlock, deleteBlock,
-  deleteBlocksInRange, setSession, clearSession, resetReminders, saveCard } from './store.js';
+  deleteBlocksInRange, setSession, clearSession, resetReminders, saveCard, logEvent } from './store.js';
 import { workSegments } from './slots.js';
 import { localDate, addDays, dayRange, utcToLocal } from './time.js';
 import { dateLabel, hm } from './format.js';
@@ -46,6 +46,7 @@ export async function onCardAction(c, u, action, id) {
   if (action === 'nn') { await c.answer(u.cb); await c.editMarkup(u.chat, u.mid, c.cardMarkup(a)); return; }
   if (action === 'noy') {
     await updateAppointment(c.db, a.id, { status: 'cancelled', cancelled_by: 'staff' }, now);
+    await logEvent(c.db, 'cancelled', now, { appointmentId: a.id, actor: 'staff' });
     const fresh = await getAppointment(c.db, a.id);
     await c.answer(u.cb, c.cfg.texts.staff_cancelled_note.replace(/<[^>]+>/g, ''));
     await c.refreshCards(fresh);
@@ -67,6 +68,7 @@ export async function finishStaffMove(c, u, sess, start, slot) {
   const ok = await updateAppointment(c.db, a.id, { start_ts: start, end_ts: slot.end, status: 'confirmed', booked_at: now }, now);
   if (!ok) { await c.answer(u.cb, c.cfg.texts.slot_taken.replace(/<[^>]+>/g, ''), true); return; }
   await resetReminders(c.db, a.id);
+  await logEvent(c.db, 'moved', now, { appointmentId: a.id, actor: 'staff' });
   await clearSession(c.db, u.chat);
   const fresh = await getAppointment(c.db, a.id);
   await c.show(u, c.t('staff_moved'), null);

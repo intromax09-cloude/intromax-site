@@ -5,9 +5,11 @@
  * Печатает все найденные проблемы разом; код выхода 1, если они есть.
  */
 import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import { parseConfig, ConfigError } from '../src/config.js';
 
-const file = process.argv[2] || new URL('../config.json', import.meta.url).pathname;
+/* fileURLToPath, а не URL.pathname: на Windows pathname даёт «/D:/…», и чтение падает с путём «D:\D:\…» (ENOENT) */
+const file = process.argv[2] || fileURLToPath(new URL('../config.json', import.meta.url));
 let raw;
 try { raw = JSON.parse(readFileSync(file, 'utf8')); }
 catch (e) { console.error('Не удалось прочитать ' + file + ': ' + (e.name === 'SyntaxError' ? 'это не корректный JSON (' + e.message + ')' : e.message)); process.exit(1); }
@@ -18,6 +20,9 @@ try {
   console.log('  ' + cfg.business.name + ' · ниша ' + cfg.business.niche + ' · язык ' + cfg.business.language + ' · пояс ' + cfg.business.timezone);
   console.log('  услуг: ' + cfg.services.length + ', мастеров: ' + cfg.masters.length + ', владельцев в конфиге: ' + owners + (owners ? '' : ' (задайте TG_CHAT_ID в окружении)'));
   console.log('  напоминания: ' + (cfg.reminders.enabled ? 'за ' + cfg.reminders.beforeHours.join(' ч и за ') + ' ч' : 'выключены') + (cfg.reminders.reviewUrl ? ', отзыв после визита' : ', без просьбы об отзыве'));
+  console.log('  поддержка: отчёт 1-го числа ' + (cfg.support.report ? 'в ' + cfg.support.reportHour + ':00' : 'выключен') + ', чатов Intromax: ' + cfg.support.chatIds.length +
+    ', мониторинг сайта: ' + (cfg.monitor.url ? cfg.monitor.url + ' (тревога после ' + cfg.monitor.failAfter + ' неудач подряд)' : 'выключен') +
+    ', передача человеку: ' + (cfg.handoff.enabled ? 'да' : 'нет'));
 } catch (e) {
   if (e instanceof ConfigError) { console.error(e.message); process.exit(1); }
   throw e;

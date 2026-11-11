@@ -7,6 +7,7 @@ import { getSession, clearSession } from './store.js';
 import { hit } from './ratelimit.js';
 import * as client from './client.js';
 import * as staff from './staff.js';
+import * as handoff from './handoff.js';
 
 /** Для журнала: только имя ошибки и обрезанный текст, где длинные числа (телефоны, id, токены) заменены на «#». */
 export function safeError(err) {
@@ -19,7 +20,8 @@ const CMD = {
   today: 'today', сьогодні: 'today', сегодня: 'today',
   tomorrow: 'tomorrow', завтра: 'tomorrow',
   block: 'block', блок: 'block',
-  id: 'id'
+  id: 'id',
+  admin: 'human', operator: 'human', human: 'human', адмін: 'human', админ: 'human', оператор: 'human', людина: 'human'
 };
 
 export function createBot(opts) {
@@ -69,19 +71,29 @@ async function onMessage(c, msg) {
   /* группы: только команды персонала в чате, который есть в config/окружении */
   if (msg.chat.type !== 'private') {
     if (cmd === 'id') return runCommand(c, u, cmd);                 // узнать id группы для config.json
+    if (!cmd && msg.reply_to_message && await handoff.relayFromStaff(c, msg)) return;   // ответ оператора клиенту
     if (c.isStaff(chatId) && (cmd === 'today' || cmd === 'tomorrow' || cmd === 'block')) return runCommand(c, u, cmd);
     return;
   }
-  if (cmd) return runCommand(c, u, cmd);
+  if (cmd && cmd !== 'human') return runCommand(c, u, cmd);
+  if (!cmd && msg.reply_to_message && await handoff.relayFromStaff(c, msg)) return;   // ответ оператора клиенту
 
   const sess = await getSession(c.db, chatId, c.now());
+  const staffChat = c.isStaff(chatId);
+  const human = c.cfg.handoff.enabled && !staffChat;
+  if (cmd === 'human') return human ? handoff.startHandoff(c, u, sess, null) : runCommand(c, u, 'start');
   if (msg.contact) {
     if (await client.onContact(c, u, sess, msg.contact)) return;
     return client.showMenu(c, u, false);
   }
-  if (text && await client.onText(c, u, sess, text)) return;
+  if (text && human && sess && sess.step === 'live') return handoff.relayFromClient(c, u, sess, text);
+  if (text && human && sess && sess.step === 'human_ask') return handoff.startHandoff(c, u, sess, text, true);
+  if (text && await client.onText(c, u, sess, text)) return;      // шаг имени/телефона: текст — это имя (даже «Людмила Оператор»); человек — /admin
+  if (text && human && handoff.wantsHuman(text)) return handoff.startHandoff(c, u, sess, text);
+  const asked = text && !staffChat ? await handoff.logUnanswered(c, u, text) : false;   // вопрос, на который нет ответа в меню
+  if (sess && (sess.step === 'live' || sess.step === 'human_ask')) return;      // стикер/фото в живом чате — молча
   if (sess) { await c.send(chatId, c.t('unknown')); return; }      // посреди записи: подсказка, диалог не сбрасываем
-  return client.showMenu(c, u, false);
+  return client.showMenu(c, u, asked && human ? 'question' : false);
 }
 
 async function runCommand(c, u, cmd) {
@@ -119,6 +131,7 @@ async function onCallback(c, cq) {
     case 'info': await client.showInfo(c, u); break;
     case 'prices': await client.showPrices(c, u); break;
     case 'faq': await client.showFaq(c, u, parts[1] === undefined ? null : parseInt(parts[1], 10)); break;
+    case 'hp': if (c.cfg.handoff.enabled && !c.isStaff(u.chat)) await handoff.startHandoff(c, u, sess, null); break;
     case 's': await staff.onCardAction(c, u, parts[1], +parts[2]); break;
     case 'st': await runCommand(c, u, parts[1]); break;
     case 'bl': await staff.onBlock(c, u, parts, sess); break;

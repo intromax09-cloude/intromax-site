@@ -4,7 +4,7 @@
  * Состояние диалога — в таблице sessions (см. store.js), в callback_data только короткие id.
  */
 import { setSession, clearSession, getSession, getClient, upsertClient, getAppointment, updateAppointment, insertAppointment,
-  activeForClient, countActiveForClient, resetReminders } from './store.js';
+  activeForClient, countActiveForClient, resetReminders, logEvent } from './store.js';
 import { eligibleResources, findSlot, pickMaster } from './slots.js';
 import { serviceEligible } from './config.js';
 import { localToUtc, dayRange, fmtHM } from './time.js';
@@ -31,9 +31,14 @@ export async function showMenu(c, u, greeting) {
   const prev = await getSession(c.db, u.chat, c.now());
   if (prev && prev.step === 'phone') await c.send(u.chat, '👌', { remove_keyboard: true }); // убрать клавиатуру «поделиться контактом»
   await clearSession(c.db, u.chat);
-  const text = greeting === false ? c.t('unknown') : c.t('welcome', { biz: cfg.business.name });
+  if (greeting === 'question') rows.push(humanRow(c));            // вопрос без ответа: предложить человека
+  const text = greeting === 'question' ? c.t('unknown_q') : greeting === false ? c.t('unknown') : c.t('welcome', { biz: cfg.business.name });
   await c.show(u, text, { inline_keyboard: rows });
 }
+
+/** Кнопка «Звʼязатися з адміністратором» (если передача человеку включена). */
+function humanRow(c) { return [{ text: c.p('menu_human'), callback_data: 'hp' }]; }
+const withHuman = (c, u, rows) => (c.cfg.handoff.enabled && !c.isStaff(u.chat) ? [...rows.slice(0, -1), humanRow(c), rows[rows.length - 1]] : rows);
 
 /* ------------------------------------------------------------ информация */
 export async function showInfo(c, u) {
@@ -54,7 +59,7 @@ export async function showInfo(c, u) {
     phone_line: raw(cfg.business.phone ? c.t('info_phone', { phone: cfg.business.phone }) : ''),
     hours: raw(lines.join('\n'))
   });
-  await c.show(u, text, { inline_keyboard: [[{ text: c.p('back'), callback_data: 'menu' }]] });
+  await c.show(u, text, { inline_keyboard: withHuman(c, u, [[{ text: c.p('back'), callback_data: 'menu' }]]) });
 }
 
 export async function showPrices(c, u) {
@@ -69,13 +74,13 @@ export async function showFaq(c, u, idx) {
   if (idx == null) {
     const rows = cfg.faq.map((f, i) => [{ text: f.q, callback_data: 'faq:' + i }]);
     rows.push([{ text: c.p('back'), callback_data: 'menu' }]);
-    await c.show(u, c.t('faq_title'), { inline_keyboard: rows });
+    await c.show(u, c.t('faq_title'), { inline_keyboard: withHuman(c, u, rows) });
     return;
   }
   const f = cfg.faq[idx];
   if (!f) return showFaq(c, u, null);
   /* ответ — доверенный HTML из config.json (проверен config.js) */
-  await c.show(u, f.a, { inline_keyboard: [[{ text: c.p('faq_back'), callback_data: 'faq' }], [{ text: c.p('back'), callback_data: 'menu' }]] });
+  await c.show(u, f.a, { inline_keyboard: withHuman(c, u, [[{ text: c.p('faq_back'), callback_data: 'faq' }], [{ text: c.p('back'), callback_data: 'menu' }]]) });
 }
 
 /* ---------------------------------------------------------------- запись */
@@ -306,6 +311,7 @@ export async function doCancel(c, u, id) {
   if (!a) return showMine(c, u);
   if (tooLate(c, a)) return askCancel(c, u, id);
   await updateAppointment(c.db, a.id, { status: 'cancelled', cancelled_by: 'client' }, c.now());
+  await logEvent(c.db, 'cancelled', c.now(), { appointmentId: a.id, actor: 'client' });
   const fresh = await getAppointment(c.db, a.id);
   await c.show(u, c.t('cancelled_client'), { inline_keyboard: [[{ text: c.p('menu_book'), callback_data: 'book' }]] });
   await c.refreshCards(fresh);
@@ -334,6 +340,7 @@ async function finishClientMove(c, u, sess, start, slot) {
     return;
   }
   await resetReminders(c.db, a.id);
+  await logEvent(c.db, 'moved', now, { appointmentId: a.id, actor: 'client' });
   await clearSession(c.db, u.chat);
   const fresh = await getAppointment(c.db, a.id);
   await c.show(u, c.t(status === 'confirmed' ? 'resched_done_confirmed' : 'resched_done_pending', { details: raw(c.details(fresh)) }), {
