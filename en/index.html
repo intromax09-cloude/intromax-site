@@ -4728,7 +4728,15 @@ window.IMX_MONEY = function(usd){
   var el = {};
   ids.forEach(function(k){ el[k] = document.getElementById('rc-' + k); });
   if(!el.people) return;
-  var money = function(n){ return '₴' + Math.round(n).toLocaleString('uk-UA'); };
+  /* валюта за мовою (як i18n/currency.js): українська — гривня, en/ і ru/ — долари */
+  var lang = document.documentElement.lang || 'uk';
+  var uah = /^uk/.test(lang);
+  var loc = uah ? 'uk-UA' : (/^ru/.test(lang) ? 'ru-RU' : 'en-US');
+  if(!uah){
+    /* ставка години в доларах: $2–60, за замовчуванням $5 (≈ ₴200) */
+    el.rate.min = 2; el.rate.max = 60; el.rate.step = 1; el.rate.value = 5;
+  }
+  var money = function(n){ return (uah ? '₴' : '$') + Math.round(n).toLocaleString(loc); };
   var calc = function(){
     var v = {};
     ids.forEach(function(k){
@@ -4748,8 +4756,8 @@ window.IMX_MONEY = function(usd){
     document.getElementById('rc-now').textContent = money(year);
     document.getElementById('rc-after').textContent = money(year - save);
     document.getElementById('rc-bar').style.width = v.share + '%';
-    document.getElementById('rc-hrs').textContent = Math.round(saveHrs).toLocaleString('uk-UA');
-    document.getElementById('rc-days').textContent = Math.round(saveHrs / 8).toLocaleString('uk-UA');
+    document.getElementById('rc-hrs').textContent = Math.round(saveHrs).toLocaleString(loc);
+    document.getElementById('rc-days').textContent = Math.round(saveHrs / 8).toLocaleString(loc);
     return {v:v, hrs:hrs, year:year, save:save};
   };
   ids.forEach(function(k){ el[k].addEventListener('input', calc); });
