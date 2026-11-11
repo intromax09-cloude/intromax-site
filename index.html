@@ -161,6 +161,23 @@
   .btn:hover .arr{transform:translate(2px,-1px);background:rgba(26,18,6,.22);}
   .btn-ghost .arr,.cta-actions .btn .arr{background:rgba(238,233,219,.08);}
 
+  /* підпис над телефоном: бот живий, його можна спробувати. Кільце навколо екрана тричі пульсує, доки гість не торкнувся чату */
+  .phone-col{position:relative;min-width:0;}
+  .try-bot{
+    display:flex;align-items:flex-start;gap:12px;width:100%;max-width:340px;margin:0 auto 20px;padding:0 6px;
+    background:none;border:0;font:inherit;text-align:left;color:var(--text-dim);font-size:14px;line-height:1.45;cursor:pointer;
+  }
+  .try-bot .tb-text{flex:1;min-width:0;}
+  .try-bot b{display:block;color:var(--text);font-size:16px;font-weight:700;margin-bottom:3px;}
+  .try-bot:hover b{color:var(--amber);}
+  .try-bot .tb-dot{position:relative;flex:0 0 10px;width:10px;height:10px;margin-top:6px;border-radius:50%;background:var(--green);}
+  .try-bot .tb-dot::after{content:'';position:absolute;inset:-5px;border-radius:50%;border:2px solid var(--green);opacity:0;animation:tbPing 2s ease-out infinite;}
+  @keyframes tbPing{0%{transform:scale(.4);opacity:.8;}100%{transform:scale(1.5);opacity:0;}}
+  .try-bot .tb-arrow{flex:0 0 44px;width:44px;height:46px;margin-top:8px;fill:none;stroke:var(--amber);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+  .phone-col.hint .phone-screen{animation:tbRing 2.2s ease-out 2.6s 3;}
+  @keyframes tbRing{0%{box-shadow:0 0 0 0 rgba(242,169,60,.55);}100%{box-shadow:0 0 0 18px rgba(242,169,60,0);}}
+  @media (prefers-reduced-motion: reduce){.try-bot .tb-dot::after,.phone-col.hint .phone-screen{animation:none;}}
+
   /* phone mock with live chat */
   /* телефон: зовнішня оправа і внутрішнє скло, як у справжнього корпусу */
   .phone{
@@ -1353,7 +1370,13 @@
         <div class="row" role="group" aria-label="Ніша для прикладу в чаті"></div>
       </div>
     </div>
-    <div class="phone bloom" data-hero>
+    <div class="phone-col hint">
+    <button type="button" class="try-bot bloom" data-hero aria-controls="hero-chat">
+      <span class="tb-dot" aria-hidden="true"></span>
+      <span class="tb-text"><b>Спробуйте бота просто тут</b><span>Він живий: натисніть кнопку або напишіть питання своїми словами. Так само він відповідатиме вашим клієнтам.</span></span>
+      <svg class="tb-arrow" viewBox="0 0 44 46" aria-hidden="true"><path d="M40 6c-16-4-30 4-31 30"/><path d="M16 30l-7 8-6-9"/></svg>
+    </button>
+    <div class="phone bloom" data-hero id="hero-chat">
       <div class="phone-screen">
         <div class="chat-head">
           <div class="chat-avatar"></div>
@@ -1370,6 +1393,7 @@
         </div>
         <div class="chat-input"><div class="field">Написати повідомлення…</div></div>
       </div>
+    </div>
     </div>
   </div>
   <div class="wrap">
@@ -5582,6 +5606,20 @@ window.IMX3D = {
     var steady = on && !moving && !tinting && energy.size <= fresh;
     if (!steady && (alive || moving || (on && tinting))) raf = requestAnimationFrame(frame);
   }
+})();
+</script>
+<script>
+/* ПІДПИС «СПРОБУЙТЕ БОТА»: клік ставить курсор у поле чату; перше торкання чату знімає пульсацію кільця */
+(function(){
+  var col = document.querySelector('.hero .phone-col'), btn = col && col.querySelector('.try-bot');
+  if (!col || !btn) return;
+  btn.addEventListener('click', function(){
+    var f = col.querySelector('.phone input.field');
+    col.classList.remove('hint');
+    if (f) { f.focus({preventScroll:true}); f.scrollIntoView({block:'nearest', behavior:'smooth'}); }
+  });
+  var phone = col.querySelector('.phone');
+  ['pointerdown','focusin'].forEach(function(ev){ phone.addEventListener(ev, function(){ col.classList.remove('hint'); }, {once:true}); });
 })();
 </script>
 </body>
