@@ -576,6 +576,8 @@
   /* точки під курсором: полотно над сіткою .grain, малює лише точки біля миші, на телефоні вимкнено */
   #dot-glow{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;}
   @media (hover:none),(pointer:coarse),(prefers-reduced-motion:reduce){#dot-glow{display:none;}}
+  /* коли полотно працює, саму сітку теж малює воно: CSS-плитка браузер округлює до пікселів екрана (масштаб 125%, 150%), і точки розходились з підсвіткою */
+  @media (hover:hover) and (pointer:fine) and (prefers-reduced-motion:no-preference){html.dg-on .grain::before{display:none;}}
   /* розділи чергуються відтінком, щоб сторінка не зливалась у суцільну темряву */
   .tint-amber{background:linear-gradient(180deg,rgba(242,169,60,.06),rgba(242,169,60,.012) 45%,transparent 80%);}
   .tint-plum{background:linear-gradient(180deg,rgba(168,154,236,.075),rgba(168,154,236,.015) 45%,transparent 80%);}
@@ -5534,7 +5536,8 @@ window.IMX3D = {
 })();
 </script>
 <script>
-/* ТОЧКИ ПІД КУРСОРОМ. Сітка .grain::before: крок 30px, центри точок у (15+30i, 15+30j) від кута екрана.
+/* ТОЧКИ ПІД КУРСОРОМ. Полотно малює і саму сітку (замість .grain::before, клас dg-on), і підсвітку,
+   тож точки збігаються за будь-якого масштабу екрана. Крок 30px, центри у (15+30i, 15+30j), маска як у .grain::before.
    Точки біля миші розгораються й гаснуть шлейфом. Колір — протилежний фону: на синьому фоні бурштин,
    у розділах з бурштиновим відтінком (.tint-amber) — бузковий. Лише миша; телефон і reduced-motion — вимкнено. */
 (function(){
@@ -5548,12 +5551,32 @@ window.IMX3D = {
   var col = AMBER.slice(), target = AMBER;
   var mx = -9999, my = -9999, sx = -9999, sy = -9999, on = false, raf = 0;
   var energy = new Map();
+  var base = document.createElement('canvas'), bctx = base.getContext('2d');
+  function drawBase(){
+    var w = innerWidth, h = innerHeight;
+    base.width = cv.width; base.height = cv.height;
+    bctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    bctx.fillStyle = 'rgba(238,233,219,.16)';
+    bctx.beginPath();
+    for (var x = OFF; x < w + STEP; x += STEP) for (var y = OFF; y < h + STEP; y += STEP){ bctx.moveTo(x + 1.15, y); bctx.arc(x, y, 1.15, 0, 6.2832); }
+    bctx.fill();
+    /* маска як у .grain::before: ellipse 85% 75% at 50% 42%, #000 20% → transparent 78% */
+    bctx.globalCompositeOperation = 'destination-in';
+    bctx.translate(w * 0.5, h * 0.42); bctx.scale(w * 0.85, h * 0.75);
+    var g = bctx.createRadialGradient(0, 0, 0, 0, 0, 1);
+    g.addColorStop(0.2, '#000'); g.addColorStop(0.78, 'rgba(0,0,0,0)');
+    bctx.fillStyle = g; bctx.fillRect(-2, -2, 4, 4);
+    bctx.globalCompositeOperation = 'source-over';
+  }
   function size(){
     DPR = Math.min(window.devicePixelRatio || 1, 2);
     cv.width = Math.round(innerWidth * DPR); cv.height = Math.round(innerHeight * DPR);
     ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    drawBase();
+    if (!raf) raf = requestAnimationFrame(frame);
   }
   size(); addEventListener('resize', size);
+  document.documentElement.classList.add('dg-on');
   function pickColor(){
     var el = document.elementFromPoint(mx, my);
     var sec = el && el.closest ? el.closest('section') : null;
@@ -5571,7 +5594,10 @@ window.IMX3D = {
   document.addEventListener('mouseleave', function(){ on = false; if (!raf) raf = requestAnimationFrame(frame); });
   function frame(){
     raf = 0;
-    ctx.clearRect(0, 0, innerWidth, innerHeight);
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, cv.width, cv.height);
+    ctx.drawImage(base, 0, 0);
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
     for (var k = 0; k < 3; k++) col[k] += (target[k] - col[k]) * 0.08;
     var c = Math.round(col[0]) + ',' + Math.round(col[1]) + ',' + Math.round(col[2]);
     var fresh = 0;
