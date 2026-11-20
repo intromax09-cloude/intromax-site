@@ -1,0 +1,616 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Intromax: прототип першого екрана «Заявка»</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&family=Playfair+Display:ital,wght@1,500&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.min.js"}}</script>
+<style>
+  :root{
+    --ink-0:#0e0f15; --ink:#161824; --ink-2:#1d2030; --ink-3:#272b3e;
+    --text:#eee9db; --text-dim:#b9b4a8; --amber:#f2a93c;
+    --line:rgba(238,233,219,.12); --line-strong:rgba(238,233,219,.27);
+    --ease:cubic-bezier(.32,.72,0,1);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{background:var(--ink);scrollbar-color:rgba(238,233,219,.22) var(--ink);}
+  body{background:var(--ink);color:var(--text);font-family:'Manrope',system-ui,sans-serif;font-weight:500;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+  a{color:inherit;text-decoration:none;}
+  :focus-visible{outline:2px solid var(--amber);outline-offset:3px;}
+  .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
+
+  /* ---------- фон сайта, упрощённо: свет по углам, сетка из точек, зерно (как .grain на сайте) ---------- */
+  .grain{position:fixed;inset:0;pointer-events:none;z-index:0;
+    background:
+      radial-gradient(1100px 700px at 100% -8%,rgba(168,154,236,.17),transparent 62%),
+      radial-gradient(900px 640px at -6% 38%,rgba(242,169,60,.11),transparent 64%),
+      radial-gradient(1000px 700px at 78% 108%,rgba(242,169,60,.09),transparent 62%),
+      linear-gradient(180deg,rgba(255,255,255,.02),transparent 40%);}
+  .grain::before{content:'';position:absolute;inset:0;
+    background-image:radial-gradient(rgba(238,233,219,.16) 1px,transparent 1.3px);background-size:30px 30px;
+    -webkit-mask-image:radial-gradient(ellipse 85% 75% at 50% 42%,#000 20%,transparent 78%);
+    mask-image:radial-gradient(ellipse 85% 75% at 50% 42%,#000 20%,transparent 78%);}
+  .grain::after{content:'';position:absolute;inset:0;opacity:.07;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");}
+
+  /* ---------- слои: фон 0 -> canvas 1 -> контент 2 -> шапка 10 ---------- */
+  #cloud{position:fixed;inset:0;width:100%;height:100%;z-index:1;pointer-events:none;display:block;opacity:0;}
+  main,footer{position:relative;z-index:2;}
+
+  header{position:sticky;top:0;z-index:10;height:72px;background:rgba(22,24,36,.9);border-bottom:1px solid var(--line);}
+  header nav{width:min(1240px,100% - 48px);height:100%;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:24px;}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:20px;letter-spacing:-.02em;}
+  .logo-dot{width:9px;height:9px;border-radius:50%;background:var(--amber);}
+  .navlinks{display:flex;gap:30px;font-size:14.5px;color:var(--text-dim);}
+  .navlinks a:hover{color:var(--text);}
+  .nav-cta{font-weight:700;font-size:14px;padding:10px 18px;border-radius:100px;border:1px solid var(--line-strong);}
+
+  /* ---------- первый экран, десктоп 1440x900 ---------- */
+  .wrap{width:min(1240px,100% - 48px);margin:0 auto;}
+  .hero-grid{position:relative;display:grid;grid-template-columns:608px 1fr;column-gap:24px;align-items:start;padding-top:78px;padding-bottom:140px;}
+  .hero-grid > *{grid-column:1;}
+  h1{font-weight:800;font-size:64px;line-height:1.02;letter-spacing:-.035em;color:var(--text);margin-bottom:24px;}
+  h1 em{font-family:'Playfair Display',serif;font-style:italic;font-weight:500;font-size:1.06em;color:var(--amber);letter-spacing:-.01em;}
+  .lead{font-size:18px;line-height:1.6;color:var(--text-dim);max-width:44ch;margin-bottom:32px;}
+  .lead .m{display:none;}
+  .hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px;}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:12px;height:56px;padding:0 28px;border-radius:100px;font-family:inherit;font-weight:700;font-size:16px;line-height:1;cursor:pointer;transition:transform .5s var(--ease),background .3s var(--ease),border-color .3s var(--ease);}
+  .btn-primary{background:var(--amber);color:#161824;border:1px solid var(--amber);}
+  .btn-primary .arr{width:26px;height:26px;border-radius:50%;background:#161824;display:grid;place-items:center;margin-right:-10px;}
+  .btn-primary .arr svg{width:14px;height:14px;fill:none;stroke:var(--amber);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;}
+  .btn-ghost{background:transparent;color:var(--text);border:1px solid rgba(238,233,219,.27);}
+  @media (hover:hover){.btn-primary:hover{transform:translateY(-2px);}.btn-ghost:hover{border-color:var(--text);}}
+  .micro{display:flex;flex-wrap:wrap;list-style:none;font-family:'JetBrains Mono',ui-monospace,monospace;font-weight:400;font-size:12px;line-height:1.4;color:var(--text-dim);margin-bottom:32px;}
+  .micro li{white-space:nowrap;padding-right:14px;margin-right:14px;border-right:1px solid var(--line-strong);}
+  .micro li:last-child{border-right:0;padding-right:0;margin-right:0;}
+
+  .niche-pick .t{font-size:12.5px;color:var(--text-dim);margin-bottom:10px;}
+  .niche-pick .row{display:flex;flex-wrap:wrap;gap:8px;}
+  .niche-pick button{font-family:inherit;font-weight:500;font-size:13px;color:var(--text-dim);background:rgba(238,233,219,.04);border:1px solid var(--line);border-radius:100px;padding:8px 14px;cursor:pointer;transition:color .3s var(--ease),border-color .3s var(--ease);}
+  .niche-pick button:hover{color:var(--text);border-color:var(--line-strong);}
+  .niche-pick button[aria-pressed="true"]{color:var(--amber);border-color:rgba(242,169,60,.5);background:rgba(242,169,60,.08);}
+
+  /* телефон-заглушка 300x610, центр x=1060 (в контейнере: справа 130px) */
+  .phone-col{grid-column:2;grid-row:1 / span 6;justify-self:end;margin:-15px 130px 0 0;width:300px;}
+  .phone{width:300px;height:610px;border-radius:46px;padding:10px;background:var(--ink-0);border:1px solid var(--line-strong);box-shadow:0 30px 80px rgba(0,0,0,.5);}
+  .phone-screen{height:100%;border-radius:36px;background:var(--ink-2);overflow:hidden;display:flex;flex-direction:column;}
+  .chat-head{display:flex;align-items:center;gap:10px;padding:34px 18px 14px;border-bottom:1px solid var(--line);}
+  .chat-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--amber),#a89aec);}
+  .chat-head .name{font-weight:700;font-size:14px;}
+  .chat-head .status{font-size:11.5px;color:#7bc99a;}
+  .chat-body{flex:1;padding:16px 14px;display:flex;flex-direction:column;gap:10px;}
+  .bubble{max-width:82%;padding:10px 13px;border-radius:16px;font-size:13px;line-height:1.45;}
+  .bubble.in{align-self:flex-start;background:var(--ink-3);border-bottom-left-radius:5px;}
+  .bubble.out{align-self:flex-end;background:rgba(242,169,60,.16);border:1px solid rgba(242,169,60,.3);border-bottom-right-radius:5px;}
+  .bubble.buttons{align-self:flex-end;display:flex;flex-direction:column;gap:6px;background:none;padding:0;max-width:90%;}
+  .bubble.buttons span{border:1px solid rgba(242,169,60,.45);color:var(--amber);border-radius:12px;padding:8px 12px;font-size:12.5px;text-align:center;}
+  .chat-input{padding:12px 14px 22px;}
+  .chat-input .field{height:40px;border-radius:100px;border:1px solid var(--line);padding:0 16px;display:flex;align-items:center;font-size:12.5px;color:var(--text-dim);}
+  .try-bot{margin-top:12px;font-size:12.5px;line-height:1.45;color:var(--text-dim);}
+  .try-bot b{display:flex;align-items:center;gap:8px;color:var(--text);font-weight:700;font-size:13.5px;margin-bottom:3px;}
+  .try-bot .dot{width:7px;height:7px;border-radius:50%;background:var(--amber);flex:none;}
+
+  /* якорь облака: пузырь 660x470, центр x=1000,y=440 страницы (в контейнере: left 570) */
+  .obj-anchor{position:absolute;pointer-events:none;}
+  .hero-grid > .obj-anchor{grid-column:auto;right:10px;top:133px;width:660px;height:470px;}
+  body.debug .obj-anchor{outline:1px dashed rgba(242,169,60,.6);}
+  #svg-fallback{width:100%;height:100%;display:none;}
+
+  /* ---------- заглушки разделов: заголовок + 100vh ---------- */
+  .stub{position:relative;min-height:100vh;}
+  .stub-in{position:relative;width:min(1240px,100% - 48px);margin:0 auto;min-height:100vh;display:flex;align-items:center;}
+  .stub h2{font-weight:800;font-size:56px;letter-spacing:-.03em;line-height:1.05;max-width:12ch;}
+  .stub .note{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;color:var(--text-dim);margin-top:16px;}
+  .stub .obj-anchor{right:20px;top:50%;margin-top:-250px;width:500px;height:500px;}
+  #process{height:300vh;}
+  #process .stub-in{position:sticky;top:0;height:100vh;}
+  .cards-row{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:40px;width:100%;}
+  .card{border:1px solid var(--line);border-radius:16px;background:linear-gradient(180deg,rgba(238,233,219,.035),rgba(238,233,219,.012));height:170px;}
+  #final .obj-anchor{width:640px;}
+  footer{padding:40px 0 60px;}
+  footer p{width:min(1240px,100% - 48px);margin:0 auto;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text-dim);}
+
+  /* ---------- телефон 375x812 (до 900 px): первый экран пересобран ---------- */
+  @media (max-width:900px){
+    header{height:56px;}
+    .nav-cta{padding:8px 14px;font-size:13px;}
+    .navlinks{display:none;}
+    .logo{font-size:18px;}
+    .wrap{width:calc(100% - 40px);}
+    .hero-grid{display:flex;flex-direction:column;align-items:stretch;padding-top:22px;padding-bottom:56px;}
+    h1{order:1;font-size:38px;line-height:1.04;margin-bottom:0;}
+    .hero-grid > .obj-anchor{order:2;position:relative;right:auto;top:auto;width:100%;max-width:520px;height:auto;aspect-ratio:335/230;margin:6px auto 4px;}
+    .lead{order:3;font-size:16px;line-height:1.55;margin-bottom:20px;max-width:none;}
+    .lead .d{display:none;} .lead .m{display:inline;}
+    .hero-actions{order:4;flex-direction:column;gap:0;margin-bottom:12px;}
+    .btn-primary{width:100%;height:52px;}
+    .btn-ghost{width:100%;height:44px;border:0;font-weight:700;font-size:15px;}
+    .micro{order:5;font-size:11.5px;margin-bottom:0;}
+    .micro li{padding-right:10px;margin-right:10px;}
+    .micro li:nth-child(2){border-right:0;padding-right:0;margin-right:0;}
+    .micro li:nth-child(3){flex-basis:100%;}
+    .phone-col{order:6;margin:56px auto 0;width:300px;}
+    .niche-pick{order:7;margin-top:28px;}
+    .stub h2{font-size:38px;}
+    .stub-in{flex-direction:column;align-items:flex-start;justify-content:center;gap:24px;}
+    .stub .obj-anchor{position:relative;right:auto;top:auto;margin:0 auto;width:100%;max-width:335px;height:auto;aspect-ratio:335/250;}
+    .stub .obj-anchor[data-m="0"]{display:none;}
+    #final .obj-anchor{width:100%;}
+    #process{height:auto;}
+    #process .stub-in{position:relative;height:auto;min-height:60vh;}
+    .stub{min-height:70vh;}
+    .stub-in{min-height:70vh;}
+    .cards-row{grid-template-columns:1fr;}
+  }
+  @media (min-width:901px) and (max-width:1240px){
+    .hero-grid{grid-template-columns:minmax(0,1fr) 340px;}
+    h1{font-size:clamp(48px,5vw,64px);}
+    .phone-col{margin-right:20px;}
+    .hero-grid > .obj-anchor{width:520px;height:370px;}
+  }
+  @media (prefers-reduced-motion:reduce){*{scroll-behavior:auto !important;transition:none !important;}}
+.bub-text{display:none;}
+  @media (max-width:900px){
+    .bub-text{display:flex;position:absolute;left:0;right:0;top:0;height:82.6%;flex-direction:column;justify-content:center;gap:14px;padding:0 13%;}
+    .bub-text span{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:13px;line-height:1.4;color:#b9b4a8;}
+    .bub-text i{display:flex;gap:6px;}
+    .bub-text i b{width:6px;height:6px;border-radius:50%;background:var(--amber);animation:typ 1.2s infinite;}
+    .bub-text i b:nth-child(2){animation-delay:.18s;} .bub-text i b:nth-child(3){animation-delay:.36s;}
+  }
+  @keyframes typ{0%,60%,100%{opacity:.35}30%{opacity:1}}
+  @media (prefers-reduced-motion:reduce){.bub-text i b{animation:none;}}
+</style>
+</head>
+<body>
+<div class="grain" aria-hidden="true"></div>
+<canvas id="cloud" aria-hidden="true"></canvas>
+
+<header>
+  <nav aria-label="Основна навігація">
+    <a class="logo" href="#top" aria-label="Intromax"><span class="logo-dot"></span>Intromax</a>
+    <div class="navlinks">
+      <a href="#services">Послуги й ціни</a>
+      <a href="#cases">Кейси</a>
+      <a href="#process">Як працюємо</a>
+      <a href="#terms">Питання</a>
+      <a href="#final">Відгуки</a>
+    </div>
+    <a href="#final" class="nav-cta">Залишити заявку</a>
+  </nav>
+</header>
+
+<main id="top">
+<section class="hero">
+  <div class="wrap hero-grid">
+    <h1>Поки ви спите,<br>бізнес<br><em>відповідає сам</em></h1>
+    <p class="lead"><span class="d">Бот у Direct і Telegram, сайт та автоматизація. Клієнт отримує відповідь за секунду, а заявка одразу приходить вам у Telegram.</span><span class="m">Бот, сайт та автоматизація. Заявка клієнта одразу приходить вам у Telegram.</span></p>
+    <div class="hero-actions">
+      <a href="#final" class="btn btn-primary">Порахувати ціну<span class="arr"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg></span></a>
+      <a href="#cases" class="btn btn-ghost">Подивитись кейси</a>
+    </div>
+    <ul class="micro"><li>Демо до оплати</li><li>ціна фіксується до старту</li><li>оплата етапами</li></ul>
+    <div class="niche-pick" id="niche-pick">
+      <div class="t">Покажемо на прикладі вашої ніші</div>
+      <div class="row" role="group" aria-label="Ніша для прикладу в чаті">
+        <button type="button" aria-pressed="true">Стоматологія</button><button type="button" aria-pressed="false">Бʼюті та косметологія</button><button type="button" aria-pressed="false">Кондитерські й доставка</button><button type="button" aria-pressed="false">Магазини й шоуруми</button><button type="button" aria-pressed="false">Фітнес і тренери</button><button type="button" aria-pressed="false">Репетитори й курси</button><button type="button" aria-pressed="false">Фото й відео</button><button type="button" aria-pressed="false">Сервіс і СТО</button><button type="button" aria-pressed="false">Оренда й туризм</button><button type="button" aria-pressed="false">Інше</button>
+      </div>
+    </div>
+    <div class="phone-col">
+      <div class="phone" id="hero-chat" role="img" aria-label="Приклад діалогу з ботом">
+        <div class="phone-screen">
+          <div class="chat-head"><div class="chat-avatar"></div><div><div class="name">Ваш бізнес</div><div class="status">● онлайн</div></div></div>
+          <div class="chat-body">
+            <div class="bubble in">Привіт! Скільки коштує доставка?</div>
+            <div class="bubble out">Привіт! Доставка залежить від району. Показати повне меню?</div>
+            <div class="bubble buttons"><span>Показати меню</span><span>Залишити адресу</span></div>
+            <div class="bubble in">Клас, дякую!</div>
+          </div>
+          <div class="chat-input"><div class="field">Написати повідомлення…</div></div>
+        </div>
+      </div>
+      <div class="try-bot"><b><span class="dot" aria-hidden="true"></span>Спробуйте бота просто тут</b>Він живий: натисніть кнопку або напишіть питання своїми словами. Так само він відповідатиме вашим клієнтам.</div>
+    </div>
+    <div class="obj-anchor" data-obj="A" data-base="660"><div class="bub-text" aria-hidden="true"><span>Скільки коштує доставка?</span><i><b></b><b></b><b></b></i></div><svg id="svg-fallback" viewBox="0 0 335 250" aria-hidden="true"></svg></div>
+  </div>
+</section>
+
+<!-- заглушки: служат только чтобы пройти все состояния объекта -->
+<section class="stub" id="services"><div class="stub-in"><div><h2>Послуги й ціни</h2></div><div class="obj-anchor" data-obj="B" data-base="500" data-m="0"></div></div></section>
+<section class="stub" id="cases"><div class="stub-in"><div><h2>Кейси</h2></div><div class="obj-anchor" data-obj="B" data-base="500" data-dim=".35" data-m="0"></div></div></section>
+<section class="stub" id="process"><div class="stub-in"><div><h2>Процес</h2><p class="note" id="proc-step">Крок 1 з 5</p></div><div class="obj-anchor" data-obj="C" data-base="600" data-m="0"></div></div></section>
+<section class="stub" id="terms" data-cards><div class="stub-in"><div style="width:100%"><h2>Умови</h2></div></div></section>
+<section class="stub" id="final"><div class="stub-in"><div><h2>Залишити заявку</h2></div><div class="obj-anchor" data-obj="D" data-base="580"></div></div></section>
+</main>
+
+
+<script>
+  // оценка: debug-контуры якорей по ?debug=1
+  if (/[?&]debug=1/.test(location.search)) document.body.classList.add('debug');
+  // выбор ниши: только состояние кнопок
+  document.querySelectorAll('#niche-pick button').forEach(function(b){
+    b.addEventListener('click', function(){
+      document.querySelectorAll('#niche-pick button').forEach(function(x){ x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+    });
+  });
+</script>
+
+<script type="module">
+/* ============ Облако «Заявка»: ленивый старт после первой отрисовки ============ */
+const Q = new URLSearchParams(location.search);
+const MOBILE = matchMedia('(max-width:900px)').matches;
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches || Q.get('rm') === '1';
+const N = MOBILE ? 1800 : 9000;
+const DPR = Math.min(devicePixelRatio || 1, MOBILE ? 1.5 : 2);
+const BASE = { A: 660, B: 500, C: 600, D: 580 };
+const ST = { A: 0, B: 1, C: 2, D: 3 };
+const dbg = window.__imx = { N, MOBILE, RM, level: 0, frames: 0 };
+
+const clamp = (x, a, b) => Math.min(b, Math.max(a, x));
+const lerp = (a, b, t) => a + (b - a) * t;
+const smooth = (a, b, x) => { const t = clamp((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
+function bezier(x1, y1, x2, y2) {
+  const cx = 3 * x1, bx = 3 * (x2 - x1) - cx, ax = 1 - cx - bx;
+  const cy = 3 * y1, by = 3 * (y2 - y1) - cy, ay = 1 - cy - by;
+  return t => {
+    if (t <= 0) return 0; if (t >= 1) return 1;
+    let a = t;
+    for (let i = 0; i < 10; i++) {
+      const x = ((ax * a + bx) * a + cx) * a - t, dx = (3 * ax * a + 2 * bx) * a + cx;
+      if (Math.abs(x) < 1e-5 || Math.abs(dx) < 1e-6) break;
+      a = clamp(a - x / dx, 0, 1);
+    }
+    return ((ay * a + by) * a + cy) * a;
+  };
+}
+const ease = bezier(.32, .72, 0, 1); // --ease сайта
+
+/* ---------- генерация 4 наборов позиций кодом ---------- */
+function rng(seed) { return () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+
+function build() {
+  const t0 = performance.now();
+  const sets = { A: genA(), B: genB(), C: genC(), D: genD() };
+  // выравнивание индексов: сортировка по углу (48 секторов) и высоте
+  Object.values(sets).forEach(s => {
+    const n = s.x.length, idx = new Array(n);
+    for (let i = 0; i < n; i++) idx[i] = i;
+    const key = new Float64Array(n);
+    for (let i = 0; i < n; i++) {
+      const ang = Math.atan2(s.y[i], s.x[i]);
+      key[i] = Math.floor((ang + Math.PI) / (2 * Math.PI) * 48) * 1e5 + (s.y[i] + 5e3);
+    }
+    idx.sort((a, b) => key[a] - key[b]);
+    s.order = idx;
+  });
+  // общая перестановка: любая половина индексов — равномерная выборка формы (для деградации)
+  const r = rng(77), perm = new Array(N);
+  for (let i = 0; i < N; i++) perm[i] = i;
+  for (let i = N - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); const t = perm[i]; perm[i] = perm[j]; perm[j] = t; }
+
+  const pos = { A: new Float32Array(N * 3), B: new Float32Array(N * 3), C: new Float32Array(N * 3), D: new Float32Array(N * 3) };
+  const amb = new Float32Array(N * 4), bri = new Float32Array(N * 4), node = new Float32Array(N).fill(-1), rnd = new Float32Array(N * 4);
+  const rr = rng(5);
+  const keys = ['A', 'B', 'C', 'D'];
+  for (let k = 0; k < N; k++) {
+    const slot = perm[k];
+    for (let q = 0; q < 4; q++) {
+      const s = sets[keys[q]], i = s.order[slot];
+      pos[keys[q]][k * 3] = s.x[i]; pos[keys[q]][k * 3 + 1] = s.y[i]; pos[keys[q]][k * 3 + 2] = s.z[i];
+      amb[k * 4 + q] = s.amb[i]; bri[k * 4 + q] = s.bri[i];
+      if (q === 2) node[k] = s.node[i];
+    }
+    rnd[k * 4] = rr(); rnd[k * 4 + 1] = rr(); rnd[k * 4 + 2] = rr(); rnd[k * 4 + 3] = rr();
+  }
+  dbg.genMs = Math.round(performance.now() - t0);
+  return { pos, amb, bri, node, rnd };
+}
+function mk() { return { x: new Float32Array(N), y: new Float32Array(N), z: new Float32Array(N), amb: new Float32Array(N), bri: new Float32Array(N), node: new Float32Array(N).fill(-1) }; }
+
+function genA() { // пузырь чата 660x470, r=90, толщина 70, хвост вниз-влево
+  const s = mk(), r = rng(1), W = 660, H = 470, R = 90, T = 70;
+  const nE = Math.round(N * .40), nP = Math.round(N * .40);
+  const sx = W / 2 - R, sy = H / 2 - R, arc = Math.PI * R / 2;
+  const segs = [2 * sx, arc, 2 * sy, arc, 2 * sx, arc, 2 * sy, arc], L = segs.reduce((a, b) => a + b, 0);
+  function onRR(d) { // обход по часовой от верхней грани
+    let i = 0; while (d > segs[i]) { d -= segs[i]; i++; }
+    const f = d / segs[i];
+    switch (i) {
+      case 0: return [-sx + f * 2 * sx, H / 2];
+      case 1: { const a = Math.PI / 2 - f * Math.PI / 2; return [sx + R * Math.cos(a), sy + R * Math.sin(a)]; }
+      case 2: return [W / 2, sy - f * 2 * sy];
+      case 3: { const a = -f * Math.PI / 2; return [sx + R * Math.cos(a), -sy + R * Math.sin(a)]; }
+      case 4: return [sx - f * 2 * sx, -H / 2];
+      case 5: { const a = -Math.PI / 2 - f * Math.PI / 2; return [-sx + R * Math.cos(a), -sy + R * Math.sin(a)]; }
+      case 6: return [-W / 2, -sy + f * 2 * sy];
+      default: { const a = Math.PI - f * Math.PI / 2; return [-sx + R * Math.cos(a), sy + R * Math.sin(a)]; }
+    }
+  }
+  const P0 = [-250, -H / 2], P1 = [-110, -H / 2], TIP = [-325, -325];
+  for (let i = 0; i < N; i++) {
+    let x, y, z, b = 1;
+    if (i < nE) { [x, y] = onRR(r() * L); z = (r() - .5) * T; }
+    else if (i < nE + nP) {
+      do { x = (r() - .5) * W; y = (r() - .5) * H; } while (Math.abs(x) > sx && Math.abs(y) > sy && Math.hypot(Math.abs(x) - sx, Math.abs(y) - sy) > R);
+      z = r() < .5 ? T / 2 : -T / 2; b = .78;
+    } else {
+      let u = r(), v = r(); if (u + v > 1) { u = 1 - u; v = 1 - v; }
+      x = P0[0] + u * (P1[0] - P0[0]) + v * (TIP[0] - P0[0]); y = P0[1] + u * (P1[1] - P0[1]) + v * (TIP[1] - P0[1]);
+      z = (r() - .5) * T * .8;
+    }
+    s.x[i] = x; s.y[i] = y; s.z[i] = z; s.amb[i] = r() < .22 ? 1 : 0; s.bri[i] = b;
+  }
+  return s;
+}
+function genB() { // решётка 3x3x3 кубиков-модулей
+  const s = mk(), r = rng(2), C = 120, G = 170;
+  for (let i = 0; i < N; i++) {
+    const cube = Math.floor(i * 27 / N), cx = (cube % 3 - 1) * G, cy = (Math.floor(cube / 3) % 3 - 1) * G, cz = (Math.floor(cube / 9) - 1) * G;
+    let x, y, z, b = .9;
+    if (r() < .85) { // 12 рёбер кубика: читаются как модуль
+      const ax = Math.floor(r() * 3), sa = r() < .5 ? -1 : 1, sb = r() < .5 ? -1 : 1, t = (r() - .5) * C, v = [0, 0, 0];
+      v[ax] = t; v[(ax + 1) % 3] = sa * C / 2; v[(ax + 2) % 3] = sb * C / 2; [x, y, z] = v; b = 1.4;
+    } else {
+      const face = Math.floor(r() * 6), a = (r() - .5) * C, bb = (r() - .5) * C, h = (face % 2 ? 1 : -1) * C / 2;
+      if (face < 2) { x = h; y = a; z = bb; } else if (face < 4) { x = a; y = h; z = bb; } else { x = a; y = h * 0 + bb; z = h; }
+      b = .8;
+    }
+    s.x[i] = cx + x; s.y[i] = cy + y; s.z[i] = cz + z; s.amb[i] = r() < .22 ? 1 : 0; s.bri[i] = b;
+  }
+  return s;
+}
+function genC() { // лента-S и 5 узлов
+  const s = mk(), r = rng(3);
+  const P = [[-300, -120, 0], [-190, 70, 30], [-60, 110, 0], [40, -50, -25], [150, -120, 0], [235, -25, 25], [310, 95, 0]];
+  const cr = (t) => { // Catmull-Rom по равномерной сетке
+    const n = P.length - 1, f = clamp(t, 0, .99999) * n, i = Math.floor(f), u = f - i;
+    const p0 = P[Math.max(i - 1, 0)], p1 = P[i], p2 = P[i + 1], p3 = P[Math.min(i + 2, n)];
+    return [0, 1, 2].map(k => .5 * ((2 * p1[k]) + (-p0[k] + p2[k]) * u + (2 * p0[k] - 5 * p1[k] + 4 * p2[k] - p3[k]) * u * u + (-p0[k] + 3 * p1[k] - 3 * p2[k] + p3[k]) * u * u * u));
+  };
+  const nodeT = [.1, .3, .5, .7, .9], perNode = Math.round(N * .06), nNodes = perNode * 5;
+  for (let i = 0; i < N; i++) {
+    let x, y, z, b = 1, am, nd = -1;
+    if (i < nNodes) {
+      nd = Math.floor(i / perNode); const c = cr(nodeT[nd]), rad = 28 * Math.cbrt(r()), th = r() * 6.2832, ph = Math.acos(2 * r() - 1);
+      x = c[0] + rad * Math.sin(ph) * Math.cos(th); y = c[1] + rad * Math.sin(ph) * Math.sin(th); z = c[2] + rad * Math.cos(ph); b = 1.3; am = 1;
+    } else {
+      const t = r(), c = cr(t), c2 = cr(t + .004), tx = c2[0] - c[0], ty = c2[1] - c[1], tl = Math.hypot(tx, ty) || 1;
+      const nx = -ty / tl, ny = tx / tl, a = r() * 6.2832, rad = 15;
+      x = c[0] + nx * Math.cos(a) * rad; y = c[1] + ny * Math.cos(a) * rad; z = c[2] + Math.sin(a) * rad; am = r() < .06 ? 1 : 0; b = .85;
+    }
+    s.x[i] = x; s.y[i] = y; s.z[i] = z; s.amb[i] = am; s.bri[i] = b; s.node[i] = nd;
+  }
+  return s;
+}
+function genD() { // бумажный самолётик (3 грани), линия сгиба ярче, шлейф 15%
+  const s = mk(), r = rng(4);
+  const Nn = [250, 40, 0], WL = [-150, 90, -135], WR = [-150, 90, 135], K = [-110, 40, 0], Kb = [-110, -45, 0];
+  const faces = [[Nn, WL, K], [Nn, WR, K], [Nn, K, Kb]];
+  const area = f => { const a = f[1].map((v, i) => v - f[0][i]), b = f[2].map((v, i) => v - f[0][i]); return Math.hypot(a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]); };
+  const ar = faces.map(area), tot = ar.reduce((x, y) => x + y, 0), nTrail = Math.round(N * .15), nFold = Math.round(N * .06);
+  for (let i = 0; i < N; i++) {
+    let x, y, z, b = 1, am = r() < .22 ? 1 : 0;
+    if (i < nTrail) { // шлейф
+      const t = r(); x = K[0] - 230 * t + (r() - .5) * 8; y = K[1] - 100 * t + Math.sin(t * 9) * 12 + (r() - .5) * (4 + 26 * t); z = (r() - .5) * (6 + 30 * t); b = .72 * (1 - t * .5);
+    } else if (i < nTrail + nFold) { // линия сгиба
+      const t = r(); x = lerp(Nn[0], K[0], t); y = lerp(Nn[1], K[1], t); z = (r() - .5) * 3; b = 1.8; am = r() < .6 ? 1 : 0;
+    } else {
+      let q = r() * tot, f = 0; while (f < 2 && q > ar[f]) { q -= ar[f]; f++; }
+      let u = r(), v = r(); if (u + v > 1) { u = 1 - u; v = 1 - v; }
+      const F = faces[f]; [x, y, z] = [0, 1, 2].map(k => F[0][k] + u * (F[1][k] - F[0][k]) + v * (F[2][k] - F[0][k]));
+      b = f === 2 ? .8 : 1;
+    }
+    s.x[i] = x; s.y[i] = y; s.z[i] = z; s.amb[i] = am; s.bri[i] = b;
+  }
+  // центрируем по ограничивающему объёму
+  let mx = [1e9, 1e9, 1e9], Mx = [-1e9, -1e9, -1e9];
+  for (let i = 0; i < N; i++) { mx[0] = Math.min(mx[0], s.x[i]); Mx[0] = Math.max(Mx[0], s.x[i]); mx[1] = Math.min(mx[1], s.y[i]); Mx[1] = Math.max(Mx[1], s.y[i]); }
+  const cx = (mx[0] + Mx[0]) / 2, cy = (mx[1] + Mx[1]) / 2;
+  for (let i = 0; i < N; i++) { s.x[i] -= cx; s.y[i] -= cy; }
+  return s;
+}
+
+/* ---------- SVG-запасной вариант: пузырь из точек, <2 КБ ---------- */
+function svgFallback() {
+  const host = document.getElementById('svg-fallback'); if (!host) return;
+  const r = rng(9), w = 335, h = 250, pad = 14, rad = 46; let wh = '', am = '';
+  const pts = [];
+  const cx = w / 2, cy = h / 2 - 12, W = w - 2 * pad, H = h - 2 * pad - 24;
+  for (let i = 0; i < 130; i++) {
+    const t = i / 130 * Math.PI * 2, e = 4; // суперэллипс
+    const c = Math.cos(t), sn = Math.sin(t);
+    pts.push([cx + Math.sign(c) * Math.pow(Math.abs(c), 2 / e) * W / 2, cy + Math.sign(sn) * Math.pow(Math.abs(sn), 2 / e) * H / 2]);
+  }
+  for (let i = 0; i < 22; i++) pts.push([lerp(60, 30, i / 22) + (r() - .5) * 6, lerp(h - 36, h - 6, i / 22) + (r() - .5) * 6]);
+  pts.forEach((p, i) => { const s = 'M' + p[0].toFixed(0) + ' ' + p[1].toFixed(0) + 'h0'; if (i % 5 === 2) am += s; else wh += s; });
+  host.innerHTML = '<path d="' + wh + '" stroke="#eee9db" stroke-opacity=".8" stroke-width="2.2" stroke-linecap="round" fill="none"/><path d="' + am + '" stroke="#f2a93c" stroke-width="2.6" stroke-linecap="round" fill="none"/>';
+  host.style.display = 'block'; dbg.svg = host.outerHTML.length;
+}
+
+/* ---------- старт ---------- */
+const saveData = navigator.connection && navigator.connection.saveData;
+const lowMem = navigator.deviceMemory && navigator.deviceMemory < 4;
+function hasGL() { try { const c = document.createElement('canvas'); return !!(c.getContext('webgl2') || c.getContext('webgl')); } catch (e) { return false; } }
+
+async function boot() {
+  if (Q.get('mode') === 'svg' || !hasGL() || (MOBILE && (saveData || lowMem))) { svgFallback(); dbg.mode = 'svg'; return; }
+  const t0 = performance.now();
+  const THREE = await import('three');
+  dbg.importMs = Math.round(performance.now() - t0);
+  const data = build();
+  const canvas = document.getElementById('cloud');
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: true, powerPreference: 'high-performance' });
+  renderer.setPixelRatio(DPR);
+  renderer.setClearColor(0x000000, 0);
+  let vw = innerWidth, vh = innerHeight;
+  const cam = new THREE.OrthographicCamera(-vw / 2, vw / 2, vh / 2, -vh / 2, 1, 3000);
+  cam.position.z = 1500;
+  const scene = new THREE.Scene();
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.BufferAttribute(data.pos.A, 3));
+  geo.setAttribute('posB', new THREE.BufferAttribute(data.pos.B, 3));
+  geo.setAttribute('posC', new THREE.BufferAttribute(data.pos.C, 3));
+  geo.setAttribute('posD', new THREE.BufferAttribute(data.pos.D, 3));
+  geo.setAttribute('aAmb', new THREE.BufferAttribute(data.amb, 4));
+  geo.setAttribute('aBri', new THREE.BufferAttribute(data.bri, 4));
+  geo.setAttribute('aNode', new THREE.BufferAttribute(data.node, 1));
+  geo.setAttribute('aRand', new THREE.BufferAttribute(data.rnd, 4));
+  const mat = new THREE.ShaderMaterial({
+    transparent: true, depthWrite: false, depthTest: false, blending: THREE.AdditiveBlending,
+    uniforms: {
+      uW: { value: new THREE.Vector4(1, 0, 0, 0) }, uE: { value: 0 }, uNoise: { value: MOBILE ? 0 : 1 }, uScale: { value: 1 },
+      uDpr: { value: DPR }, uYk: { value: 1 }, uStep: { value: 0 }, uOpacity: { value: 0 },
+      uSize: { value: MOBILE ? new THREE.Vector2(1.5, 2.2) : new THREE.Vector2(2.4, 3.4) }
+    },
+    vertexShader: `
+      attribute vec3 posB; attribute vec3 posC; attribute vec3 posD;
+      attribute vec4 aAmb; attribute vec4 aBri; attribute float aNode; attribute vec4 aRand;
+      uniform vec4 uW; uniform float uE; uniform float uNoise; uniform float uScale; uniform float uDpr; uniform float uStep; uniform float uYk; uniform vec2 uSize;
+      varying float vAmb; varying float vBri;
+      void main(){
+        vec3 p = position*uW.x + posB*uW.y + posC*uW.z + posD*uW.w;
+        p += (aRand.xyz-.5)*2.*sin(3.14159265*uE)*40.*uNoise;
+        p *= uScale; p.y *= uYk;
+        float bri = dot(aBri,uW);
+        if(aNode > -.5){ float lit = clamp(uStep-aNode,0.,1.); bri *= mix(1., mix(.3,1.6,lit), uW.z); }
+        vAmb = dot(aAmb,uW); vBri = bri;
+        vec4 mv = modelViewMatrix*vec4(p,1.);
+        gl_Position = projectionMatrix*mv;
+        float depth = (mv.z + 1500.)/400.;
+        gl_PointSize = mix(uSize.x,uSize.y,aRand.w)*uDpr*(1.+depth*.22)*(.9+.2*min(bri,1.8));
+      }`,
+    fragmentShader: `
+      uniform float uOpacity; varying float vAmb; varying float vBri;
+      void main(){
+        float d = length(gl_PointCoord-.5); if(d>.5) discard;
+        float a = smoothstep(.5,.12,d);
+        vec3 col = mix(vec3(.933,.914,.859), vec3(.949,.663,.235), vAmb);
+        col = mix(col, vec3(1.), smoothstep(.28,0.,d)*.45);
+        gl_FragColor = vec4(col, a*min(vBri,1.8)*uOpacity*1.2);
+      }`
+  });
+  const pts = new THREE.Points(geo, mat);
+  pts.frustumCulled = false;
+  scene.add(pts);
+  const U = mat.uniforms;
+  function resize() { vw = innerWidth; vh = innerHeight; renderer.setSize(vw, vh, false); cam.left = -vw / 2; cam.right = vw / 2; cam.top = vh / 2; cam.bottom = -vh / 2; cam.updateProjectionMatrix(); }
+  resize();
+
+  // прогрев шейдеров
+  U.uOpacity.value = 0;
+  try { await renderer.compileAsync(scene, cam); } catch (e) { renderer.compile(scene, cam); }
+  renderer.render(scene, cam);
+  dbg.warm = true;
+
+  // якоря
+  const mobAllowed = ['A', 'D'];
+  const anchors = [...document.querySelectorAll('[data-obj-anchor],.obj-anchor[data-obj]')]
+    .map(el => ({ el, st: ST[el.dataset.obj], key: el.dataset.obj, base: MOBILE && el.dataset.obj === 'A' ? 760 : (+el.dataset.base || BASE[el.dataset.obj]), dim: el.dataset.dim ? +el.dataset.dim : 1 }))
+    .filter(a => !MOBILE || mobAllowed.includes(a.key));
+  const cards = [...document.querySelectorAll('[data-cards]')];
+  const proc = document.getElementById('process'), stepEl = RM ? null : document.getElementById('proc-step');
+  dbg.anchors = anchors.length;
+  const state = dbg.state = {};
+
+  function measure() {
+    const rs = anchors.map(a => { const r = a.el.getBoundingClientRect(); return { cx: r.left + r.width / 2, cy: r.top + r.height / 2, w: r.width, d: r.top + r.height / 2 - vh / 2, st: a.st, base: a.base, dim: a.dim }; });
+    let i = 0; while (i < rs.length - 1 && rs[i + 1].d <= 0) i++;
+    const last = i === rs.length - 1, a = rs[i], b = last ? a : rs[i + 1];
+    const u = last ? 0 : clamp(-a.d / (b.d - a.d), 0, 1);
+    const t = clamp((u - .25) / .5, 0, 1), e = ease(t);
+    const W = [0, 0, 0, 0]; W[a.st] += 1 - e; W[b.st] += e;
+    const s = lerp(a.w / a.base, b.w / b.base, e);
+    let mult = 1; if (MOBILE) mult = 1 - smooth(.05, .3, Math.min(u, 1 - u));
+    // шаг «Процесса»
+    let step = 0;
+    if (proc) { const r = proc.getBoundingClientRect(); step = clamp(-r.top / Math.max(1, r.height - vh), 0, 1) * 5.2; }
+    let cardT = 1; cards.forEach(c => { const r = c.getBoundingClientRect(); if (r.top < vh * .5 && r.bottom > vh * .5) cardT = .18; });
+    const sn = Math.min(5, Math.max(1, Math.ceil(step || .001))); if (stepEl && stepEl.dataset.n != sn) { stepEl.dataset.n = sn; stepEl.textContent = 'Крок ' + sn + ' з 5'; }
+    Object.assign(state, { i, u: +u.toFixed(3), e: +e.toFixed(3), W, scale: s, dim: lerp(a.dim, b.dim, e) * mult, step, cardT });
+    // телефон: пузырь с хвостом целиком влезает в canvas 335x250, центр рамки (пузырь+хвост) смещён на 45 ед. вниз
+    const cyAdj = MOBILE ? -45 * s * .92 * W[0] : 0;
+    return { cx: lerp(a.cx, b.cx, e), cy: lerp(a.cy, b.cy, e) + cyAdj, s, W, e: a.st === b.st ? 0 : e, dim: lerp(a.dim, b.dim, e) * mult, i, u, step, cardT };
+  }
+
+  function apply(m, now, cardF, fade) {
+    U.uW.value.set(m.W[0], m.W[1], m.W[2], m.W[3]);
+    U.uE.value = m.e; U.uScale.value = m.s; U.uYk.value = MOBILE ? 1 - .08 * m.W[0] : 1; U.uStep.value = RM ? 5 : m.step;
+    U.uOpacity.value = fade * m.dim * cardF;
+    // поворот по состояниям: между соседними формами 25-40 градусов, плавно вместе с морфом
+    const ROT = [[-.08, -.18], [.32, .5], [-.18, .32], [.64, -.75]];
+    let rx = 0, ry = 0; for (let q = 0; q < 4; q++) { rx += m.W[q] * ROT[q][0]; ry += m.W[q] * ROT[q][1]; }
+    pts.rotation.x = rx;
+    pts.rotation.y = ry;
+    pts.position.set(m.cx - vw / 2, vh / 2 - m.cy, 0);
+    dbg.opacity = U.uOpacity.value;
+  }
+
+  addEventListener('resize', () => { resize(); dirty = true; });
+  let dirty = true, cardF = 1, born = performance.now(), last = 0, acc = 0, cnt = 0, cleared = false;
+  addEventListener('scroll', () => { dirty = true; }, { passive: true });
+
+  if (RM) { /* четыре готовых кадра, смена по IntersectionObserver, без анимации прокрутки */
+    let cur = -1;
+    const stateIdx = { A: 0, B: 1, C: 2, D: 3 };
+    function showFor(key, a) {
+      const r = a.el.getBoundingClientRect();
+      const m = { cx: r.left + r.width / 2, cy: r.top + r.height / 2, s: r.width / a.base, W: [0, 0, 0, 0], e: 0, dim: a.dim, i: 0, u: 0, step: 5 };
+      m.W[stateIdx[key]] = 1;
+      apply(m, 0, 1, 1); renderer.render(scene, cam);
+    }
+    function pick() {
+      let best = null, bd = 1e9;
+      anchors.forEach(a => { const r = a.el.getBoundingClientRect(); if (r.bottom > 0 && r.top < vh) { const d = Math.abs(r.top + r.height / 2 - vh / 2); if (d < bd) { bd = d; best = a; } } });
+      const inCards = cards.some(c => { const r = c.getBoundingClientRect(); return r.top < vh * .5 && r.bottom > vh * .5; });
+      if (inCards) { canvas.style.transition = 'opacity .3s'; canvas.style.opacity = .18; return; }
+      if (!best) return;
+      const id = anchors.indexOf(best);
+      if (id === cur) { canvas.style.opacity = 1; return; }
+      cur = id; canvas.style.transition = 'opacity .3s'; canvas.style.opacity = 0;
+      setTimeout(() => { showFor(best.key, best); canvas.style.opacity = best.dim; dbg.rmState = best.key; }, 300);
+    }
+    const io = new IntersectionObserver(pick, { threshold: [0, .25, .5, .75, 1] });
+    anchors.forEach(a => io.observe(a.el)); cards.forEach(c => io.observe(c));
+    addEventListener('resize', () => { cur = -1; pick(); });
+    pick(); dbg.mode = 'rm-static'; return;
+  }
+
+  // фаза появления: opacity 0 -> 1 за 900 мс
+  canvas.style.opacity = 1; dbg.mode = 'webgl';
+  born = performance.now();
+  let slowN = 0;
+  function frame(now) {
+    requestAnimationFrame(frame);
+    if (document.hidden) { last = 0; return; }
+    if (last) {
+      const dt = now - last;
+      // измеряем после появления (первые 1.5 с — загрузка шрифтов и прогрев); 2 плохих окна подряд по 30 кадров = ступень вниз
+      if (dt < 250 && now - born > 1500) { acc += dt; cnt++; if (cnt === 30) { const avg = acc / 30; dbg.avgFrameMs = +avg.toFixed(1); acc = 0; cnt = 0; if (avg > 24) { if (++slowN >= 2 && dbg.level < 2) { dbg.level++; slowN = 0; if (dbg.level === 1) geo.setDrawRange(0, N >> 1); dirty = true; } } else slowN = 0; } }
+    }
+    last = now;
+    const m = measure();
+    cardF += (m.cardT - cardF) * .12; if (Math.abs(m.cardT - cardF) > .002) dirty = true;
+    const fade = clamp((now - born) / 900, 0, 1); if (fade < 1) dirty = true;
+    const idle = false;
+    const op = fade * m.dim * cardF;
+    if (op < .02) { if (!cleared) { renderer.clear(); cleared = true; } return; }
+    if (!dirty && !idle) return;
+    cleared = false; dirty = false;
+    apply(m, now, cardF, fade);
+    renderer.render(scene, cam);
+    dbg.frames++;
+  }
+  requestAnimationFrame(frame);
+  dbg.renderer = renderer;
+}
+
+// LCP — текст: three.js грузится после первой отрисовки и простоя
+requestAnimationFrame(() => requestAnimationFrame(() => {
+  (window.requestIdleCallback || (f => setTimeout(f, 200)))(() => boot().catch(e => { console.error('cloud boot failed', e); svgFallback(); }), { timeout: 1500 });
+}));
+</script>
+</body>
+</html>
