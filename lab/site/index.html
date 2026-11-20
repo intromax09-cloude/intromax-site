@@ -1345,7 +1345,7 @@
   .hero h1 em{letter-spacing:-.01em;}
   .hero p.lead{font-size:18px;line-height:1.6;max-width:44ch;margin-bottom:32px;}
   .hero p.lead .m{display:none;}
-  .hero-actions{margin-bottom:20px;}
+  .hero-actions{margin-bottom:24px;}
   .hero .btn{height:56px;padding:0 28px;justify-content:center;gap:12px;font-size:16px;line-height:1;}
   .hero .btn-primary .arr{width:26px;height:26px;background:#161824;margin:0 -10px 0 0;}
   .hero .btn-primary .arr svg{stroke:var(--amber);}
@@ -1399,12 +1399,12 @@
   .section-head.has-slot .lead{font-size:18px;max-width:44ch;}
   @media (max-width:1099px){
     .section-head.has-slot{display:flex;flex-direction:column;align-items:stretch;min-height:0;}
-    .section-head.has-slot > .stage-slot{order:-1;height:260px;min-height:0;margin-bottom:8px;}
+    .section-head.has-slot > .stage-slot{order:-1;height:260px;min-height:0;margin-bottom:24px;}
     .section-head.has-slot h2{max-width:22ch;}
   }
   @media (max-width:700px){
     section:has(> .wrap > .section-head.has-slot),section.has-slot-sec{padding-top:8px;}
-    .section-head.has-slot > .stage-slot{height:180px;margin-bottom:8px;}
+    .section-head.has-slot > .stage-slot{height:140px;margin-bottom:24px;}
     .section-head h2{font-size:32px;line-height:1.1;}
     .section-head .lead,.section-head.has-slot .lead{font-size:16px;line-height:1.55;}
   }
@@ -1422,12 +1422,12 @@
   #terms .term h3{font-size:18px;font-weight:700;}
   @media (max-width:1099px){
     #terms .wrap.slot-wrap,#cta .wrap.slot-wrap{display:flex;flex-direction:column;align-items:stretch;}
-    #terms .wrap.slot-wrap > .stage-slot,#cta .wrap.slot-wrap > .stage-slot{order:-1;height:260px;min-height:0;margin-bottom:8px;}
+    #terms .wrap.slot-wrap > .stage-slot,#cta .wrap.slot-wrap > .stage-slot{order:-1;height:260px;min-height:0;margin-bottom:24px;}
     #terms .terms-grid{grid-template-columns:repeat(3,1fr);}
   }
   @media (max-width:980px){ #terms .terms-grid{grid-template-columns:1fr 1fr;} }
   @media (max-width:700px){
-    #terms .wrap.slot-wrap > .stage-slot,#cta .wrap.slot-wrap > .stage-slot{height:180px;}
+    #terms .wrap.slot-wrap > .stage-slot,#cta .wrap.slot-wrap > .stage-slot{height:140px;margin-bottom:24px;}
     #terms{padding-top:8px;} #cta{padding-top:8px;}
   }
 
@@ -1548,9 +1548,8 @@
   @media (max-width:700px){ .foot-tg{font-size:24px;margin:0 0 20px;} .foot-word{margin-bottom:12px;} }
 
 
-  /* телефон: основной текст не меньше 16 px (микрокопия, данные и подписи остаются мельче) */
+  
   @media (max-width:700px){
-    .svc p,.svc li,.pack p,.pack .rows div,.term p,.case p,.sup p,.calc-hint,.faq-foot,.price-note,.kit-info p,.foot-about,.foot-col a,.calc-row label,.pp-cap,.proc-text p{font-size:16px;line-height:1.55;}
     .mobile-menu a{font-size:18px;font-weight:700;}
   }
 
@@ -1559,6 +1558,53 @@
     html{scroll-behavior:auto;}
     .bloom{opacity:1 !important;transform:none !important;animation:none !important;}
   }
+
+  /* ---------- круг 2: ревью дизайнера ---------- */
+  .rail:not(:hover) a.on:not(:focus-visible) span{opacity:0;}
+  .pr s,.pack .was s,.pack .cost s,.svc-cost s{opacity:1 !important;color:var(--text-dim);}
+  .faq .ans p{max-width:680px;}
+  .proc-hint.last svg{display:none;}
+  @media (max-width:700px){
+    .mq{height:60px;} .mq-track span{font-size:40px;}
+    .svc-grid,.packs,.terms-grid,.support-grid,.cases{align-items:flex-start;}
+    .foot-tg{font-size:20px;margin:0 0 12px;min-height:44px;display:flex;align-items:center;}
+    .foot-word{margin-bottom:4px;}
+    .foot-grid{gap:20px 20px;padding-bottom:20px;margin-bottom:16px;}
+    .foot-col a{padding:10px 0;margin-bottom:0;}
+    footer{padding:28px 0;}
+    header.stuck{background:rgba(22,24,36,.97);} .dock{background:rgba(27,29,41,.97);}
+    .rng{height:44px;}
+    .lang a{display:inline-flex;align-items:center;justify-content:center;min-width:44px;min-height:44px;}
+    .niche-pick button,.chip,.case-filter button{min-height:44px;}
+    .faq-foot button{display:inline-block;min-height:44px;padding:10px 4px;}
+    .foot-contacts .btn{min-height:44px;}
+  }
+
+  /* круг 2, часть 2 */
+  @media (min-width:701px) and (max-width:900px){
+    .hero-actions{flex-direction:row;gap:12px;flex-wrap:wrap;align-items:center;}
+    .hero .btn-primary{width:auto;min-width:240px;max-width:360px;}
+    .hero .btn-ghost{width:auto;height:56px;border:1px solid var(--line-strong);}
+  }
+  @media (max-width:700px){
+    section:has(> .wrap > .section-head.has-slot),section.has-slot-sec,#terms,#cta{padding-top:0;}
+    .section-head.has-slot > .stage-slot,#terms .wrap.slot-wrap > .stage-slot,#cta .wrap.slot-wrap > .stage-slot{margin-bottom:24px;}
+    .notfit li{font-size:14px;line-height:1.5;}
+    .vow{font-size:26px;margin:-20px 0 28px;}
+    .faq .ans p{font-size:15px;line-height:1.6;}
+    .faq summary{font-size:17px;}
+    .chat-send{width:44px;height:44px;}
+    .foot-row a{display:inline-block;padding:12px 0;}
+    .foot-word{margin-bottom:0;}
+    .foot-tg{margin:0 0 4px;}
+    .section-head .lead,.section-head.has-slot .lead{font-size:16px;line-height:1.55;}
+  }
+
+  /* круг 2: нигде мельче 12 px */
+  .lang a,.micro li,.chat-head .status,.pr s,.pack .save,.sup .plus,.case-filter button,.case-bar,.case-bar span,.case-meta,.case-tags i,.calc-cap,
+  .kit-sum .t,.pp-switch .mono,.pp-head em span,.pp-field label,.pp-live em,.field .hint,.foot-grid .t,.rail a span,.dock-sheet a b,.dock-sheet a em,.dock-ring i,
+  b small,.svc-vars small{font-size:12px;}
+  @media (max-width:700px){ .micro li{font-size:12px;} }
 </style>
 <noscript><style>#intro{display:none}.bloom,.navlinks a,.nav-cta{opacity:1;transform:none}</style></noscript>
 </head>
@@ -1651,7 +1697,7 @@
 <section id="services" class="tint-amber tint-line">
   <div class="wrap">
     <div class="section-head has-slot">
-      <h2>Усі послуги та їхні <em>ціни</em></h2>
+      <h2>Усі послуги та їхні ціни</h2>
       <p class="lead">Біля кожної послуги її ціна, строк запуску й абонплата. Усе в одному місці, без окремої таблиці цін. Точну цифру називаємо протягом доби після заявки, і після старту роботи вона не змінюється.</p>
       <div class="stage-slot" data-stage="B" aria-hidden="true"></div>
     </div>
@@ -2060,7 +2106,7 @@
 <section id="routine" class="tint-amber tint-line">
   <div class="wrap">
     <div class="section-head">
-      <h2>Скільки коштує ручна <em>рутина</em></h2>
+      <h2>Скільки коштує ручна рутина</h2>
       <p class="lead">Посуньте повзунки під свою команду. Рахують ваші цифри, не наші.</p>
     </div>
     <div class="calc bloom">
@@ -2506,7 +2552,6 @@
       <div class="foot-brand">
         <div class="logo" style="font-size:16px;margin-bottom:12px;"><span class="logo-dot"></span> Intromax</div>
         <p class="foot-about">Боти, сайти та автоматизація процесів для бізнесу в Україні.</p>
-        <div class="foot-status">відповідаємо протягом доби</div>
         <div class="foot-contacts">
           <a href="#order" class="btn btn-primary">Залишити заявку</a>
           <a href="https://www.instagram.com/intromax.tech/" class="btn btn-ghost">Instagram</a>
@@ -3838,12 +3883,9 @@ window.IMX_MONEY = function(usd){
   var BACK = {t:'↩️ Меню', go:'menu'};
   var MENU = [
     {t:'🎯 Підібрати рішення за 3 питання', go:'quiz', wide:true},
-    {t:'👆 Спробувати бота як клієнт', go:'demo', wide:true},
     {t:'🧩 Послуги', go:'services'},
     {t:'💰 Ціни', go:'price'},
     {t:'📂 Кейси', go:'cases'},
-    {t:'❓ Питання', go:'faq'},
-    {t:'📞 Записатись на дзвінок', go:'call'},
     {t:'✍️ Заявка', go:'lead'},
     {t:'🙋 Покликати людину', go:'human', wide:true}
   ];
@@ -6528,7 +6570,7 @@ async function boot() {
     if (f === 6) return Math.max(vw / 2000, H / 1300) * 1.05;
     const s = SL[i]; if (!s) return .5;
     if (s.kind === 'ribbon') return 1;
-    const fit = F[f].fit, hk = MOBILE ? 1.35 : 1.0, wk = f === 3 ? .98 : .94;
+    const fit = F[f].fit, hk = MOBILE ? 1.0 : 1.0, wk = MOBILE ? .86 : (f === 3 ? .98 : .94);
     return clamp(Math.min(s.w * wk / fit.fw, s.h * hk / fit.fh), .15, 1.8);
   }
 
