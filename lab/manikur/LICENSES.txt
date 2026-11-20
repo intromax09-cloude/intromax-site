@@ -1,0 +1,14 @@
+Фото: Pexels (Pexels License, свободное использование, атрибуция не обязательна, указана для учёта). Файлы скачаны в сжатом виде (?auto=compress&cs=tinysrgb), без обработки.
+Автор взят со страницы фото на Pexels.
+
+img/hero-nude.jpg      | Pexels 41062012 | Casa Rio Beauty Salon | https://www.pexels.com/photo/elegant-hand-with-nude-manicure-in-dubai-setting-41062012/
+img/interior.jpg       | Pexels 6825309  | kaboompics            | https://www.pexels.com/photo/desk-lamp-and-creased-beige-curtain-6825309/
+img/work-nude.jpg      | Pexels 35491156 | Jaki&Kari Jelevi      | https://www.pexels.com/photo/elegant-nude-and-glitter-manicure-close-up-35491156/
+img/work-milky.jpg     | Pexels 12653042 | Marianna Hambardzumyan| https://www.pexels.com/photo/a-person-with-white-nail-polish-12653042/
+img/work-french.jpg    | Pexels 13038494 | Roman Titov           | https://www.pexels.com/photo/hand-with-french-tip-nails-13038494/
+img/work-powder.jpg    | Pexels 6941115  | cottonbro studio      | https://www.pexels.com/photo/photo-of-a-woman-s-hands-6941115/
+img/work-shine.jpg     | Pexels 17280274 | Melih Can             | https://www.pexels.com/photo/manicure-on-woman-hands-17280274/
+img/master-tools.jpg   | Pexels 11966580 | Надежда Скорупич      | https://www.pexels.com/photo/devices-for-manicure-11966580/   (ширина 1000; на сайте показана верхняя часть кадра, без надписей на упаковке)
+img/tea.jpg            | Pexels 2752031  | Ray Piedra            | https://www.pexels.com/photo/ceramic-cup-filled-with-tea-2752031/
+img/pedicure.jpg       | Pexels 4963837  | Karola G              | https://www.pexels.com/photo/close-up-of-woman-feet-4963837/
+img/silk.jpg           | Pexels 8465934  | Davis Vidal           | https://www.pexels.com/photo/crumpled-white-plain-cloth-8465934/

@@ -1,0 +1,441 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Orelle — студія манікюру, Чернігів</title>
+<meta name="description" content="Студія манікюру Orelle у Чернігові: прийом за записом, стерильні інструменти, одноразові пилки.">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;1,300&family=Jost:wght@300;400;500&family=Marck+Script&display=swap" rel="stylesheet">
+<script>document.documentElement.className='js'</script>
+<style>
+:root{--ivory:#F7F1EA;--sand:#E9DCCF;--powder:#EBD6CC;--cocoa:#4A3A30;--taupe:#7A655A;--line:#D9C9BA;--accent:#5E6E88;--accent-h:#4E5D75;
+--serif:'Cormorant Garamond',Georgia,serif;--script:'Marck Script',cursive;--sans:'Jost',system-ui,sans-serif}
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth;scroll-padding-top:72px}
+body{background:var(--ivory);color:var(--cocoa);font:300 16px/26px var(--sans);-webkit-text-size-adjust:100%;overflow-x:hidden}
+img{display:block;max-width:100%}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.dark :focus-visible{outline-color:var(--ivory)}
+.wrap{max-width:1280px;margin:0 auto;padding:0 20px}
+.sec{padding:72px 0}
+h1,h2,h3{font-family:var(--serif);font-weight:300;letter-spacing:-.01em}
+h2{font-size:34px;line-height:38px}
+h3{font-size:28px;line-height:34px}
+.script{font-family:var(--script);font-size:28px;line-height:1.1;color:var(--taupe);display:block;margin-bottom:6px}
+.btn{display:inline-flex;align-items:center;justify-content:center;border-radius:999px;font:500 16px/1 var(--sans);letter-spacing:.02em;text-decoration:none;cursor:pointer;border:1px solid transparent;min-height:48px;padding:0 36px;transition:background-color .2s,color .2s}
+.btn-main{background:var(--accent);color:#fff}.btn-main:hover{background:var(--accent-h)}
+.btn-line{border-color:rgba(74,58,48,.4);color:var(--cocoa);background:transparent}.btn-line:hover{background:var(--sand)}
+.btn-sand{background:var(--sand);color:var(--cocoa)}.btn-sand:hover{background:var(--line)}
+.btn-line-cream{border-color:rgba(247,241,234,.55);color:var(--ivory)}.btn-line-cream:hover{background:rgba(247,241,234,.12)}
+/* header */
+.top{height:56px;display:flex;align-items:center;justify-content:center}
+.logo{text-decoration:none;text-align:center;display:block}
+.logo b{font:300 30px/1 var(--serif);display:block;letter-spacing:-.01em}
+.logo span{font:400 18px/1 var(--script);color:var(--taupe);display:block;margin-top:2px}
+.top nav,.top .btn{display:none}
+/* hero (mobile first) */
+.hero{text-align:center;padding-bottom:40px;overflow-x:clip}
+.hero-photo{width:232px;height:290px;margin:12px auto 0;border-radius:116px 116px 0 0;overflow:hidden}
+.hero-photo img{width:100%;height:100%;object-fit:cover;object-position:35% 60%}
+.eyebrow{font:500 12px/16px var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--taupe);margin:24px 0 8px}
+h1{font-size:32px;line-height:36px;margin-bottom:12px}
+.lead{font-size:16px;line-height:24px;max-width:335px;margin:0 auto 20px}
+.pills{display:flex;flex-direction:column;gap:10px;max-width:335px;margin:0 auto}
+.pills .btn{width:100%}.pills .btn-main{min-height:52px}
+.pills .btn-sand,.pills .btn-line{min-height:48px}
+.hero-desk-btns{display:none}
+@media(max-width:767px) and (max-height:880px){
+.hero-photo{height:232px;margin-top:4px}
+.eyebrow{margin:16px 0 6px}
+h1{margin-bottom:8px}
+.lead{margin-bottom:14px}
+.pills{gap:8px}
+.pills .btn-main{min-height:48px}.pills .btn-sand{min-height:44px}
+.round{margin-top:14px}
+}
+.round{display:flex;justify-content:center;gap:14px;margin-top:20px}
+.round a{width:44px;height:44px;border-radius:50%;border:1px solid rgba(74,58,48,.4);display:grid;place-items:center}
+.round a:hover{background:var(--sand)}
+.round svg{width:20px;height:20px}
+/* trust */
+.trust{list-style:none;padding:0;display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--line)}
+.trust li{padding:20px 12px;text-align:center;font:400 14px/20px var(--sans)}
+.trust li:nth-child(odd){border-right:1px solid var(--line)}
+.trust li:nth-child(-n+2){border-bottom:1px solid var(--line)}
+.trust svg{width:28px;height:28px;margin:0 auto 8px;display:block;stroke:var(--cocoa);fill:none;stroke-width:1.25;stroke-linecap:round;stroke-linejoin:round}
+/* services */
+.svc-grid{display:grid;gap:16px;margin-top:28px}
+.tiles{display:grid;gap:16px}
+.tile{position:relative;overflow:hidden;border:1px solid var(--line);border-radius:24px;padding:28px 24px 24px;min-height:200px}
+.tile .ghost{position:absolute;right:-6px;bottom:-14px;font:italic 300 64px/1 var(--serif);color:var(--sand);z-index:0;pointer-events:none;white-space:nowrap}
+.tile>*:not(.ghost){position:relative;z-index:1}
+.tile p{margin:6px 0 14px;max-width:34ch}
+.from{font:500 15px/1 var(--sans);color:var(--cocoa)}
+.arch{overflow:hidden;border-radius:999px 999px 0 0}
+.arch img{width:100%;height:100%;object-fit:cover}
+.svc-photo{height:420px;max-width:340px;margin:0 auto;width:100%}
+/* amenities */
+.amen{background:var(--sand);text-align:center;padding:22px 20px;font:400 15px/24px var(--sans);letter-spacing:.02em}
+/* price */
+.price-head{margin-bottom:24px}
+.price-grid{display:grid;gap:28px}
+.seg{display:inline-flex;background:var(--sand);border-radius:999px;padding:4px;margin-bottom:16px}
+.seg button,.levels button{font:500 15px/1 var(--sans);letter-spacing:.02em;border:1px solid transparent;background:transparent;color:var(--cocoa);border-radius:999px;cursor:pointer;min-height:44px;padding:0 24px}
+.seg button[aria-selected=true]{background:var(--cocoa);color:var(--ivory)}
+.levels{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px}
+.levels button{border-color:var(--line);padding:0 18px;min-height:44px}
+.levels button[aria-selected=true]{border-color:var(--accent);color:var(--accent);background:transparent}
+.rows{list-style:none;padding:0;transition:opacity .2s}
+.rows.fade{opacity:0}
+.rows li{display:flex;align-items:baseline;gap:10px;padding:12px 0}
+.rows .nm{flex:0 1 auto}
+.rows .dots{flex:1 1 20px;border-bottom:1px dashed var(--line);min-width:16px;transform:translateY(-4px)}
+.rows .pr{font:500 16px/1 var(--sans);white-space:nowrap}
+.note{font:300 14px/20px var(--sans);color:var(--taupe);margin-top:10px}
+.frame{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:12px 22px;margin:20px 0 24px;font:500 12px/18px var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--taupe);text-align:center}
+.price-photo{display:none}
+/* works */
+.works-head{margin-bottom:28px}
+.mosaic{display:grid;grid-template-columns:repeat(2,160px);justify-content:center;gap:28px 16px}
+.oval{margin:0}
+.oval button{display:block;width:100%;padding:0;border:0;background:none;cursor:pointer;border-radius:50%}
+.clip{display:block;overflow:hidden;clip-path:ellipse(50% 50% at 50% 50%);height:220px;background:var(--sand);transition:clip-path .9s cubic-bezier(.22,.7,.2,1) var(--d,0s)}
+.clip img{width:100%;height:100%;object-fit:cover;transition:transform .9s cubic-bezier(.22,.7,.2,1) var(--d,0s)}
+.js .oval:not(.in) .clip{clip-path:ellipse(18% 12% at 50% 50%)}
+.js .oval:not(.in) .clip img{transform:scale(1.12)}
+.oval:nth-child(2) .clip{height:260px}.oval:nth-child(4) .clip{height:260px}
+.oval:nth-child(even){margin-top:28px}
+.oval:nth-child(5) .clip{height:240px}
+.oval figcaption{font:italic 300 22px/28px var(--serif);text-align:center;margin-top:10px}
+.more{display:inline-block;margin-top:32px;font:400 16px/24px var(--sans);text-decoration:underline;text-underline-offset:4px}
+.more:hover{color:var(--accent)}
+dialog{border:0;padding:0;background:transparent;max-width:min(92vw,720px);max-height:92vh;overflow:visible}
+dialog::backdrop{background:rgba(74,58,48,.82)}
+dialog img{max-height:82vh;width:auto;max-width:100%;border-radius:24px;margin:0 auto}
+dialog p{color:var(--ivory);text-align:center;font:italic 300 22px/28px var(--serif);margin-top:10px}
+dialog button{position:absolute;top:-8px;right:-8px;width:44px;height:44px;border-radius:50%;border:0;background:var(--ivory);color:var(--cocoa);font:400 22px/1 var(--sans);cursor:pointer}
+/* about */
+.about{display:grid;gap:28px;align-items:center}
+.about .arch{aspect-ratio:1/1.02;max-width:360px;width:100%;margin:0 auto}
+.about .arch img{object-position:50% 3%}
+.about p{max-width:52ch}
+.sign{font:400 28px/1.1 var(--script);color:var(--taupe);margin-top:18px}
+/* booking */
+.book{position:relative;background:var(--powder);overflow:hidden}
+.book::before{content:"";position:absolute;inset:0;background:url(img/silk.jpg) center/cover;opacity:.35}
+.book .wrap{position:relative}
+form{max-width:560px;margin-top:24px}
+.fld{display:block;margin-bottom:16px}
+.fld span,.grp legend{display:block;font:400 14px/20px var(--sans);margin-bottom:6px}
+.fld input,.fld select{width:100%;min-height:48px;border:1px solid var(--line);border-radius:14px;background:var(--ivory);padding:0 16px;font:300 16px var(--sans);color:var(--cocoa)}
+.grp{border:0;padding:0;margin:0 0 16px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips label{position:relative}
+.chips input{position:absolute;opacity:0;inset:0;width:100%;height:100%;margin:0;cursor:pointer}
+.chips span{display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border:1px solid var(--line);border-radius:999px;background:var(--ivory);font:400 15px/1 var(--sans)}
+.chips input:checked+span{background:var(--cocoa);color:var(--ivory);border-color:var(--cocoa)}
+.chips input:focus-visible+span{outline:2px solid var(--accent);outline-offset:3px}
+.err{color:#8a3b2c;font:400 14px/20px var(--sans);min-height:20px;margin-bottom:8px}
+.after{font:300 14px/20px var(--sans);color:var(--taupe);margin-top:14px;max-width:44ch}
+.ok{display:none;background:var(--ivory);border-radius:20px;padding:20px 22px;margin-top:16px;font:400 17px/26px var(--sans)}
+.ok.show{display:block}
+/* contacts */
+.dark{background:var(--cocoa);color:var(--ivory);clip-path:polygon(0 24px,100% 0,100% 100%,0 100%);padding:108px 0 64px;margin-top:-1px}
+.contacts{display:grid;gap:28px}
+.dark address{font-style:normal}
+.dark address p{margin-bottom:10px;font-size:17px}
+.dark a{text-decoration-color:rgba(247,241,234,.5)}
+.dark .btn{margin-top:16px}
+.cside{display:grid;gap:16px}
+.cside img{width:100%;height:200px;object-fit:cover;border-radius:24px}
+.map{height:200px;border-radius:24px;background:#5a493e;border:1px solid rgba(247,241,234,.25);position:relative;overflow:hidden}
+.map svg{position:absolute;inset:0;width:100%;height:100%}
+.map em{position:absolute;left:16px;bottom:12px;font:400 14px/20px var(--sans);font-style:normal;color:rgba(247,241,234,.8)}
+/* footer */
+footer{background:var(--cocoa);color:var(--ivory);padding:0 0 96px}
+footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;border-top:1px solid rgba(247,241,234,.2);padding-top:22px;font:300 14px/20px var(--sans)}
+footer a{text-underline-offset:3px}
+/* sticky */
+.sticky{position:fixed;left:20px;right:20px;bottom:calc(12px + env(safe-area-inset-bottom));z-index:20;min-height:52px;box-shadow:none;transform:translateY(140%);transition:transform .25s;visibility:hidden}
+.sticky.on{transform:none;visibility:visible}
+/* >=768 */
+@media(min-width:768px){
+.wrap{padding:0 40px}
+.sec{padding:96px 0}
+.tile{min-height:220px}
+.svc-grid{grid-template-columns:1fr}
+.tiles{grid-template-columns:1fr 1fr}
+.svc-photo{height:460px;max-width:380px}
+.price-grid{grid-template-columns:1fr}
+.about{grid-template-columns:1fr 1fr}
+.contacts{grid-template-columns:1fr 1fr}
+.mosaic{grid-template-columns:repeat(5,1fr);gap:20px;align-items:center}
+.oval:nth-child(even){margin-top:0}
+.oval .clip,.oval:nth-child(n) .clip{height:var(--h)}
+.oval:nth-child(1){--h:260px}.oval:nth-child(2){--h:320px}.oval:nth-child(3){--h:290px}.oval:nth-child(4){--h:340px}.oval:nth-child(5){--h:270px}
+}
+/* >=1100 desktop */
+@media(min-width:1100px){
+html{scroll-padding-top:96px}
+.wrap{padding:0 80px}
+.sec{padding:120px 0}
+h2{font-size:52px;line-height:58px}
+.script{font-size:34px}
+body{font-size:17px;line-height:28px}
+.top{height:88px;justify-content:space-between;padding:0 max(80px,calc((100vw - 1280px)/2 + 80px))}
+.logo{text-align:left}
+.top nav{display:flex;gap:36px}
+.top nav a{font:400 15px/1 var(--sans);text-decoration:none;padding:12px 0}
+.top nav a:hover{text-decoration:underline;text-underline-offset:6px}
+.top .btn{display:inline-flex;min-height:44px;padding:0 28px;font-size:15px}
+.hero{text-align:left;display:grid;grid-template-columns:minmax(0,560px) 1fr;gap:60px;align-items:center;padding:32px 0 0 max(80px,calc((100vw - 1280px)/2 + 80px));padding-bottom:0;min-height:680px}
+.hero-photo{width:auto;height:640px;margin:0;border-radius:0;overflow:visible}
+.hero-photo img{clip-path:url(#heroMask);object-position:30% 55%}
+.eyebrow{margin:0 0 20px}
+h1{font-size:76px;line-height:80px;margin-bottom:24px}
+.lead{font-size:18px;line-height:30px;max-width:460px;margin:0 0 36px}
+.hero-text{order:-1}
+.pills,.round{display:none}
+.hero-desk-btns{display:flex;gap:14px;flex-wrap:wrap}
+.hero-desk-btns .btn-main{min-height:56px}
+.hero-desk-btns .btn-line{min-height:56px}
+.trust{grid-template-columns:repeat(4,1fr);max-width:1280px;margin:0 auto;border-top:1px solid var(--line)}
+.trust li{border:0!important;border-right:1px solid var(--line)!important;padding:28px 16px;text-align:left;display:flex;gap:14px;align-items:center}
+.trust li:last-child{border-right:0!important}
+.trust svg{margin:0;flex:none}
+.svc-grid{grid-template-columns:1fr 340px;gap:40px;align-items:stretch}
+.svc-photo{height:auto;max-width:none;min-height:520px}
+.tile .ghost{font-size:62px;right:18px;bottom:-8px}
+.tile{padding:32px 28px 28px;min-height:250px}
+.price-grid{grid-template-columns:1fr 360px;gap:80px;align-items:start}
+.price-photo{display:block;height:520px;position:relative}
+.price-photo img{position:absolute;inset:0;transition:opacity .2s}
+.price-photo img[hidden]{display:block;opacity:0}
+.mosaic{gap:28px}
+.oval figcaption{font-size:22px}
+.about{gap:80px}
+.about .arch{max-width:none}
+.contacts{gap:60px;grid-template-columns:1fr 1fr}
+.sticky{display:none}
+footer{padding-bottom:0}
+}
+@media(prefers-reduced-motion:reduce){
+html{scroll-behavior:auto}
+.clip,.clip img,.rows,.sticky,.btn{transition:none!important}
+.js .oval .clip{clip-path:ellipse(50% 50% at 50% 50%)!important}
+.js .oval .clip img{transform:none!important}
+}
+@media(min-width:768px) and (max-width:1099px){
+.hero-photo{width:min(420px,70vw);height:525px;border-radius:210px 210px 0 0}
+.hero-photo img{object-position:35% 60%}
+.lead{max-width:460px}
+.pills{max-width:420px}
+.top{height:72px}
+.sticky{left:50%;right:auto;width:420px;margin-left:-210px}
+}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs><clipPath id="heroMask" clipPathUnits="objectBoundingBox"><path d="M0.14,0 C0.04,0.2 0.18,0.36 0.07,0.54 C0.02,0.72 0.14,0.88 0.1,1 L1,1 L1,0 Z"/></clipPath></defs></svg>
+
+<header class="top" id="top">
+  <a class="logo" href="#top" aria-label="Orelle, студія манікюру"><b>Orelle</b><span>студія манікюру</span></a>
+  <nav aria-label="Основне меню"><a href="#poslugy">Послуги</a><a href="#price">Прайс</a><a href="#roboty">Роботи</a><a href="#kontakty">Контакти</a></nav>
+  <a class="btn btn-main" href="#zapys">Записатися</a>
+</header>
+
+<main>
+<section class="hero" id="hero">
+  <div class="hero-photo"><img src="img/hero-nude.jpg" width="1200" height="1600" alt="Руки з нюдовим манікюром мигдалеподібної форми" fetchpriority="high"></div>
+  <div class="hero-text">
+    <p class="eyebrow">Чернігів</p>
+    <h1>Манікюр, який<br>не кричить,<br>а тримається</h1>
+    <p class="lead">Приймаємо за записом: без черг і поспіху. Працюємо охайно, тихо й без зайвого.</p>
+    <div class="hero-desk-btns"><a class="btn btn-main" href="#zapys">Записатися</a><a class="btn btn-line" href="#roboty">Дивитись роботи</a></div>
+    <div class="pills">
+      <a class="btn btn-main" href="#zapys">Записатися</a>
+      <a class="btn btn-sand" href="#price">Послуги й ціни</a>
+      <a class="btn btn-sand" href="#roboty">Фото робіт</a>
+      <a class="btn btn-sand" href="#kontakty">Контакти</a>
+    </div>
+    <div class="round">
+      <a href="#kontakty" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r=".6" fill="currentColor"/></svg></a>
+      <a href="#kontakty" aria-label="Telegram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><path d="M21 4 3 11l5.5 2L10 19l3-3.5 4.5 3.5z"/><path d="m8.5 13 8-5.5"/></svg></a>
+      <a href="#kontakty" aria-label="Дзвінок"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><path d="M6 3.5h3l1.5 4-2 1.5a11 11 0 0 0 6.500 6.500l1.500-2 4 1.500v3a2 2 0 0 1-2 2A16 16 0 0 1 4 5.500a2 2 0 0 1 2-2z"/></svg></a>
+    </div>
+  </div>
+</section>
+
+<ul class="trust" aria-label="Наші обіцянки">
+  <li><svg viewBox="0 0 28 28"><path d="M6 22 20 8M17 5l6 6M5 17l6 6M20 8l-2-2"/></svg>Стерильні інструменти</li>
+  <li><svg viewBox="0 0 28 28"><rect x="9" y="3" width="10" height="22" rx="5"/><path d="M12 9h4M12 13h4M12 17h4"/></svg>Одноразові пилки й бафи</li>
+  <li><svg viewBox="0 0 28 28"><rect x="5" y="6" width="18" height="17" rx="3"/><path d="M5 11h18M10 3v5M18 3v5M10 16l3 3 5-5"/></svg>Запис онлайн</li>
+  <li><svg viewBox="0 0 28 28"><path d="M5 11h14v5a6 6 0 0 1-6 6h-2a6 6 0 0 1-6-6zM19 12h2a3 3 0 0 1 0 6h-2M9 4c-1 1.500 1 2.500 0 4M13 4c-1 1.500 1 2.500 0 4"/></svg>Чай, кава й тиша</li>
+</ul>
+
+<section class="sec" id="poslugy">
+  <div class="wrap">
+    <h2>Що ми робимо</h2>
+    <div class="svc-grid">
+      <div class="tiles">
+        <article class="tile"><span class="ghost" aria-hidden="true">манікюр</span><h3>Манікюр</h3><p>Охайна форма, гладке покриття без сколів.</p><span class="from">від 400 грн</span></article>
+        <article class="tile"><span class="ghost" aria-hidden="true">педикюр</span><h3>Педикюр</h3><p>Апаратний, без болю й поспіху.</p><span class="from">від 550 грн</span></article>
+        <article class="tile"><span class="ghost" aria-hidden="true">нарощування</span><h3>Нарощування</h3><p>Природна довжина, міцна база.</p><span class="from">від 1200 грн</span></article>
+        <article class="tile"><span class="ghost" aria-hidden="true">дизайн</span><h3>Дизайн</h3><p>Мінімалізм: лінії, френч, сяйво.</p><span class="from">від 30 грн</span></article>
+      </div>
+      <div class="arch svc-photo"><img src="img/interior.jpg" width="1200" height="1800" loading="lazy" alt="Світлий куточок з лляною шторою, мармуровою консоллю та лампою" style="object-position:55% 70%"></div>
+    </div>
+  </div>
+</section>
+
+<p class="amen">Одноразові розхідники · Бережні матеріали · Чай, кава й тиша</p>
+
+<section class="sec" id="price">
+  <div class="wrap">
+    <div class="price-head"><span class="script">прайс</span><h2>Ціни на послуги</h2></div>
+    <div class="price-grid">
+      <div>
+        <div class="seg" role="tablist" aria-label="Тип послуги" id="svcTabs">
+          <button role="tab" id="tab-m" aria-selected="true" aria-controls="rows" data-k="m" tabindex="0">Манікюр</button>
+          <button role="tab" id="tab-p" aria-selected="false" aria-controls="rows" data-k="p" tabindex="-1">Педикюр</button>
+        </div>
+        <div class="levels" role="tablist" aria-label="Рівень майстра" id="lvlTabs">
+          <button role="tab" aria-selected="false" data-l="0" tabindex="-1">Майстер</button>
+          <button role="tab" aria-selected="false" data-l="1" tabindex="-1">Старший майстер</button>
+          <button role="tab" aria-selected="true" data-l="2" tabindex="0">Топ-майстер</button>
+        </div>
+        <ul class="rows" id="rows" role="tabpanel" aria-live="polite"></ul>
+        <p class="note">Ціни — приклад</p>
+        <p class="frame">Стерильність · Одноразові пилки · Індивідуальний підхід</p><br>
+        <a class="btn btn-main" href="#zapys">Записатися</a>
+      </div>
+      <div class="price-photo arch" aria-hidden="true">
+        <img id="phM" src="img/work-nude.jpg" width="1200" height="1600" loading="lazy" alt="">
+        <img id="phP" src="img/pedicure.jpg" width="1600" height="1067" loading="lazy" alt="" hidden>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="roboty" style="padding-top:0">
+  <div class="wrap">
+    <div class="works-head"><span class="script">роботи</span><h2>Наші роботи</h2></div>
+    <div class="mosaic" id="mosaic">
+      <figure class="oval"><button type="button" data-src="img/work-nude.jpg" data-cap="Нюд" aria-label="Відкрити фото: Нюд"><span class="clip"><img src="img/work-nude.jpg" width="1200" height="1600" loading="lazy" alt="Нюдовий манікюр з сяйвом і тонким квітковим малюнком" style="object-position:50% 55%"></span></button><figcaption>Нюд</figcaption></figure>
+      <figure class="oval"><button type="button" data-src="img/work-milky.jpg" data-cap="Молочний" aria-label="Відкрити фото: Молочний"><span class="clip"><img src="img/work-milky.jpg" width="1125" height="2000" loading="lazy" alt="Молочний манікюр, дві руки" style="object-position:50% 45%"></span></button><figcaption>Молочний</figcaption></figure>
+      <figure class="oval"><button type="button" data-src="img/work-french.jpg" data-cap="Френч" aria-label="Відкрити фото: Френч"><span class="clip"><img src="img/work-french.jpg" width="1200" height="1600" loading="lazy" alt="Класичний френч на світлому тлі" style="object-position:55% 55%"></span></button><figcaption>Френч</figcaption></figure>
+      <figure class="oval"><button type="button" data-src="img/work-powder.jpg" data-cap="Пудра" aria-label="Відкрити фото: Пудра"><span class="clip"><img src="img/work-powder.jpg" width="1600" height="1067" loading="lazy" alt="Пудрово-рожеве покриття, руки на білій тканині" style="object-position:55% 50%"></span></button><figcaption>Пудра</figcaption></figure>
+      <figure class="oval"><button type="button" data-src="img/work-shine.jpg" data-cap="Сяйво" aria-label="Відкрити фото: Сяйво"><span class="clip"><img src="img/work-shine.jpg" width="1200" height="1600" loading="lazy" alt="Мінімальний дизайн з легким мерехтінням" style="object-position:50% 55%"></span></button><figcaption>Сяйво</figcaption></figure>
+    </div>
+    <a class="more" href="#kontakty">Більше робіт в Instagram</a>
+  </div>
+</section>
+<dialog id="lb" aria-label="Фото роботи"><img id="lbImg" src="" alt=""><p id="lbCap"></p><button type="button" id="lbX" aria-label="Закрити">&times;</button></dialog>
+
+<section class="sec" id="master" style="padding-top:0">
+  <div class="wrap about">
+    <div class="arch"><img src="img/master-tools-crop.jpg" width="1000" height="1060" loading="lazy" alt="Манікюрні інструменти на світлому тлі з сухою пампасною травою"></div>
+    <div>
+      <h2 style="margin-bottom:20px">Про майстра</h2>
+      <p>Працюємо за записом, один клієнт за раз. Інструменти проходять стерилізацію, пилки одноразові. Пишіть, якщо не знаєте, який дизайн обрати: підкажемо.</p>
+      <p class="sign">[Ім'я майстра]</p>
+    </div>
+  </div>
+</section>
+
+<section class="sec book" id="zapys">
+  <div class="wrap">
+    <h2>Оберіть час</h2>
+    <form id="form" novalidate>
+      <label class="fld"><span>Ім'я</span><input name="name" autocomplete="given-name" required></label>
+      <label class="fld"><span>Телефон</span><input name="phone" type="tel" autocomplete="tel" inputmode="tel" required></label>
+      <label class="fld"><span>Послуга</span><select name="svc" id="svcSel"></select></label>
+      <fieldset class="grp"><legend>День</legend><div class="chips" id="days"></div></fieldset>
+      <fieldset class="grp"><legend>Час</legend><div class="chips" id="times"></div></fieldset>
+      <p class="err" id="err" role="alert"></p>
+      <button class="btn btn-main" type="submit">Записатися</button>
+      <p class="after">Заявка прийде майстру в Telegram, підтвердимо у відповідь.</p>
+      <p class="ok" id="ok" role="status" tabindex="-1">Дякуємо! Підтвердимо запис у Telegram або дзвінком.</p>
+    </form>
+  </div>
+</section>
+
+<section class="dark" id="kontakty">
+  <div class="wrap contacts">
+    <div>
+      <h2 style="margin-bottom:24px">Контакти</h2>
+      <address>
+        <p>вул. [Адреса], Чернігів</p>
+        <p><a href="#kontakty">+380 [XX XXX XX XX]</a></p>
+        <p>Пн–Сб, 10:00–19:00 [приклад]</p>
+        <p><a href="#kontakty">@[instagram]</a></p>
+      </address>
+      <a class="btn btn-line-cream" href="#kontakty">Відкрити карту</a>
+    </div>
+    <div class="cside">
+      <img src="img/tea.jpg" width="1600" height="1067" loading="lazy" alt="Чашка чаю на блюдці, лаванда та сухі пелюстки на білому тлі" style="object-position:35% 55%">
+      <div class="map" role="img" aria-label="Карта-заглушка"><svg viewBox="0 0 400 200" preserveAspectRatio="none" fill="none" stroke="rgba(247,241,234,.22)" stroke-width="1.5"><path d="M0 60 L400 100M0 150 L400 120M120 0 L170 200M280 0 L250 200"/><circle cx="205" cy="104" r="7" fill="#F7F1EA" stroke="none"/></svg><em>Карта (заглушка)</em></div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="dark" style="clip-path:none;padding-top:0">
+  <div class="wrap">
+    <span><a href="https://intromax.com.ua/">Демо-концепт Intromax</a></span>
+    <span><a href="#kontakty">Instagram</a> &nbsp;·&nbsp; <a href="#top">Угору</a></span>
+  </div>
+</footer>
+
+<a class="btn btn-main sticky" id="sticky" href="#zapys">Записатися</a>
+
+<script>
+(function(){
+var P={m:[["Манікюр без покриття",400,500,650],["Манікюр + покриття гель-лаком",650,800,1000],["Зміцнення базою",150,180,220],["Нарощування, нова форма",1200,1500,1800],["Корекція нарощування",900,1100,1300],["Дизайн, 1 ніготь (від)",30,40,50]],
+p:[["Педикюр апаратний",550,650,800],["Педикюр + покриття гель-лаком",750,900,1100],["Експрес, тільки пальчики",400,500,600],["Покриття гель-лаком на стопах",300,350,400],["Зняття покриття",100,120,150]]};
+var k='m',l=2,rows=document.getElementById('rows'),phM=document.getElementById('phM'),phP=document.getElementById('phP');
+function draw(){rows.innerHTML=P[k].map(function(r){return '<li><span class="nm">'+r[0]+'</span><span class="dots" aria-hidden="true"></span><span class="pr">'+r[1+l]+' грн</span></li>'}).join('');
+phM.hidden=(k==='p');phP.hidden=(k!=='p');}
+function swap(){rows.classList.add('fade');setTimeout(function(){draw();rows.classList.remove('fade')},200)}
+function tabs(box,attr,cb){var bs=[].slice.call(box.querySelectorAll('[role=tab]'));
+function sel(b,focus){bs.forEach(function(x){var on=x===b;x.setAttribute('aria-selected',on);x.tabIndex=on?0:-1});if(focus)b.focus();cb(b.getAttribute(attr))}
+bs.forEach(function(b,i){b.addEventListener('click',function(){sel(b)});
+b.addEventListener('keydown',function(e){var n=null;if(e.key==='ArrowRight'||e.key==='ArrowDown')n=bs[(i+1)%bs.length];else if(e.key==='ArrowLeft'||e.key==='ArrowUp')n=bs[(i-1+bs.length)%bs.length];else if(e.key==='Home')n=bs[0];else if(e.key==='End')n=bs[bs.length-1];if(n){e.preventDefault();sel(n,true)}})})}
+tabs(document.getElementById('svcTabs'),'data-k',function(v){k=v;swap()});
+tabs(document.getElementById('lvlTabs'),'data-l',function(v){l=+v;swap()});
+draw();
+/* select */
+var sel=document.getElementById('svcSel');sel.innerHTML='<option value="">Оберіть послугу</option>'+P.m.concat(P.p).map(function(r){return '<option>'+r[0]+'</option>'}).join('');
+/* days, times */
+var dn=['Нд','Пн','Вт','Ср','Чт','Пт','Сб'],d=new Date(),out=[];
+while(out.length<7){if(d.getDay()!==0)out.push(new Date(d));d.setDate(d.getDate()+1)}
+document.getElementById('days').innerHTML=out.map(function(x,i){var t=dn[x.getDay()]+' '+x.getDate();return '<label><input type="radio" name="day" value="'+t+'"><span>'+t+'</span></label>'}).join('');
+var tm=[];for(var h=10;h<=18;h++)tm.push(h+':00');
+document.getElementById('times').innerHTML=tm.map(function(t){return '<label><input type="radio" name="time" value="'+t+'"><span>'+t+'</span></label>'}).join('');
+var f=document.getElementById('form'),err=document.getElementById('err'),ok=document.getElementById('ok');
+f.addEventListener('submit',function(e){e.preventDefault();ok.classList.remove('show');var n=f.name.value.trim(),p=f.phone.value.replace(/\D/g,'');
+var m=!n?'Вкажіть ім\'я.':p.length<10?'Вкажіть телефон.':!f.svc.value?'Оберіть послугу.':!f.day.value?'Оберіть день.':!f.time.value?'Оберіть час.':'';
+err.textContent=m;if(m)return;f.querySelectorAll('.btn,.grp,.fld,.after').forEach(function(x){x.style.display='none'});ok.classList.add('show');ok.focus()});
+/* wow */
+var ov=[].slice.call(document.querySelectorAll('.oval'));
+ov.forEach(function(o,i){o.querySelector('.clip').style.setProperty('--d',(i*.12)+'s')});
+if(!('IntersectionObserver' in window)||matchMedia('(prefers-reduced-motion: reduce)').matches){ov.forEach(function(o){o.classList.add('in')})}
+else{var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.3});ov.forEach(function(o){io.observe(o)})}
+/* lightbox */
+var lb=document.getElementById('lb'),li=document.getElementById('lbImg'),lc=document.getElementById('lbCap');
+document.getElementById('mosaic').addEventListener('click',function(e){var b=e.target.closest('button[data-src]');if(!b)return;li.src=b.dataset.src;li.alt=b.dataset.cap;lc.textContent=b.dataset.cap;lb.showModal()});
+document.getElementById('lbX').addEventListener('click',function(){lb.close()});
+lb.addEventListener('click',function(e){if(e.target===lb)lb.close()});
+/* sticky */
+var st=document.getElementById('sticky'),hero=document.getElementById('hero'),bk=document.getElementById('zapys'),vh=false,vb=false;
+function upd(){st.classList.toggle('on',!vh&&!vb)}
+if('IntersectionObserver' in window){new IntersectionObserver(function(es){vh=es[0].isIntersecting;upd()}).observe(hero);new IntersectionObserver(function(es){vb=es[0].isIntersecting;upd()}).observe(bk)}
+})();
+</script>
+</body>
+</html>
