@@ -38,7 +38,9 @@
     background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");}
 
   /* ---------- слои: фон 0 -> canvas 1 -> контент 2 -> шапка 10 ---------- */
-  #cloud{position:fixed;inset:0;width:100%;height:100%;z-index:1;pointer-events:none;display:block;opacity:0;}
+  html{overflow-anchor:none;}
+  /* холст: размер задаётся один раз; 100lvh не меняется при движении адресной строки */
+  #cloud{position:fixed;left:0;top:0;width:100%;height:100vh;height:100lvh;z-index:1;pointer-events:none;display:block;opacity:0;}
   main,footer{position:relative;z-index:2;}
 
   header{position:sticky;top:0;z-index:10;height:72px;background:rgba(22,24,36,.9);border-bottom:1px solid var(--line);}
@@ -75,8 +77,8 @@
   .niche-pick button[aria-pressed="true"]{color:var(--amber);border-color:rgba(242,169,60,.5);background:rgba(242,169,60,.08);}
 
   /* телефон-заглушка 300x610, центр x=1060 (в контейнере: справа 130px) */
-  .phone-col{grid-column:2;grid-row:1 / span 6;justify-self:end;margin:-15px 130px 0 0;width:300px;}
-  .phone{width:300px;height:610px;border-radius:46px;padding:10px;background:var(--ink-0);border:1px solid var(--line-strong);box-shadow:0 30px 80px rgba(0,0,0,.5);}
+  .phone-col{position:relative;grid-column:2;grid-row:1 / span 6;justify-self:end;margin:-15px 130px 0 0;width:300px;}
+  .phone{position:relative;z-index:1;width:300px;height:610px;border-radius:46px;padding:10px;background:var(--ink-0);border:1px solid var(--line-strong);box-shadow:0 30px 80px rgba(0,0,0,.5);}
   .phone-screen{height:100%;border-radius:36px;background:var(--ink-2);overflow:hidden;display:flex;flex-direction:column;}
   .chat-head{display:flex;align-items:center;gap:10px;padding:34px 18px 14px;border-bottom:1px solid var(--line);}
   .chat-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--amber),#a89aec);}
@@ -94,23 +96,16 @@
   .try-bot b{display:flex;align-items:center;gap:8px;color:var(--text);font-weight:700;font-size:13.5px;margin-bottom:3px;}
   .try-bot .dot{width:7px;height:7px;border-radius:50%;background:var(--amber);flex:none;}
 
-  /* якорь облака: пузырь 660x470, центр x=1000,y=440 страницы (в контейнере: left 570) */
-  .obj-anchor{position:absolute;pointer-events:none;}
-  .hero-grid > .obj-anchor{grid-column:auto;right:10px;top:133px;width:660px;height:470px;}
-  body.debug .obj-anchor{outline:1px dashed rgba(242,169,60,.6);}
-  #svg-fallback{width:100%;height:100%;display:none;}
+  /* запасной SVG (нет WebGL / saveData): контур телефона из точек, центр совпадает с .phone (610/2 = 305 px) */
+  #svg-fallback{position:absolute;left:50%;top:305px;width:440px;height:750px;transform:translate(-50%,-50%);pointer-events:none;z-index:0;display:none;}
 
-  /* ---------- заглушки разделов: заголовок + 100vh ---------- */
+  /* ---------- заглушки разделов: заголовок + 100vh. Облако закреплено по экрану (JS), якорей в разделах нет ---------- */
   .stub{position:relative;min-height:100vh;}
   .stub-in{position:relative;width:min(1240px,100% - 48px);margin:0 auto;min-height:100vh;display:flex;align-items:center;}
   .stub h2{font-weight:800;font-size:56px;letter-spacing:-.03em;line-height:1.05;max-width:12ch;}
   .stub .note{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;color:var(--text-dim);margin-top:16px;}
-  .stub .obj-anchor{right:20px;top:50%;margin-top:-250px;width:500px;height:500px;}
   #process{height:300vh;}
   #process .stub-in{position:sticky;top:0;height:100vh;}
-  .cards-row{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:40px;width:100%;}
-  .card{border:1px solid var(--line);border-radius:16px;background:linear-gradient(180deg,rgba(238,233,219,.035),rgba(238,233,219,.012));height:170px;}
-  #final .obj-anchor{width:640px;}
   footer{padding:40px 0 60px;}
   footer p{width:min(1240px,100% - 48px);margin:0 auto;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text-dim);}
 
@@ -123,8 +118,7 @@
     .wrap{width:calc(100% - 40px);}
     .hero-grid{display:flex;flex-direction:column;align-items:stretch;padding-top:22px;padding-bottom:56px;}
     h1{order:1;font-size:38px;line-height:1.04;margin-bottom:0;}
-    .hero-grid > .obj-anchor{order:2;position:relative;right:auto;top:auto;width:100%;max-width:520px;height:auto;aspect-ratio:335/230;margin:6px auto 4px;}
-    .lead{order:3;font-size:16px;line-height:1.55;margin-bottom:20px;max-width:none;}
+    .lead{order:3;margin-top:14px;font-size:16px;line-height:1.55;margin-bottom:20px;max-width:none;}
     .lead .d{display:none;} .lead .m{display:inline;}
     .hero-actions{order:4;flex-direction:column;gap:0;margin-bottom:12px;}
     .btn-primary{width:100%;height:52px;}
@@ -136,33 +130,21 @@
     .phone-col{order:6;margin:56px auto 0;width:300px;}
     .niche-pick{order:7;margin-top:28px;}
     .stub h2{font-size:38px;}
-    .stub-in{flex-direction:column;align-items:flex-start;justify-content:center;gap:24px;}
-    .stub .obj-anchor{position:relative;right:auto;top:auto;margin:0 auto;width:100%;max-width:335px;height:auto;aspect-ratio:335/250;}
-    .stub .obj-anchor[data-m="0"]{display:none;}
-    #final .obj-anchor{width:100%;}
-    #process{height:auto;}
-    #process .stub-in{position:relative;height:auto;min-height:60vh;}
+    /* телефон: текст сверху, облако закреплено по экрану ниже него (центр 0.50 высоты) */
+    .stub-in{flex-direction:column;align-items:flex-start;justify-content:flex-start;gap:24px;padding-top:16px;}
+    #process{height:220vh;}
+    #process .stub-in{position:sticky;top:0;height:100vh;min-height:100vh;padding-top:84px;}
     .stub{min-height:70vh;}
     .stub-in{min-height:70vh;}
-    .cards-row{grid-template-columns:1fr;}
+    #final,#final .stub-in{min-height:90vh;} /* чтобы kf финала (top-122) был достижим прокруткой */
+    #svg-fallback{width:360px;height:640px;}
   }
   @media (min-width:901px) and (max-width:1240px){
     .hero-grid{grid-template-columns:minmax(0,1fr) 340px;}
     h1{font-size:clamp(48px,5vw,64px);}
     .phone-col{margin-right:20px;}
-    .hero-grid > .obj-anchor{width:520px;height:370px;}
   }
   @media (prefers-reduced-motion:reduce){*{scroll-behavior:auto !important;transition:none !important;}}
-.bub-text{display:none;}
-  @media (max-width:900px){
-    .bub-text{display:flex;position:absolute;left:0;right:0;top:0;height:82.6%;flex-direction:column;justify-content:center;gap:14px;padding:0 13%;}
-    .bub-text span{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:13px;line-height:1.4;color:#b9b4a8;}
-    .bub-text i{display:flex;gap:6px;}
-    .bub-text i b{width:6px;height:6px;border-radius:50%;background:var(--amber);animation:typ 1.2s infinite;}
-    .bub-text i b:nth-child(2){animation-delay:.18s;} .bub-text i b:nth-child(3){animation-delay:.36s;}
-  }
-  @keyframes typ{0%,60%,100%{opacity:.35}30%{opacity:1}}
-  @media (prefers-reduced-motion:reduce){.bub-text i b{animation:none;}}
 </style>
 </head>
 <body>
@@ -200,6 +182,7 @@
       </div>
     </div>
     <div class="phone-col">
+      <svg id="svg-fallback" viewBox="-220 -375 440 750" aria-hidden="true"></svg>
       <div class="phone" id="hero-chat" role="img" aria-label="Приклад діалогу з ботом">
         <div class="phone-screen">
           <div class="chat-head"><div class="chat-avatar"></div><div><div class="name">Ваш бізнес</div><div class="status">● онлайн</div></div></div>
@@ -214,16 +197,15 @@
       </div>
       <div class="try-bot"><b><span class="dot" aria-hidden="true"></span>Спробуйте бота просто тут</b>Він живий: натисніть кнопку або напишіть питання своїми словами. Так само він відповідатиме вашим клієнтам.</div>
     </div>
-    <div class="obj-anchor" data-obj="A" data-base="660"><div class="bub-text" aria-hidden="true"><span>Скільки коштує доставка?</span><i><b></b><b></b><b></b></i></div><svg id="svg-fallback" viewBox="0 0 335 250" aria-hidden="true"></svg></div>
   </div>
 </section>
 
-<!-- заглушки: служат только чтобы пройти все состояния объекта -->
-<section class="stub" id="services"><div class="stub-in"><div><h2>Послуги й ціни</h2></div><div class="obj-anchor" data-obj="B" data-base="500" data-m="0"></div></div></section>
-<section class="stub" id="cases"><div class="stub-in"><div><h2>Кейси</h2></div><div class="obj-anchor" data-obj="B" data-base="500" data-dim=".35" data-m="0"></div></div></section>
-<section class="stub" id="process"><div class="stub-in"><div><h2>Процес</h2><p class="note" id="proc-step">Крок 1 з 5</p></div><div class="obj-anchor" data-obj="C" data-base="600" data-m="0"></div></div></section>
-<section class="stub" id="terms" data-cards><div class="stub-in"><div style="width:100%"><h2>Умови</h2></div></div></section>
-<section class="stub" id="final"><div class="stub-in"><div><h2>Залишити заявку</h2></div><div class="obj-anchor" data-obj="D" data-base="580"></div></div></section>
+<!-- заглушки: служат только чтобы пройти все формы облака: B стек, C стена, D лента, E лист-заявка, F самолётик -->
+<section class="stub" id="services"><div class="stub-in"><div><h2>Послуги й ціни</h2></div></div></section>
+<section class="stub" id="cases"><div class="stub-in"><div><h2>Кейси</h2></div></div></section>
+<section class="stub" id="process"><div class="stub-in"><div><h2>Процес</h2><p class="note" id="proc-step">Крок 1 з 5</p></div></div></section>
+<section class="stub" id="terms"><div class="stub-in"><div style="width:100%"><h2>Умови</h2></div></div></section>
+<section class="stub" id="final"><div class="stub-in"><div><h2>Залишити заявку</h2></div></div></section>
 </main>
 
 
@@ -239,372 +221,663 @@
 </script>
 
 <script type="module">
-/* ============ Облако «Заявка»: ленивый старт после первой отрисовки ============ */
+/* ============ Облако «Заявка» v2: ленивый старт после первой отрисовки ============
+   6 форм: A обтекание телефона, B стек из 4 пластин, C стена проектов, D лента процесса, E лист-заявка, F самолётик.
+   Формы E и F — отдельные функции genE / genF: чтобы поменять местами, достаточно переставить их в GEN (и WF/ROT). */
 const Q = new URLSearchParams(location.search);
 const MOBILE = matchMedia('(max-width:900px)').matches;
 const RM = matchMedia('(prefers-reduced-motion: reduce)').matches || Q.get('rm') === '1';
-const N = MOBILE ? 1800 : 9000;
+const HOVER = matchMedia('(hover:hover)').matches && !MOBILE && !RM;
+const N = MOBILE ? 6000 : 20000;
 const DPR = Math.min(devicePixelRatio || 1, MOBILE ? 1.5 : 2);
-const BASE = { A: 660, B: 500, C: 600, D: 580 };
-const ST = { A: 0, B: 1, C: 2, D: 3 };
-const dbg = window.__imx = { N, MOBILE, RM, level: 0, frames: 0 };
+const dbg = window.__imx = { N, MOBILE, RM, level: 0, frames: 0, setSize: 0, setPR: 0, maxDt: 0, gbcrInFrame: 0 };
 
+const TAU = Math.PI * 2;
 const clamp = (x, a, b) => Math.min(b, Math.max(a, x));
 const lerp = (a, b, t) => a + (b - a) * t;
-const smooth = (a, b, x) => { const t = clamp((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
-function bezier(x1, y1, x2, y2) {
-  const cx = 3 * x1, bx = 3 * (x2 - x1) - cx, ax = 1 - cx - bx;
-  const cy = 3 * y1, by = 3 * (y2 - y1) - cy, ay = 1 - cy - by;
-  return t => {
-    if (t <= 0) return 0; if (t >= 1) return 1;
-    let a = t;
-    for (let i = 0; i < 10; i++) {
-      const x = ((ax * a + bx) * a + cx) * a - t, dx = (3 * ax * a + 2 * bx) * a + cx;
-      if (Math.abs(x) < 1e-5 || Math.abs(dx) < 1e-6) break;
-      a = clamp(a - x / dx, 0, 1);
-    }
-    return ((ay * a + by) * a + cy) * a;
-  };
-}
-const ease = bezier(.32, .72, 0, 1); // --ease сайта
-
-/* ---------- генерация 4 наборов позиций кодом ---------- */
+const sm5 = x => { x = clamp(x, 0, 1); return x * x * x * (x * (x * 6 - 15) + 10); };
 function rng(seed) { return () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const C = f => Math.round(N * f);
 
-function build() {
-  const t0 = performance.now();
-  const sets = { A: genA(), B: genB(), C: genC(), D: genD() };
-  // выравнивание индексов: сортировка по углу (48 секторов) и высоте
-  Object.values(sets).forEach(s => {
-    const n = s.x.length, idx = new Array(n);
-    for (let i = 0; i < n; i++) idx[i] = i;
-    const key = new Float64Array(n);
-    for (let i = 0; i < n; i++) {
-      const ang = Math.atan2(s.y[i], s.x[i]);
-      key[i] = Math.floor((ang + Math.PI) / (2 * Math.PI) * 48) * 1e5 + (s.y[i] + 5e3);
-    }
-    idx.sort((a, b) => key[a] - key[b]);
-    s.order = idx;
-  });
-  // общая перестановка: любая половина индексов — равномерная выборка формы (для деградации)
-  const r = rng(77), perm = new Array(N);
-  for (let i = 0; i < N; i++) perm[i] = i;
-  for (let i = N - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); const t = perm[i]; perm[i] = perm[j]; perm[j] = t; }
-
-  const pos = { A: new Float32Array(N * 3), B: new Float32Array(N * 3), C: new Float32Array(N * 3), D: new Float32Array(N * 3) };
-  const amb = new Float32Array(N * 4), bri = new Float32Array(N * 4), node = new Float32Array(N).fill(-1), rnd = new Float32Array(N * 4);
-  const rr = rng(5);
-  const keys = ['A', 'B', 'C', 'D'];
-  for (let k = 0; k < N; k++) {
-    const slot = perm[k];
-    for (let q = 0; q < 4; q++) {
-      const s = sets[keys[q]], i = s.order[slot];
-      pos[keys[q]][k * 3] = s.x[i]; pos[keys[q]][k * 3 + 1] = s.y[i]; pos[keys[q]][k * 3 + 2] = s.z[i];
-      amb[k * 4 + q] = s.amb[i]; bri[k * 4 + q] = s.bri[i];
-      if (q === 2) node[k] = s.node[i];
-    }
-    rnd[k * 4] = rr(); rnd[k * 4 + 1] = rr(); rnd[k * 4 + 2] = rr(); rnd[k * 4 + 3] = rr();
-  }
-  dbg.genMs = Math.round(performance.now() - t0);
-  return { pos, amb, bri, node, rnd };
-}
-function mk() { return { x: new Float32Array(N), y: new Float32Array(N), z: new Float32Array(N), amb: new Float32Array(N), bri: new Float32Array(N), node: new Float32Array(N).fill(-1) }; }
-
-function genA() { // пузырь чата 660x470, r=90, толщина 70, хвост вниз-влево
-  const s = mk(), r = rng(1), W = 660, H = 470, R = 90, T = 70;
-  const nE = Math.round(N * .40), nP = Math.round(N * .40);
-  const sx = W / 2 - R, sy = H / 2 - R, arc = Math.PI * R / 2;
-  const segs = [2 * sx, arc, 2 * sy, arc, 2 * sx, arc, 2 * sy, arc], L = segs.reduce((a, b) => a + b, 0);
-  function onRR(d) { // обход по часовой от верхней грани
-    let i = 0; while (d > segs[i]) { d -= segs[i]; i++; }
-    const f = d / segs[i];
-    switch (i) {
-      case 0: return [-sx + f * 2 * sx, H / 2];
-      case 1: { const a = Math.PI / 2 - f * Math.PI / 2; return [sx + R * Math.cos(a), sy + R * Math.sin(a)]; }
-      case 2: return [W / 2, sy - f * 2 * sy];
-      case 3: { const a = -f * Math.PI / 2; return [sx + R * Math.cos(a), -sy + R * Math.sin(a)]; }
-      case 4: return [sx - f * 2 * sx, -H / 2];
-      case 5: { const a = -Math.PI / 2 - f * Math.PI / 2; return [-sx + R * Math.cos(a), -sy + R * Math.sin(a)]; }
-      case 6: return [-W / 2, -sy + f * 2 * sy];
-      default: { const a = Math.PI - f * Math.PI / 2; return [-sx + R * Math.cos(a), sy + R * Math.sin(a)]; }
-    }
-  }
-  const P0 = [-250, -H / 2], P1 = [-110, -H / 2], TIP = [-325, -325];
-  for (let i = 0; i < N; i++) {
-    let x, y, z, b = 1;
-    if (i < nE) { [x, y] = onRR(r() * L); z = (r() - .5) * T; }
-    else if (i < nE + nP) {
-      do { x = (r() - .5) * W; y = (r() - .5) * H; } while (Math.abs(x) > sx && Math.abs(y) > sy && Math.hypot(Math.abs(x) - sx, Math.abs(y) - sy) > R);
-      z = r() < .5 ? T / 2 : -T / 2; b = .78;
-    } else {
-      let u = r(), v = r(); if (u + v > 1) { u = 1 - u; v = 1 - v; }
-      x = P0[0] + u * (P1[0] - P0[0]) + v * (TIP[0] - P0[0]); y = P0[1] + u * (P1[1] - P0[1]) + v * (TIP[1] - P0[1]);
-      z = (r() - .5) * T * .8;
-    }
-    s.x[i] = x; s.y[i] = y; s.z[i] = z; s.amb[i] = r() < .22 ? 1 : 0; s.bri[i] = b;
-  }
-  return s;
-}
-function genB() { // решётка 3x3x3 кубиков-модулей
-  const s = mk(), r = rng(2), C = 120, G = 170;
-  for (let i = 0; i < N; i++) {
-    const cube = Math.floor(i * 27 / N), cx = (cube % 3 - 1) * G, cy = (Math.floor(cube / 3) % 3 - 1) * G, cz = (Math.floor(cube / 9) - 1) * G;
-    let x, y, z, b = .9;
-    if (r() < .85) { // 12 рёбер кубика: читаются как модуль
-      const ax = Math.floor(r() * 3), sa = r() < .5 ? -1 : 1, sb = r() < .5 ? -1 : 1, t = (r() - .5) * C, v = [0, 0, 0];
-      v[ax] = t; v[(ax + 1) % 3] = sa * C / 2; v[(ax + 2) % 3] = sb * C / 2; [x, y, z] = v; b = 1.4;
-    } else {
-      const face = Math.floor(r() * 6), a = (r() - .5) * C, bb = (r() - .5) * C, h = (face % 2 ? 1 : -1) * C / 2;
-      if (face < 2) { x = h; y = a; z = bb; } else if (face < 4) { x = a; y = h; z = bb; } else { x = a; y = h * 0 + bb; z = h; }
-      b = .8;
-    }
-    s.x[i] = cx + x; s.y[i] = cy + y; s.z[i] = cz + z; s.amb[i] = r() < .22 ? 1 : 0; s.bri[i] = b;
-  }
-  return s;
-}
-function genC() { // лента-S и 5 узлов
-  const s = mk(), r = rng(3);
-  const P = [[-300, -120, 0], [-190, 70, 30], [-60, 110, 0], [40, -50, -25], [150, -120, 0], [235, -25, 25], [310, 95, 0]];
-  const cr = (t) => { // Catmull-Rom по равномерной сетке
-    const n = P.length - 1, f = clamp(t, 0, .99999) * n, i = Math.floor(f), u = f - i;
-    const p0 = P[Math.max(i - 1, 0)], p1 = P[i], p2 = P[i + 1], p3 = P[Math.min(i + 2, n)];
-    return [0, 1, 2].map(k => .5 * ((2 * p1[k]) + (-p0[k] + p2[k]) * u + (2 * p0[k] - 5 * p1[k] + 4 * p2[k] - p3[k]) * u * u + (-p0[k] + 3 * p1[k] - 3 * p2[k] + p3[k]) * u * u * u));
+/* ---------- геометрические помощники ---------- */
+function pose(rx, ry, rz, pre) { // сначала сдвиг pre, затем Rz, Rx, Ry
+  const cz = Math.cos(rz), sz = Math.sin(rz), cx = Math.cos(rx), sx = Math.sin(rx), cy = Math.cos(ry), sy = Math.sin(ry);
+  return p => {
+    const x = p[0] + (pre ? pre[0] : 0), y = p[1] + (pre ? pre[1] : 0), z = (p[2] || 0) + (pre ? pre[2] : 0);
+    const x1 = cz * x - sz * y, y1 = sz * x + cz * y;
+    const y2 = cx * y1 - sx * z, z2 = sx * y1 + cx * z;
+    return [cy * x1 + sy * z2, y2, -sy * x1 + cy * z2];
   };
-  const nodeT = [.1, .3, .5, .7, .9], perNode = Math.round(N * .06), nNodes = perNode * 5;
-  for (let i = 0; i < N; i++) {
-    let x, y, z, b = 1, am, nd = -1;
-    if (i < nNodes) {
-      nd = Math.floor(i / perNode); const c = cr(nodeT[nd]), rad = 28 * Math.cbrt(r()), th = r() * 6.2832, ph = Math.acos(2 * r() - 1);
-      x = c[0] + rad * Math.sin(ph) * Math.cos(th); y = c[1] + rad * Math.sin(ph) * Math.sin(th); z = c[2] + rad * Math.cos(ph); b = 1.3; am = 1;
-    } else {
-      const t = r(), c = cr(t), c2 = cr(t + .004), tx = c2[0] - c[0], ty = c2[1] - c[1], tl = Math.hypot(tx, ty) || 1;
-      const nx = -ty / tl, ny = tx / tl, a = r() * 6.2832, rad = 15;
-      x = c[0] + nx * Math.cos(a) * rad; y = c[1] + ny * Math.cos(a) * rad; z = c[2] + Math.sin(a) * rad; am = r() < .06 ? 1 : 0; b = .85;
-    }
-    s.x[i] = x; s.y[i] = y; s.z[i] = z; s.amb[i] = am; s.bri[i] = b; s.node[i] = nd;
-  }
-  return s;
 }
-function genD() { // бумажный самолётик (3 грани), линия сгиба ярче, шлейф 15%
-  const s = mk(), r = rng(4);
-  const Nn = [250, 40, 0], WL = [-150, 90, -135], WR = [-150, 90, 135], K = [-110, 40, 0], Kb = [-110, -45, 0];
-  const faces = [[Nn, WL, K], [Nn, WR, K], [Nn, K, Kb]];
-  const area = f => { const a = f[1].map((v, i) => v - f[0][i]), b = f[2].map((v, i) => v - f[0][i]); return Math.hypot(a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]); };
-  const ar = faces.map(area), tot = ar.reduce((x, y) => x + y, 0), nTrail = Math.round(N * .15), nFold = Math.round(N * .06);
-  for (let i = 0; i < N; i++) {
-    let x, y, z, b = 1, am = r() < .22 ? 1 : 0;
-    if (i < nTrail) { // шлейф
-      const t = r(); x = K[0] - 230 * t + (r() - .5) * 8; y = K[1] - 100 * t + Math.sin(t * 9) * 12 + (r() - .5) * (4 + 26 * t); z = (r() - .5) * (6 + 30 * t); b = .72 * (1 - t * .5);
-    } else if (i < nTrail + nFold) { // линия сгиба
-      const t = r(); x = lerp(Nn[0], K[0], t); y = lerp(Nn[1], K[1], t); z = (r() - .5) * 3; b = 1.8; am = r() < .6 ? 1 : 0;
-    } else {
-      let q = r() * tot, f = 0; while (f < 2 && q > ar[f]) { q -= ar[f]; f++; }
-      let u = r(), v = r(); if (u + v > 1) { u = 1 - u; v = 1 - v; }
-      const F = faces[f]; [x, y, z] = [0, 1, 2].map(k => F[0][k] + u * (F[1][k] - F[0][k]) + v * (F[2][k] - F[0][k]));
-      b = f === 2 ? .8 : 1;
+function RR(cx, cy, w, h, r, seg) { // скруглённый прямоугольник, замкнутая ломаная
+  const pts = [], hx = w / 2 - r, hy = h / 2 - r; seg = seg || 5;
+  const corner = (ox, oy, a0) => { for (let i = 0; i <= seg; i++) { const a = a0 + i / seg * Math.PI / 2; pts.push([cx + ox + r * Math.cos(a), cy + oy + r * Math.sin(a)]); } };
+  corner(hx, hy, 0); corner(-hx, hy, Math.PI / 2); corner(-hx, -hy, Math.PI); corner(hx, -hy, 1.5 * Math.PI);
+  pts.push(pts[0].slice()); return pts;
+}
+function CI(cx, cy, r, n) { n = n || Math.max(14, Math.round(r * 1.2)); const p = []; for (let i = 0; i <= n; i++) { const a = i / n * TAU; p.push([cx + r * Math.cos(a), cy + r * Math.sin(a)]); } return p; }
+function ARC(cx, cy, r, a0, a1, n) { n = n || 12; const p = []; for (let i = 0; i <= n; i++) { const a = lerp(a0, a1, i / n); p.push([cx + r * Math.cos(a), cy + r * Math.sin(a)]); } return p; }
+function POLY(a, closed) { const p = a.map(q => q.slice()); if (closed) p.push(a[0].slice()); return p; }
+function dashed(pts, on, off) { // ломаная -> массив ломаных-штрихов
+  const out = []; let cur = [pts[0]], draw = true, left = on;
+  for (let i = 1; i < pts.length; i++) {
+    let a = pts[i - 1], b = pts[i], dx = b[0] - a[0], dy = b[1] - a[1], dz = (b[2] || 0) - (a[2] || 0), len = Math.hypot(dx, dy, dz), pos = 0;
+    while (len - pos > left) {
+      pos += left; const f = pos / len, pt = [a[0] + dx * f, a[1] + dy * f, (a[2] || 0) + dz * f];
+      if (draw) { cur.push(pt); out.push(cur); cur = []; } else cur = [pt];
+      draw = !draw; left = draw ? on : off;
     }
-    s.x[i] = x; s.y[i] = y; s.z[i] = z; s.amb[i] = am; s.bri[i] = b;
+    left -= len - pos; if (draw) cur.push(b);
   }
-  // центрируем по ограничивающему объёму
-  let mx = [1e9, 1e9, 1e9], Mx = [-1e9, -1e9, -1e9];
-  for (let i = 0; i < N; i++) { mx[0] = Math.min(mx[0], s.x[i]); Mx[0] = Math.max(Mx[0], s.x[i]); mx[1] = Math.min(mx[1], s.y[i]); Mx[1] = Math.max(Mx[1], s.y[i]); }
-  const cx = (mx[0] + Mx[0]) / 2, cy = (mx[1] + Mx[1]) / 2;
-  for (let i = 0; i < N; i++) { s.x[i] -= cx; s.y[i] -= cy; }
-  return s;
+  if (draw && cur.length > 1) out.push(cur);
+  return out;
+}
+function hatchRect(x0, y0, x1, y1, step, vertical) { const out = []; if (vertical) { for (let x = x0 + step / 2; x < x1; x += step) out.push([[x, y0], [x, y1]]); } else { for (let y = y0 + step / 2; y < y1; y += step) out.push([[x0, y], [x1, y]]); } return out; }
+
+/* ---------- форма: накопитель точек и группы штрихов («гравюра») ---------- */
+function newForm(seed) {
+  return { r: rng(seed), n: 0, x: new Float32Array(N), y: new Float32Array(N), z: new Float32Array(N), amb: new Float32Array(N), bri: new Float32Array(N), u: new Float32Array(N).fill(-1), w: new Float32Array(N),
+    add(x, y, z, bri, amb, u, w) { const i = this.n; if (i >= N) return; this.x[i] = x; this.y[i] = y; this.z[i] = z; this.bri[i] = bri; this.amb[i] = amb; this.u[i] = u; this.w[i] = w; this.n++; } };
+}
+class Grp {
+  constructor() { this.s = []; this.c = [0]; }
+  add(p, o) {
+    if (p.length < 2) return; const cum = [0];
+    for (let i = 1; i < p.length; i++) { const a = p[i - 1], b = p[i]; cum.push(cum[i - 1] + Math.hypot(b[0] - a[0], b[1] - a[1], (b[2] || 0) - (a[2] || 0))); }
+    const len = cum[cum.length - 1]; if (len < 1e-6) return;
+    o = o || {}; this.s.push({ p, cum, len, o }); this.c.push(this.c[this.c.length - 1] + len * (o.wt || 1));
+  }
+  addMap(p2, xf, o) { this.add(p2.map(q => xf([q[0], q[1], q[2] || 0])), o); }
+  addDashed(p2, xf, on, off, o) { dashed(p2, on, off).forEach(d => this.addMap(d, xf, o)); }
+  emit(F, count, base) {
+    const r = F.r, tot = this.c[this.c.length - 1]; if (!tot || count <= 0) return;
+    const bb = base.bri === undefined ? 1 : base.bri, ba = base.amb || 0, j = base.j === undefined ? 1 : base.j;
+    for (let k = 0; k < count; k++) {
+      const q = r() * tot; let lo = 0, hi = this.s.length - 1;
+      while (lo < hi) { const m = (lo + hi) >> 1; if (this.c[m + 1] < q) lo = m + 1; else hi = m; }
+      const s = this.s[lo], tau = r() * s.len; let a = 0, b = s.cum.length - 1;
+      while (a < b - 1) { const m = (a + b) >> 1; if (s.cum[m] <= tau) a = m; else b = m; }
+      const f = (tau - s.cum[a]) / ((s.cum[b] - s.cum[a]) || 1), p0 = s.p[a], p1 = s.p[b];
+      const x = p0[0] + (p1[0] - p0[0]) * f, y = p0[1] + (p1[1] - p0[1]) * f, z = (p0[2] || 0) + ((p1[2] || 0) - (p0[2] || 0)) * f;
+      const u = s.o.u !== undefined ? s.o.u : (p0[3] !== undefined ? p0[3] + (p1[3] - p0[3]) * f : -1);
+      const am = s.o.amb !== undefined ? s.o.amb : ba;
+      F.add(x + (r() - .5) * j, y + (r() - .5) * j, z + (r() - .5) * j * .6, (s.o.bri === undefined ? 1 : s.o.bri) * bb, r() < am ? 1 : 0, u, s.o.w || 0);
+    }
+  }
+}
+function scatter(F, count, fn, base) {
+  const r = F.r, bb = base.bri === undefined ? .35 : base.bri, ba = base.amb || 0;
+  for (let k = 0; k < count; k++) { const p = fn(r); F.add(p[0], p[1], p[2], bb * (base.vary ? .6 + .8 * r() : 1), r() < ba ? 1 : 0, p[3] !== undefined ? p[3] : (base.u !== undefined ? base.u : -1), base.w || 0); }
+}
+function dustEll(F, count, rx, ry, rz, K, hole) { // пыль вокруг формы: эллипсоид с пустым ядром
+  scatter(F, count, r => { let x, y, z; do { x = (r() * 2 - 1); y = (r() * 2 - 1); z = (r() * 2 - 1); } while (x * x + y * y + z * z > 1 || (hole && x * x + y * y + z * z < hole)); return [x * rx, y * ry, z * rz]; }, { bri: .42 * (K || 1), vary: true });
+}
+function fillDust(F, fn) { if (F.n < N) scatter(F, N - F.n, fn, { bri: .4, vary: true }); }
+
+/* ---------- A. Обтекание телефона (hero): контур 300x610, r 46 ---------- */
+const PW = 300, PH = 610, PR = 46, PERIM = 2 * (PW - 2 * PR) + 2 * (PH - 2 * PR) + 2 * Math.PI * PR;
+function rrPt(s, W, H, R) { // точка контура и внешняя нормаль: [x, y, nx, ny], y вверх
+  const hx = W / 2 - R, hy = H / 2 - R, a = 2 * hx, b = 2 * hy, c = Math.PI * R / 2, P = 2 * a + 2 * b + 4 * c; s = ((s % P) + P) % P;
+  if (s < a) return [-hx + s, H / 2, 0, 1]; s -= a;
+  if (s < c) { const q = s / R; return [hx + R * Math.sin(q), hy + R * Math.cos(q), Math.sin(q), Math.cos(q)]; } s -= c;
+  if (s < b) return [W / 2, hy - s, 1, 0]; s -= b;
+  if (s < c) { const q = s / R; return [hx + R * Math.cos(q), -hy - R * Math.sin(q), Math.cos(q), -Math.sin(q)]; } s -= c;
+  if (s < a) return [hx - s, -H / 2, 0, -1]; s -= a;
+  if (s < c) { const q = s / R; return [-hx - R * Math.sin(q), -hy - R * Math.cos(q), -Math.sin(q), -Math.cos(q)]; } s -= c;
+  if (s < b) return [-W / 2, -hy + s, -1, 0]; s -= b;
+  const q = s / R; return [-hx - R * Math.cos(q), hy + R * Math.sin(q), -Math.cos(q), Math.sin(q)];
+}
+function* genA(F) {
+  // десктоп: яркость ×0.8 (круг 2), кайма d 4…150, /34. Телефон: аура шире и стоит над ботом: d до 230, /64, яркость ×0.9, над ботом (текстовая зона) ×0.5
+  const r = F.r, K = MOBILE ? .9 : .8, DM = MOBILE ? 230 : 142, DS = MOBILE ? 64 : 34, LK = MOBILE ? 1.6 : 1;
+  const zoneK = y => MOBILE && y > PH / 2 ? .55 : 1; // выше верха бота: зона текста
+  const E = 1 - Math.exp(-(DM - 4) / DS);
+  for (let k = 0, n = C(MOBILE ? .50 : .40); k < n; k++) {
+    const d = 4 - DS * Math.log(1 - r() * E), c = rrPt(r() * PERIM, PW, PH, PR), py = c[1] + c[3] * d;
+    F.add(c[0] + c[2] * d + (r() - .5), py + (r() - .5), -30 - 230 * r(), (d < 14 ? 1.5 : d < 40 ? 1 : .7) * K * zoneK(py), r() < .10 ? 1 : 0, -1, 0);
+  }
+  yield;
+  // 25%: десять линий-обтеканий (штрихи 70…140, пробелы 20…60)
+  const ds = [10, 18, 28, 40, 54, 70, 90, 110, 126, 140].map(d => d * LK), per = C(MOBILE ? .30 : .25) / ds.length;
+  for (const d of ds) {
+    const dashes = []; let s = r() * PERIM, sum = 0;
+    for (let cov = 0; cov < PERIM;) { const L = 70 + r() * 70, g = 20 + r() * 40; dashes.push([s, L]); sum += L; s += L + g; cov += L + g; }
+    const zl = -60 - 140 * r(), bb = (1.15 - d / 330) * K;
+    for (let k = 0, n = Math.round(per); k < n; k++) {
+      let q = r() * sum, di = 0; while (di < dashes.length - 1 && q > dashes[di][1]) { q -= dashes[di][1]; di++; }
+      const c = rrPt(dashes[di][0] + q, PW, PH, PR), py = c[1] + c[3] * d;
+      F.add(c[0] + c[2] * d + (r() - .5) * .8, py + (r() - .5) * .8, zl + (r() - .5) * 30, bb * zoneK(py), r() < .10 ? 1 : 0, -1, 0);
+    }
+    yield;
+  }
+  // остальное: запас под телефоном (внутри контура), из него точки «вылазят» при прокрутке
+  const hx = PW / 2 - PR, hy = PH / 2 - PR;
+  fillDust(F, r => { let x, y; do { x = (r() - .5) * PW; y = (r() - .5) * PH; } while (Math.abs(x) > hx && Math.abs(y) > hy && Math.hypot(Math.abs(x) - hx, Math.abs(y) - hy) > PR); return [x, y, -140 + 120 * r()]; });
+  for (let i = 0; i < F.n; i++) if (F.bri[i] === 0) F.bri[i] = .6; // страховка
+  // под телефоном яркость выше дымки, амбер 10%
+  for (let i = 0; i < F.n; i++) { if (F.z[i] > -140 && F.z[i] < -20 && Math.abs(F.x[i]) < PW / 2 && Math.abs(F.y[i]) < PH / 2 && F.bri[i] < .5) { F.bri[i] = .75 * K; if (r() < .10) F.amb[i] = 1; } }
 }
 
-/* ---------- SVG-запасной вариант: пузырь из точек, <2 КБ ---------- */
+/* ---------- B. Стек из 4 пластин: сайт, бот, CRM, аналитика ---------- */
+function* genB(F) {
+  const r = F.r, S = 140, RX = -1.05, RY = .5;
+  const gC = new Grp(), gM = new Grp(), gP = new Grp(), gA = new Grp();
+  const zk = k => (1.5 - k) * S;
+  const bub = (put, cx, cy, w, h, side, o) => {
+    put(RR(cx, cy, w, h, 14, 5), o);
+    put([[cx - side * (w / 2 - 20), cy - h / 2], [cx - side * (w / 2 + 3), cy - h / 2 - 13], [cx - side * (w / 2 - 38), cy - h / 2]], o);
+    put([[cx - w / 2 + 16, cy + 6], [cx + w / 2 - 34, cy + 6]], { bri: .7, amb: o.amb });
+    put([[cx - w / 2 + 16, cy - 7], [cx + w / 2 - 70, cy - 7]], { bri: .7, amb: o.amb });
+  };
+  for (let k = 0; k < 4; k++) {
+    const xf = pose(RX, RY, 0, [0, 0, zk(k)]);
+    const top = p => xf([p[0], p[1], 5]), bot = p => xf([p[0], p[1], -5]);
+    gC.addMap(RR(0, 0, 480, 300, 24, 7), top, { bri: 1.5 }); gC.addMap(RR(0, 0, 480, 300, 24, 7), bot, { bri: 1 });
+    for (const [cx, cy] of [[216, 126], [-216, 126], [216, -126], [-216, -126]]) gC.add([top([cx, cy]), bot([cx, cy])], { bri: 1 });
+    const put = (pts, o) => gM.addMap(pts, top, o || {});
+    const putD = (pts, on, off, o) => gM.addDashed(pts, top, on, off, o || {});
+    if (k === 0) { // Сайт
+      [-210, -192, -174].forEach(x => put(CI(x, 128, 6), { bri: 1.2 }));
+      put([[-240, 108], [240, 108]], { bri: 1.2 });
+      put(RR(34, 128, 250, 20, 10, 5), { bri: 1.1 });
+      put(RR(0, 38, 440, 92, 10, 5), { bri: 1.3 });
+      put([[-200, 66], [-40, 66]], { bri: 1.2 }); put([[-200, 62], [-40, 62]], { bri: .9 }); put([[-200, 44], [-90, 44]], { bri: .8 });
+      put(CI(150, 38, 26, 30), { bri: 1.2 }); put([[134, 24], [150, 50], [166, 24]], { bri: .8 });
+      putD([[-210, -30], [120, -30]], 9, 4, { bri: .85 }); putD([[-210, -52], [60, -52]], 9, 4, { bri: .85 }); putD([[-210, -74], [150, -74]], 9, 4, { bri: .85 });
+      put(RR(-150, -112, 130, 30, 15, 6), { amb: 1, bri: 1.4 });
+      hatchRect(-205, -125, -95, -99, 6, true).forEach(l => put(l, { amb: 1, bri: .7 }));
+    } else if (k === 1) { // Бот
+      bub(put, -120, 72, 220, 44, 1, { bri: 1.2 });
+      bub(put, 100, 6, 230, 44, -1, { bri: 1.2, amb: 1 });
+      bub(put, -140, -58, 180, 40, 1, { bri: 1.1 });
+      put(RR(-176, -100, 60, 26, 13, 5), { bri: 1.0 });
+      [-190, -176, -162].forEach(x => put(CI(x, -100, 3, 8), { amb: 1, bri: 1.2 }));
+      put(RR(0, -134, 440, 24, 12, 6), { bri: 1.0 }); put([[-206, -134], [-150, -134]], { bri: .6 });
+    } else if (k === 2) { // CRM: таблица 4x5, шапка ярче, одна строка янтарная
+      const ys = [110, 66, 22, -22, -66, -110], xs = [-220, -110, 0, 110, 220];
+      ys.forEach((y, i) => put([[-220, y], [220, y]], { bri: i < 2 ? 1.5 : 1 }));
+      put([[-220, 62], [220, 62]], { bri: 1.2 });
+      xs.forEach(x => put([[x, 110], [x, -110]], { bri: 1 }));
+      for (let ri = 0; ri < 5; ri++) for (let ci = 0; ci < 4; ci++) {
+        const yc = (ys[ri] + ys[ri + 1]) / 2, x0 = xs[ci] + 12, w = ri === 0 ? 40 : 30 + ((ri * 7 + ci * 13) % 5) * 11;
+        put([[x0, yc], [x0 + w, yc]], { bri: ri === 0 ? 1.4 : .8, amb: ri === 3 ? 1 : 0 });
+      }
+      put([[-220, -22], [220, -22], [220, -66], [-220, -66], [-220, -22]], { amb: 1, bri: 1.4 });
+    } else { // Аналитика
+      put([[-220, 112], [-220, -122], [220, -122]], { bri: 1.5 });
+      [-60, 0, 60].forEach(y => putD([[-220, y], [220, y]], 5, 7, { bri: .5 }));
+      const hs = [50, 85, 62, 120, 100, 150, 135], tops = [];
+      hs.forEach((h, i) => { const x = -190 + i * 60; put([[x - 16, -122], [x - 16, -122 + h], [x + 16, -122 + h], [x + 16, -122]], { bri: 1.1 }); hatchRect(x - 16, -122, x + 16, -122 + h, 6, true).forEach(l => put(l, { bri: .5 })); tops.push([x, -122 + h + 18]); });
+      put(tops, { amb: 1, bri: 1.4 }); tops.forEach(t => put(CI(t[0], t[1], 5, 10), { amb: 1, bri: 1.5 }));
+    }
+    // акценты: янтарные искры в ключевых местах пластины
+    const spots = [[-150, -112], [100, 6], [0, -44], [160, 28]];
+    for (let q = 0; q < 6; q++) gA.add([top([spots[k][0] - 6 + q, spots[k][1]]), top([spots[k][0] - 6 + q, spots[k][1] + .5])], { amb: 1, bri: 1.6 });
+    if (k < 3) for (const [cx, cy] of [[216, 126], [-216, 126], [216, -126], [-216, -126]]) { const a = xf([cx, cy, 5]), b = pose(RX, RY, 0, [0, 0, zk(k + 1)])([cx, cy, 5]); gP.addDashed([a, b], p => p, 7, 6, { bri: .9 }); }
+  }
+  gC.emit(F, C(.24), { bri: 1 }); yield;
+  gM.emit(F, C(.34), { bri: 1, amb: 0 }); yield;
+  gP.emit(F, C(.04), { bri: 1 });
+  gA.emit(F, C(.04), { bri: 1 }); yield;
+  scatter(F, C(.20), rr => { const k = Math.floor(rr() * 4), xf = pose(RX, RY, 0, [0, 0, zk(k)]); return xf([(rr() - .5) * 480, (rr() - .5) * 300, 0]); }, { bri: .35 }); yield;
+  // токены: кластеры 3x3 между пластинами
+  const nt = Math.round(C(.04) / 9);
+  for (let q = 0; q < nt; q++) { const k = Math.floor(r() * 3), xf = pose(RX, RY, 0, [0, 0, zk(k) - S * (.25 + .5 * r())]), cx = (r() - .5) * 440, cy = (r() - .5) * 270; for (let i = -1; i <= 1; i++) for (let j = -1; j <= 1; j++) { const p = xf([cx + i * 4, cy + j * 4, 0]); F.add(p[0], p[1], p[2], .9, r() < .15 ? 1 : 0, -1, 0); } }
+  fillDust(F, rr => { const a = rr() * TAU, d = .75 + rr() * .7; return [Math.cos(a) * 330 * d, Math.sin(a) * 260 * d, (rr() - .5) * 400]; });
+}
+
+/* ---------- C. Стена проектов 3x2 ---------- */
+function* genC(F) {
+  const r = F.r, Rw = 1310, gT = new Grp(), gG = new Grp(), gD = new Grp(), gA = new Grp();
+  const MB = MOBILE, SC = MB ? .75 : 1; // телефон: 2 колонки x 3 ряда, плитка 150x~100
+  const tiles = MB ? [[-82, 120], [82, 120], [-82, 0], [82, 0], [-82, -120], [82, -120]] : [[-220, 80], [0, 80], [220, 80], [-220, -80], [0, -80], [220, -80]];
+  const amb = [];
+  tiles.forEach(([tx, ty], i) => {
+    const xf = p => { const X = tx + p[0] * SC, ang = X / Rw; return [Rw * Math.sin(ang), ty + p[1] * SC, Rw * (1 - Math.cos(ang)) + (p[2] || 0)]; };
+    const T = (pts, o) => gT.addMap(pts, xf, o || {}), G = (pts, o) => gG.addMap(pts, xf, o || {});
+    T(RR(0, 0, 200, 130, 14, 6), { bri: 1.4 });
+    gD.addDashed([[-90, -77], [60, -77]], xf, 8, 5, { bri: .8 }); gD.addDashed([[-90, -87], [20, -87]], xf, 8, 5, { bri: .6 });
+    if (i === 0) { // салон: круг-портрет + 2 строки
+      G(CI(-48, 8, 34, 36), { bri: 1.2 }); G(CI(-48, 20, 11, 14), { bri: 1.1 }); G(ARC(-48, -12, 26, .2 * Math.PI, .8 * Math.PI, 14), { bri: 1.1 });
+      G([[0, 30], [80, 30]], { bri: 1.1 }); G([[0, 6], [60, 6]], { bri: .8 });
+    } else if (i === 1) { // клиника: крест + 3 строки-ячейки
+      G(POLY([[-12, 35], [12, 35], [12, 12], [35, 12], [35, -12], [12, -12], [12, -35], [-12, -35], [-12, -12], [-35, -12], [-35, 12], [-12, 12]].map(q => [q[0] - 50, q[1] + 5]), true), { bri: 1.3 });
+      G(CI(-50, 5, 46, 40), { bri: .8 });
+      [28, 5, -18].forEach((y, k) => { G(RR(28, y, 90, 16, 5, 4), { bri: 1 }); G([[-8, y], [10 + k * 12, y]], { bri: .6 }); });
+    } else if (i === 2) { // ресторан: тарелка (3 кольца) + вилка и нож
+      G(CI(-48, 4, 36, 36), { bri: 1.2 }); G(CI(-48, 4, 25, 26), { bri: 1 }); G(CI(-48, 4, 13, 16), { bri: .9 });
+      [30, 38, 46].forEach(x => G([[x, 34], [x, 10]], { bri: 1 })); G([[30, 10], [30, 2], [46, 2], [46, 10]], { bri: 1 }); G([[38, 2], [38, -40]], { bri: 1 });
+      G([[72, 34], [72, -40]], { bri: 1 }); G([[72, 34], [80, 20], [72, 0]], { bri: 1 });
+    } else if (i === 3) { // СТО: силуэт авто из 5 кривых
+      G(POLY([[-78, -18], [-78, -2], [-56, 4], [-38, 26], [20, 26], [44, 4], [78, -2], [78, -18]], true), { bri: 1.3 });
+      G(POLY([[-30, 8], [-24, 22], [0, 22], [0, 8]], true), { bri: 1 }); G(POLY([[8, 8], [8, 22], [18, 22], [34, 8]], true), { bri: 1 });
+      G(CI(-44, -18, 11, 16), { bri: 1.2 }); G(CI(44, -18, 11, 16), { bri: 1.2 }); G(CI(-44, -18, 4, 8), { bri: 1 }); G(CI(44, -18, 4, 8), { bri: 1 });
+      G([[-90, -32], [90, -32]], { bri: .7 });
+    } else if (i === 4) { // магазин: сетка товаров 2x2
+      [[-62, 20], [-18, 20], [-62, -24], [-18, -24]].forEach(([x, y]) => { G(RR(x, y, 38, 38, 6, 4), { bri: 1.2 }); G([[x - 10, y - 10], [x + 10, y + 10]], { bri: .6 }); G([[x - 10, y + 10], [x + 10, y - 10]], { bri: .6 }); });
+      [26, 0, -26].forEach(y => G([[30, y], [84, y]], { bri: .8 }));
+    } else { // чат: 3 пузыря
+      const bb = (cx, cy, w, h, side, o) => { G(RR(cx, cy, w, h, 10, 4), o); G([[cx - side * (w / 2 - 14), cy - h / 2], [cx - side * (w / 2 + 2), cy - h / 2 - 9], [cx - side * (w / 2 - 28), cy - h / 2]], o); };
+      bb(-30, 26, 100, 28, 1, { bri: 1.2 }); bb(30, -4, 100, 28, -1, { bri: 1.2 }); bb(-30, -34, 80, 24, 1, { bri: 1.1 });
+    }
+    // янтарная точка-заявка с двумя кольцами в углу
+    gA.addMap(CI(78, 48, 8, 14), xf, { amb: 1, bri: 1.4 }); gA.addMap(CI(78, 48, 14, 20), xf, { amb: 1, bri: 1 });
+    amb.push(xf([78, 48, 0]));
+  });
+  gT.emit(F, C(.20), { bri: 1 }); yield;
+  gG.emit(F, C(.40), { bri: 1 }); yield;
+  gD.emit(F, C(.10), { bri: 1 });
+  gA.emit(F, C(.03), { bri: 1, amb: 1 });
+  amb.forEach(p => scatter(F, 14, rr => { const a = rr() * TAU, d = 3.5 * Math.sqrt(rr()); return [p[0] + Math.cos(a) * d, p[1] + Math.sin(a) * d, p[2]]; }, { bri: 1.7, amb: 1 }));
+  yield;
+  scatter(F, C(.15), rr => { const t = Math.floor(rr() * 6), p = tiles[t], x = p[0] + (rr() - .5) * 200 * SC, ang = x / Rw; return [Rw * Math.sin(ang), p[1] + (rr() - .5) * 130 * SC, Rw * (1 - Math.cos(ang))]; }, { bri: .35 }); yield;
+  fillDust(F, rr => { const a = rr() * TAU, d = .8 + rr() * .6; return [Math.cos(a) * (MB ? 220 : 360) * d, Math.sin(a) * (MB ? 280 : 230) * d, (rr() - .5) * 300]; });
+}
+
+/* ---------- D. Лента процесса: белая линия «идёт», узлы вспыхивают ---------- */
+const NODE_U = [.1, .3, .5, .7, .9];
+function* genD(F) {
+  const r = F.r;
+  const cr = u => [-300 + 600 * u, 170 * Math.sin(TAU * 1.25 * u), 90 * Math.cos(TAU * u)];
+  const norm = v => { const l = Math.hypot(v[0], v[1], v[2]) || 1; return [v[0] / l, v[1] / l, v[2] / l]; };
+  const cross = (a, b) => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
+  const surf = (u, v) => { const c = cr(u), T = norm(cr(u + .0008).map((q, i) => q - c[i])), S0 = norm(cross(T, [0, 0, 1])), Z0 = cross(T, S0), ph = .8 * Math.PI * u, cs = Math.cos(ph), sn = Math.sin(ph); return [c[0] + 45 * v * (cs * S0[0] + sn * Z0[0]), c[1] + 45 * v * (cs * S0[1] + sn * Z0[1]), c[2] + 45 * v * (cs * S0[2] + sn * Z0[2]), u]; };
+  const line = v => { const p = []; for (let i = 0; i <= 420; i++) p.push(surf(i / 420, v)); return p; };
+  const gc = new Grp(), gs = new Grp(), gt = new Grp(), gn = new Grp();
+  gc.add(line(0), { bri: 1.5 });
+  gs.add(line(-1), { bri: .9 }); gs.add(line(1), { bri: .9 });
+  // длина кривой для шага шпал 36 px
+  let L = 0, prev = cr(0); for (let i = 1; i <= 400; i++) { const c = cr(i / 400); L += Math.hypot(c[0] - prev[0], c[1] - prev[1], c[2] - prev[2]); prev = c; }
+  const nsl = Math.round(L / 36);
+  for (let i = 1; i < nsl; i++) { const u = i / nsl; gt.add([surf(u, -1), surf(u, 0), surf(u, 1)].map(p => [p[0], p[1], p[2], u]), { bri: .85 }); }
+  const nodeAt = [];
+  NODE_U.forEach(u => {
+    const c = cr(u); nodeAt.push(c);
+    const ring = CI(0, 0, 26, 40).map(p => [c[0] + p[0], c[1] + p[1], c[2], u]); gn.add(ring, { bri: 1.5, w: 1, wt: 1 });
+    for (let k = 0; k < 8; k++) { const a = k / 8 * TAU; gn.add([[c[0] + 31 * Math.cos(a), c[1] + 31 * Math.sin(a), c[2], u], [c[0] + 45 * Math.cos(a), c[1] + 45 * Math.sin(a), c[2], u]], { bri: 1.2, w: 1 }); }
+  });
+  gc.emit(F, C(.14), { bri: 1, j: 1 }); yield;
+  gs.emit(F, C(.22), { bri: 1 }); yield;
+  gt.emit(F, C(.18), { bri: 1 }); yield;
+  // узлы 16%: кольцо + лучи + ядро
+  gn.emit(F, Math.round(C(.16) * .6), { bri: 1, amb: 0 });
+  NODE_U.forEach((u, j) => { const c = nodeAt[j]; scatter(F, Math.round(C(.16) * .4 / 5), rr => { const a = rr() * TAU, ph = Math.acos(2 * rr() - 1), d = 10 * Math.cbrt(rr()); return [c[0] + d * Math.sin(ph) * Math.cos(a), c[1] + d * Math.sin(ph) * Math.sin(a), c[2] + d * Math.cos(ph)]; }, { bri: 1.3, u, w: 1 }); });
+  yield;
+  scatter(F, C(.20), rr => surf(rr(), (rr() * 2 - 1) * 1.05), { bri: .35 }); yield;
+  fillDust(F, rr => { const a = rr() * TAU, d = .7 + rr() * .6; return [Math.cos(a) * 340 * d, Math.sin(a) * 210 * d, (rr() - .5) * 260]; });
+}
+
+/* ---------- E. Лист-заявка (бланк) с 5 условиями; четвёртая и пятая галочки — по прокрутке ---------- */
+function* genE(F) {
+  const r = F.r, xf = pose(-.2, .35, -.12), gC = new Grp(), gR = new Grp(), gK = new Grp(), gS = new Grp();
+  const put = (g, pts, o) => g.addMap(pts, xf, o || {});
+  put(gC, POLY([[-180, -240], [180, -240], [180, 170], [110, 240], [-180, 240]], true), { bri: 1.4 });
+  put(gC, POLY([[110, 240], [110, 170], [180, 170]], true), { bri: 1.7 }); put(gC, [[110, 240], [180, 170]], { bri: 2 });
+  put(gR, [[-140, 192], [30, 192]], { bri: 1.5 }); put(gR, [[-140, 187], [30, 187]], { bri: 1.2 }); put(gR, [[-140, 166], [-60, 166]], { bri: .9 });
+  const ys = [112, 50, -12, -74, -136], chk = [-1, -1, -1, .6, .85];
+  ys.forEach((y, i) => {
+    put(gK, RR(-130, y, 20, 20, 3, 3), { bri: 1.3 });
+    const o = chk[i] < 0 ? { amb: 1, bri: 1.6 } : { amb: 1, bri: 1.6, u: chk[i], w: 1 };
+    put(gK, [[-137, y], [-131, y - 6], [-120, y + 7]], o);
+    gR.addDashed([[-96, y + 4], [30 + (i % 2) * 20, y + 4]], xf, 9, 3, { bri: 1.1 }); gR.addDashed([[-96, y - 10], [-20 - (i % 3) * 12, y - 10]], xf, 9, 3, { bri: .65 });
+  });
+  put(gS, CI(100, -180, 46, 44), { amb: 1, bri: 1.4 }); put(gS, CI(100, -180, 36, 36), { amb: 1, bri: 1.1 });
+  for (let k = 0; k < 12; k++) { const a = k / 12 * TAU; put(gS, [[100 + 50 * Math.cos(a), -180 + 50 * Math.sin(a)], [100 + 62 * Math.cos(a), -180 + 62 * Math.sin(a)]], { amb: 1, bri: 1.2 }); }
+  put(gS, ARC(100, -180, 20, .3, 2.6, 10), { amb: 1, bri: 1 });
+  gC.emit(F, C(.22), { bri: 1 }); yield;
+  gR.emit(F, C(.30), { bri: 1 }); yield;
+  gK.emit(F, C(.12), { bri: 1 });
+  gS.emit(F, C(.08), { bri: 1 }); yield;
+  scatter(F, C(.18), rr => { let x, y; do { x = (rr() - .5) * 360; y = (rr() - .5) * 480; } while (x > 110 && y > 170 && (x - 110) + (y - 170) > 70 && false); return xf([x, y, 0]); }, { bri: .35 }); yield;
+  fillDust(F, rr => { const a = rr() * TAU, d = .75 + rr() * .6; return [Math.cos(a) * 260 * d, Math.sin(a) * 330 * d, (rr() - .5) * 280]; });
+}
+
+/* ---------- F. Самолётик (финал): заявка улетела и дошла ---------- */
+function* genF(F) {
+  const r = F.r, Nn = [250, 40, 0], WL = [-150, 90, -135], WR = [-150, 90, 135], K = [-110, 40, 0], Kb = [-110, -45, 0];
+  const tilt = pose(-1.2, 0, 0), roll = a => p => [Math.cos(a) * p[0] - Math.sin(a) * p[1], Math.sin(a) * p[0] + Math.cos(a) * p[1], p[2]];
+  const xf = p => roll(.4)(tilt(p));
+  const gC = new Grp(), gH = new Grp(), gF = new Grp(), gT = new Grp();
+  const E3 = (a, b, g, o) => g.add([xf(a), xf(b)], o);
+  [[Nn, WL], [Nn, WR], [WL, K], [WR, K], [K, Kb], [Nn, Kb]].forEach(e => E3(e[0], e[1], gC, { bri: 1.4 }));
+  E3(Nn, K, gF, { bri: 2 });
+  const lerp3 = (a, b, t) => [lerp(a[0], b[0], t), lerp(a[1], b[1], t), lerp(a[2], b[2], t)];
+  const pw = xf(WL), pn = xf(Nn), steps = Math.round(Math.hypot(pw[0] - pn[0], pw[1] - pn[1]) / 9);
+  for (let i = 1; i < steps; i++) { const t = i / steps; E3(lerp3(Nn, WL, t), lerp3(Nn, K, t), gH, { bri: .8 }); } // нижнее крыло штрихуется через 9 px
+  // шлейф: пунктирная дуга от хвоста, точки тускнеют к концу
+  const T0 = xf(K), bez = t => { const m = 1 - t, P = [[T0[0] - 14, T0[1] - 4], [T0[0] - 150, T0[1] + 10], [T0[0] - 290, T0[1] - 90], [T0[0] - 400, T0[1] - 215]]; return [0, 1].map(k => m * m * m * P[0][k] + 3 * m * m * t * P[1][k] + 3 * m * t * t * P[2][k] + t * t * t * P[3][k]); };
+  const arcPts = []; for (let i = 0; i <= 60; i++) { const t = i / 60, p = bez(t); arcPts.push([p[0], p[1], 0, t]); }
+  dashed(arcPts, 11, 9).forEach(d => { const t = d[0][3] === undefined ? 0 : d[0][3]; gT.add(d, { bri: .95 * (1 - .75 * t) }); });
+  gC.emit(F, C(.20), { bri: 1 }); yield;
+  gH.emit(F, C(.25), { bri: 1 }); yield;
+  gF.emit(F, C(.08), { bri: 1 });
+  gT.emit(F, C(.22), { bri: 1, j: 2 }); yield;
+  scatter(F, C(.15), rr => { let u = rr(), v = rr(); if (u + v > 1) { u = 1 - u; v = 1 - v; } const w = rr() < .5 ? WL : WR, a = Nn, b = w, c = K; return xf([a[0] + u * (b[0] - a[0]) + v * (c[0] - a[0]), a[1] + u * (b[1] - a[1]) + v * (c[1] - a[1]), a[2] + u * (b[2] - a[2]) + v * (c[2] - a[2])]); }, { bri: .35 });
+  scatter(F, C(.04), rr => { const a = rr() * TAU, d = 9 * Math.sqrt(rr()); return [pn[0] + Math.cos(a) * d, pn[1] + Math.sin(a) * d, 0]; }, { bri: 1.7, amb: 1 }); yield;
+  fillDust(F, rr => { const a = rr() * TAU, d = .6 + rr() * .7; return [Math.cos(a) * 380 * d - 90, Math.sin(a) * 240 * d - 20, (rr() - .5) * 240]; });
+  // центр по границам
+  let x0 = 1e9, x1 = -1e9, y0 = 1e9, y1 = -1e9; for (let i = 0; i < F.n; i++) { x0 = Math.min(x0, F.x[i]); x1 = Math.max(x1, F.x[i]); y0 = Math.min(y0, F.y[i]); y1 = Math.max(y1, F.y[i]); }
+  const cx = (x0 + x1) / 2, cy = (y0 + y1) / 2; for (let i = 0; i < F.n; i++) { F.x[i] -= cx; F.y[i] -= cy; }
+}
+
+const A_ADD = MOBILE ? .7 : .4; // добавка к размеру точки формы A, px
+const GEN = [genA, genB, genC, genD, genE, genF];
+const WF = [300, 560, MOBILE ? 330 : 660, 640, 400, 700];                       // номинальная ширина формы (для телефона: 0.92·vw / WF)
+const ROT = [[0, 0], [0, -.22], [.04, .2], [0, -.2], [0, .12], [.04, -.28]]; // добавочный поворот формы (рад): 15-20° за раздел
+
+/* ---------- сборка буферов: кусками ≤ 10 мс в простое ---------- */
+const idle = () => new Promise(res => (window.requestIdleCallback ? requestIdleCallback(res, { timeout: 120 }) : setTimeout(res, 16)));
+async function buildForms() {
+  const t0 = performance.now(); let maxChunk = 0, forms = [];
+  for (let i = 0; i < 6; i++) {
+    const F = newForm(i * 7919 + 13), it = GEN[i](F); let done = false;
+    while (!done) {
+      const c0 = performance.now();
+      while (performance.now() - c0 < 10) { if (it.next().done) { done = true; break; } }
+      maxChunk = Math.max(maxChunk, performance.now() - c0);
+      if (!done) await idle();
+    }
+    // перемешивание (любой префикс = равномерная выборка формы) и упаковка
+    const r = rng(500 + i), perm = new Uint32Array(N); for (let k = 0; k < N; k++) perm[k] = k;
+    for (let k = N - 1; k > 0; k--) { const j = Math.floor(r() * (k + 1)), t = perm[k]; perm[k] = perm[j]; perm[j] = t; }
+    const pos = new Float32Array(N * 3), prop = new Float32Array(N * 4);
+    for (let k = 0; k < N; k++) { const s = perm[k]; pos[k * 3] = F.x[s]; pos[k * 3 + 1] = F.y[s]; pos[k * 3 + 2] = F.z[s]; prop[k * 4] = F.amb[s]; prop[k * 4 + 1] = F.bri[s]; prop[k * 4 + 2] = F.u[s]; prop[k * 4 + 3] = F.w[s]; }
+    forms.push({ pos, prop, n: F.n });
+    dbg['gen' + 'ABCDEF'[i]] = F.n;
+    await idle();
+  }
+  dbg.genMs = Math.round(performance.now() - t0); dbg.genMaxChunkMs = +maxChunk.toFixed(1);
+  return forms;
+}
+
+/* ---------- запасной SVG (нет WebGL / saveData): контур телефона из точек, < 2 КБ ---------- */
 function svgFallback() {
   const host = document.getElementById('svg-fallback'); if (!host) return;
-  const r = rng(9), w = 335, h = 250, pad = 14, rad = 46; let wh = '', am = '';
-  const pts = [];
-  const cx = w / 2, cy = h / 2 - 12, W = w - 2 * pad, H = h - 2 * pad - 24;
-  for (let i = 0; i < 130; i++) {
-    const t = i / 130 * Math.PI * 2, e = 4; // суперэллипс
-    const c = Math.cos(t), sn = Math.sin(t);
-    pts.push([cx + Math.sign(c) * Math.pow(Math.abs(c), 2 / e) * W / 2, cy + Math.sign(sn) * Math.pow(Math.abs(sn), 2 / e) * H / 2]);
-  }
-  for (let i = 0; i < 22; i++) pts.push([lerp(60, 30, i / 22) + (r() - .5) * 6, lerp(h - 36, h - 6, i / 22) + (r() - .5) * 6]);
-  pts.forEach((p, i) => { const s = 'M' + p[0].toFixed(0) + ' ' + p[1].toFixed(0) + 'h0'; if (i % 5 === 2) am += s; else wh += s; });
-  host.innerHTML = '<path d="' + wh + '" stroke="#eee9db" stroke-opacity=".8" stroke-width="2.2" stroke-linecap="round" fill="none"/><path d="' + am + '" stroke="#f2a93c" stroke-width="2.6" stroke-linecap="round" fill="none"/>';
+  const r = rng(9); let wh = '', am = '', n = 0;
+  [14, 34, 62].forEach((d, ri) => { for (let s = r() * 30; s < PERIM + d * 3; s += 28 - ri * 4) { const c = rrPt(s * PERIM / (PERIM + d * 3), PW, PH, PR); const x = Math.round(c[0] + c[2] * d), y = Math.round(-(c[1] + c[3] * d)), seg = 'M' + x + ' ' + y + 'h0'; if (++n % 9 === 4) am += seg; else wh += seg; } });
+  host.innerHTML = '<path d="' + wh + '" stroke="#eee9db" stroke-opacity=".5" stroke-width="2.2" stroke-linecap="round" fill="none"/><path d="' + am + '" stroke="#f2a93c" stroke-width="2.6" stroke-linecap="round" fill="none"/>';
   host.style.display = 'block'; dbg.svg = host.outerHTML.length;
 }
 
 /* ---------- старт ---------- */
 const saveData = navigator.connection && navigator.connection.saveData;
-const lowMem = navigator.deviceMemory && navigator.deviceMemory < 4;
 function hasGL() { try { const c = document.createElement('canvas'); return !!(c.getContext('webgl2') || c.getContext('webgl')); } catch (e) { return false; } }
+const WEAK = MOBILE && ((navigator.deviceMemory && navigator.deviceMemory < 4) || (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4));
 
 async function boot() {
-  if (Q.get('mode') === 'svg' || !hasGL() || (MOBILE && (saveData || lowMem))) { svgFallback(); dbg.mode = 'svg'; return; }
+  if (Q.get('mode') === 'svg' || !hasGL() || saveData) { svgFallback(); dbg.mode = 'svg'; return; }
   const t0 = performance.now();
-  const THREE = await import('three');
+  const [THREE, F] = await Promise.all([import('three'), buildForms()]);
   dbg.importMs = Math.round(performance.now() - t0);
-  const data = build();
   const canvas = document.getElementById('cloud');
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: true, powerPreference: 'high-performance' });
-  renderer.setPixelRatio(DPR);
-  renderer.setClearColor(0x000000, 0);
-  let vw = innerWidth, vh = innerHeight;
-  const cam = new THREE.OrthographicCamera(-vw / 2, vw / 2, vh / 2, -vh / 2, 1, 3000);
-  cam.position.z = 1500;
-  const scene = new THREE.Scene();
-  const geo = new THREE.BufferGeometry();
-  geo.setAttribute('position', new THREE.BufferAttribute(data.pos.A, 3));
-  geo.setAttribute('posB', new THREE.BufferAttribute(data.pos.B, 3));
-  geo.setAttribute('posC', new THREE.BufferAttribute(data.pos.C, 3));
-  geo.setAttribute('posD', new THREE.BufferAttribute(data.pos.D, 3));
-  geo.setAttribute('aAmb', new THREE.BufferAttribute(data.amb, 4));
-  geo.setAttribute('aBri', new THREE.BufferAttribute(data.bri, 4));
-  geo.setAttribute('aNode', new THREE.BufferAttribute(data.node, 1));
-  geo.setAttribute('aRand', new THREE.BufferAttribute(data.rnd, 4));
+  renderer.setPixelRatio(DPR); renderer.setClearColor(0x000000, 0);
+
+  /* размеры: ширина = clientWidth (без полосы прокрутки), высота = 100lvh, считается один раз */
+  const probe = document.createElement('div'); probe.style.cssText = 'position:fixed;left:0;top:0;width:0;height:100lvh;visibility:hidden;pointer-events:none';
+  document.body.appendChild(probe);
+  let vw = document.documentElement.clientWidth, H = probe.offsetHeight || innerHeight, lastW = vw, lastH = innerHeight;
+  const cam = new THREE.OrthographicCamera(-vw / 2, vw / 2, H / 2, -H / 2, 1, 3000); cam.position.z = 1500;
+  const scene = new THREE.Scene(), geo = new THREE.BufferGeometry();
+  const aFrom = new THREE.BufferAttribute(new Float32Array(F[0].pos), 3), aTo = new THREE.BufferAttribute(new Float32Array(F[1].pos), 3);
+  const pFrom = new THREE.BufferAttribute(new Float32Array(F[0].prop), 4), pTo = new THREE.BufferAttribute(new Float32Array(F[1].prop), 4);
+  const rr = rng(5), rnd = new Float32Array(N * 4), sweep = new Float32Array(N);
+  for (let k = 0; k < N * 4; k++) rnd[k] = rr();
+  for (let k = 0; k < N; k++) sweep[k] = clamp((F[0].pos[k * 3] + 310) / 620, 0, 1);
+  geo.setAttribute('position', aFrom); geo.setAttribute('aTo', aTo); geo.setAttribute('pFrom', pFrom); geo.setAttribute('pTo', pTo);
+  geo.setAttribute('aRand', new THREE.BufferAttribute(rnd, 4)); geo.setAttribute('aSweep', new THREE.BufferAttribute(sweep, 1));
+  const drawN0 = WEAK ? 3500 : N; geo.setDrawRange(0, drawN0);
   const mat = new THREE.ShaderMaterial({
     transparent: true, depthWrite: false, depthTest: false, blending: THREE.AdditiveBlending,
     uniforms: {
-      uW: { value: new THREE.Vector4(1, 0, 0, 0) }, uE: { value: 0 }, uNoise: { value: MOBILE ? 0 : 1 }, uScale: { value: 1 },
-      uDpr: { value: DPR }, uYk: { value: 1 }, uStep: { value: 0 }, uOpacity: { value: 0 },
-      uSize: { value: MOBILE ? new THREE.Vector2(1.5, 2.2) : new THREE.Vector2(2.4, 3.4) }
+      uSc: { value: new THREE.Vector2(1, 1) }, uAdd: { value: new THREE.Vector2() }, uCF: { value: new THREE.Vector2() }, uCT: { value: new THREE.Vector2() }, uE: { value: 0 },
+      uProg: { value: new THREE.Vector2(1, 1) }, uPen: { value: new THREE.Vector2() }, uRot: { value: new THREE.Vector2() },
+      uB: { value: 270 }, uNoise: { value: MOBILE ? .5 : 1 }, uMouse: { value: new THREE.Vector3(0, 0, 0) }, uMR: { value: 140 },
+      uDpr: { value: DPR }, uOpacity: { value: 0 }, uBriK: { value: 1 }, uCap: { value: MOBILE ? .5 : 1 },
+      uSize: { value: MOBILE ? new THREE.Vector2(1.4, 2.4) : new THREE.Vector2(1.6, 2.8) }
     },
     vertexShader: `
-      attribute vec3 posB; attribute vec3 posC; attribute vec3 posD;
-      attribute vec4 aAmb; attribute vec4 aBri; attribute float aNode; attribute vec4 aRand;
-      uniform vec4 uW; uniform float uE; uniform float uNoise; uniform float uScale; uniform float uDpr; uniform float uStep; uniform float uYk; uniform vec2 uSize;
+      attribute vec3 aTo; attribute vec4 pFrom; attribute vec4 pTo; attribute vec4 aRand; attribute float aSweep;
+      uniform vec2 uAdd; uniform vec2 uSc; uniform vec2 uCF; uniform vec2 uCT; uniform float uE; uniform vec2 uProg; uniform vec2 uPen; uniform vec2 uRot;
+      uniform float uB; uniform float uNoise; uniform vec3 uMouse; uniform float uMR; uniform float uDpr; uniform float uBriK; uniform vec2 uSize;
       varying float vAmb; varying float vBri;
+      float sm5(float x){ x = clamp(x,0.,1.); return x*x*x*(x*(x*6.-15.)+10.); }
+      void side(vec4 pr, float s, float pen, out float bri, out float amb, out float sz){
+        bri = pr.y; amb = pr.x; sz = 1.;
+        if(pr.z > -.5){
+          float dd = s - pr.z; float lit = step(0., dd); float k = mix(.08, 1., lit);
+          if(pen > .5){ float near = 1. - smoothstep(0., .012, abs(dd)); float tail = lit*(1. - smoothstep(0., .05, dd)); k *= 1. + 1.4*near + .8*tail; sz *= 1. + .5*near; }
+          if(pr.w > .5){ float fl = lit*(1. - smoothstep(0., .04, dd)); sz *= 1. + .8*fl; amb = mix(amb, 1., lit); k *= mix(1., 1.6, lit); }
+          bri *= k;
+        }
+      }
       void main(){
-        vec3 p = position*uW.x + posB*uW.y + posC*uW.z + posD*uW.w;
-        p += (aRand.xyz-.5)*2.*sin(3.14159265*uE)*40.*uNoise;
-        p *= uScale; p.y *= uYk;
-        float bri = dot(aBri,uW);
-        if(aNode > -.5){ float lit = clamp(uStep-aNode,0.,1.); bri *= mix(1., mix(.3,1.6,lit), uW.z); }
-        vAmb = dot(aAmb,uW); vBri = bri;
-        vec4 mv = modelViewMatrix*vec4(p,1.);
+        float bF, aF, zF, bT, aT, zT;
+        side(pFrom, uProg.x, uPen.x, bF, aF, zF); side(pTo, uProg.y, uPen.y, bT, aT, zT);
+        float dly = .65*aSweep + .35*aRand.x;
+        float ei = sm5(uE*1.45 - dly*.45);
+        float sn = sin(3.14159265*ei);
+        vec3 p = mix(position*uSc.x, aTo*uSc.y, ei);
+        float th = sn*(.5 + .4*aRand.y + length(p.xy)/420.);
+        float cs = cos(th), sa = sin(th);
+        p.xy = vec2(cs*p.x - sa*p.y, sa*p.x + cs*p.y);
+        vec3 dir = normalize(vec3(p.xy, (aRand.z - .5)*500.) + vec3(1e-3));
+        p += dir*pow(sn, 1.3)*uB*(.6 + .8*aRand.y);
+        vec3 nz = vec3(sin(p.y*.012 + aRand.x*6.2832), sin(p.z*.012 + p.x*.006 + aRand.y*6.2832), sin(p.x*.012 + aRand.z*6.2832));
+        p += nz*36.*sn*uNoise;
+        float cy = cos(uRot.y), sy = sin(uRot.y), cx = cos(uRot.x), sx = sin(uRot.x);
+        p = vec3(cy*p.x + sy*p.z, p.y, -sy*p.x + cy*p.z);
+        p = vec3(p.x, cx*p.y - sx*p.z, sx*p.y + cx*p.z);
+        p.xy += mix(uCF, uCT, ei);
+        float inr = 0.;
+        if(uMouse.z > 0.){
+          vec2 dm = p.xy - uMouse.xy; float dist = length(dm);
+          if(dist < uMR){ float q = 1. - dist/uMR; inr = q*uMouse.z; vec2 n = dm/max(dist, 1e-3); p.xy += (n*52.*q*q + vec2(-n.y, n.x)*18.*q)*uMouse.z; p.z += 40.*q*uMouse.z; }
+        }
+        float bri = mix(bF, bT, ei)*(1. - .2*sn)*uBriK*(1. + .4*inr);
+        vAmb = mix(aF, aT, ei); vBri = bri;
+        vec4 mv = modelViewMatrix*vec4(p, 1.);
         gl_Position = projectionMatrix*mv;
         float depth = (mv.z + 1500.)/400.;
-        gl_PointSize = mix(uSize.x,uSize.y,aRand.w)*uDpr*(1.+depth*.22)*(.9+.2*min(bri,1.8));
+        gl_PointSize = (mix(uSize.x, uSize.y, aRand.w) + mix(uAdd.x, uAdd.y, ei))*uDpr*(1. + depth*.22)*(.9 + .2*min(bri, 1.8))*mix(zF, zT, ei)*(1. - .1*sn)*(1. + .3*inr);
       }`,
     fragmentShader: `
-      uniform float uOpacity; varying float vAmb; varying float vBri;
+      uniform float uOpacity; uniform float uCap; varying float vAmb; varying float vBri;
       void main(){
-        float d = length(gl_PointCoord-.5); if(d>.5) discard;
-        float a = smoothstep(.5,.12,d);
-        vec3 col = mix(vec3(.933,.914,.859), vec3(.949,.663,.235), vAmb);
-        col = mix(col, vec3(1.), smoothstep(.28,0.,d)*.45);
-        gl_FragColor = vec4(col, a*min(vBri,1.8)*uOpacity*1.2);
+        float d = length(gl_PointCoord - .5); if(d > .5) discard;
+        float a = smoothstep(.5, .12, d);
+        vec3 col = mix(vec3(.933, .914, .859), vec3(.949, .663, .235), vAmb);
+        col = mix(col, vec3(1.), smoothstep(.28, 0., d)*.45);
+        gl_FragColor = vec4(col, min(a*min(vBri, 1.8)*uOpacity*1.2, mix(uCap, 1., vAmb)));
       }`
   });
-  const pts = new THREE.Points(geo, mat);
-  pts.frustumCulled = false;
-  scene.add(pts);
+  const pts = new THREE.Points(geo, mat); pts.frustumCulled = false; scene.add(pts);
   const U = mat.uniforms;
-  function resize() { vw = innerWidth; vh = innerHeight; renderer.setSize(vw, vh, false); cam.left = -vw / 2; cam.right = vw / 2; cam.top = vh / 2; cam.bottom = -vh / 2; cam.updateProjectionMatrix(); }
-  resize();
-
-  // прогрев шейдеров
-  U.uOpacity.value = 0;
+  function setSize() { renderer.setSize(vw, H, false); dbg.setSize++; cam.left = -vw / 2; cam.right = vw / 2; cam.top = H / 2; cam.bottom = -H / 2; cam.updateProjectionMatrix(); }
+  setSize();
   try { await renderer.compileAsync(scene, cam); } catch (e) { renderer.compile(scene, cam); }
-  renderer.render(scene, cam);
-  dbg.warm = true;
+  renderer.render(scene, cam); dbg.warm = true;
 
-  // якоря
-  const mobAllowed = ['A', 'D'];
-  const anchors = [...document.querySelectorAll('[data-obj-anchor],.obj-anchor[data-obj]')]
-    .map(el => ({ el, st: ST[el.dataset.obj], key: el.dataset.obj, base: MOBILE && el.dataset.obj === 'A' ? 760 : (+el.dataset.base || BASE[el.dataset.obj]), dim: el.dataset.dim ? +el.dataset.dim : 1 }))
-    .filter(a => !MOBILE || mobAllowed.includes(a.key));
-  const cards = [...document.querySelectorAll('[data-cards]')];
+  /* ---------- кэш раскладки: читается ТОЛЬКО здесь (загрузка, resize, ResizeObserver, fonts.ready), в frame() нет ---------- */
   const proc = document.getElementById('process'), stepEl = RM ? null : document.getElementById('proc-step');
-  dbg.anchors = anchors.length;
-  const state = dbg.state = {};
-
+  let phone = { cx: 0, cy: 0 }, maxScroll = 0, KF = [], eRange = [0, 1], dRange = [0, 1];
   function measure() {
-    const rs = anchors.map(a => { const r = a.el.getBoundingClientRect(); return { cx: r.left + r.width / 2, cy: r.top + r.height / 2, w: r.width, d: r.top + r.height / 2 - vh / 2, st: a.st, base: a.base, dim: a.dim }; });
-    let i = 0; while (i < rs.length - 1 && rs[i + 1].d <= 0) i++;
-    const last = i === rs.length - 1, a = rs[i], b = last ? a : rs[i + 1];
-    const u = last ? 0 : clamp(-a.d / (b.d - a.d), 0, 1);
-    const t = clamp((u - .25) / .5, 0, 1), e = ease(t);
-    const W = [0, 0, 0, 0]; W[a.st] += 1 - e; W[b.st] += e;
-    const s = lerp(a.w / a.base, b.w / b.base, e);
-    let mult = 1; if (MOBILE) mult = 1 - smooth(.05, .3, Math.min(u, 1 - u));
-    // шаг «Процесса»
-    let step = 0;
-    if (proc) { const r = proc.getBoundingClientRect(); step = clamp(-r.top / Math.max(1, r.height - vh), 0, 1) * 5.2; }
-    let cardT = 1; cards.forEach(c => { const r = c.getBoundingClientRect(); if (r.top < vh * .5 && r.bottom > vh * .5) cardT = .18; });
-    const sn = Math.min(5, Math.max(1, Math.ceil(step || .001))); if (stepEl && stepEl.dataset.n != sn) { stepEl.dataset.n = sn; stepEl.textContent = 'Крок ' + sn + ' з 5'; }
-    Object.assign(state, { i, u: +u.toFixed(3), e: +e.toFixed(3), W, scale: s, dim: lerp(a.dim, b.dim, e) * mult, step, cardT });
-    // телефон: пузырь с хвостом целиком влезает в canvas 335x250, центр рамки (пузырь+хвост) смещён на 45 ед. вниз
-    const cyAdj = MOBILE ? -45 * s * .92 * W[0] : 0;
-    return { cx: lerp(a.cx, b.cx, e), cy: lerp(a.cy, b.cy, e) + cyAdj, s, W, e: a.st === b.st ? 0 : e, dim: lerp(a.dim, b.dim, e) * mult, i, u, step, cardT };
+    const sy0 = scrollY, rect = id => { const q = document.getElementById(id).getBoundingClientRect(); return { top: q.top + sy0, h: q.height, left: q.left, w: q.width }; };
+    const ph = rect('hero-chat'); phone = { cx: ph.left + ph.w / 2, cy: ph.top + ph.h / 2 };
+    const sv = rect('services'), cs = rect('cases'), pr = rect('process'), tm = rect('terms'), fn = rect('final');
+    maxScroll = Math.max(0, document.documentElement.scrollHeight - H);
+    const base = r0 => r0.top + r0.h / 2 - H / 2;
+    const aA = phone.cy - H / 2, aB = base(sv), aC = base(cs), aD = pr.top, bD = pr.top + pr.h - H;
+    let aF = Math.min(base(fn), maxScroll - 4);
+    let aE = base(tm) - .25 * H, bE = base(tm) + .3 * H;
+    if (MOBILE) { aF = Math.min(fn.top - 122, maxScroll - 4); aE = tm.top - 122; bE = tm.top + 120; } // телефон: заголовок на y≈160, форма начинается ниже
+    aE = Math.max(aE, bD + .2 * H); bE = Math.min(bE, aF - .2 * H);
+    KF = [[aA, aA], [aB, aB], [aC, aC], [aD, bD], [aE, bE], [aF, aF]];
+    for (let i = 1; i < 6; i++) if (KF[i][0] <= KF[i - 1][1] + 1) KF[i][0] = KF[i - 1][1] + 1; // страховка монотонности
+    dRange = [aD, bD]; eRange = [aE + .1 * H, bE - .05 * H];
+    dbg.kf = KF.map(k => k.map(Math.round)); dbg.phone = phone; dbg.maxScroll = Math.round(maxScroll); dbg.H = H; dbg.vw = vw;
+    dirty = true;
+  }
+  function targetT(sy) {
+    if (sy <= KF[0][1]) return 0;
+    for (let i = 0; i < 5; i++) { if (sy < KF[i + 1][0]) return sy <= KF[i][1] ? i : i + (sy - KF[i][1]) / (KF[i + 1][0] - KF[i][1]); }
+    return 5;
   }
 
-  function apply(m, now, cardF, fade) {
-    U.uW.value.set(m.W[0], m.W[1], m.W[2], m.W[3]);
-    U.uE.value = m.e; U.uScale.value = m.s; U.uYk.value = MOBILE ? 1 - .08 * m.W[0] : 1; U.uStep.value = RM ? 5 : m.step;
-    U.uOpacity.value = fade * m.dim * cardF;
-    // поворот по состояниям: между соседними формами 25-40 градусов, плавно вместе с морфом
-    const ROT = [[-.08, -.18], [.32, .5], [-.18, .32], [.64, -.75]];
-    let rx = 0, ry = 0; for (let q = 0; q < 4; q++) { rx += m.W[q] * ROT[q][0]; ry += m.W[q] * ROT[q][1]; }
-    pts.rotation.x = rx;
-    pts.rotation.y = ry;
-    pts.position.set(m.cx - vw / 2, vh / 2 - m.cy, 0);
-    dbg.opacity = U.uOpacity.value;
+  /* ---------- позиции форм: A привязана к документу, B-F — к экрану ---------- */
+  const narrow = () => vw < 1100;
+  function centerOf(i, sy) {
+    if (i === 0) return [phone.cx - vw / 2, H / 2 - (phone.cy - sy)];
+    if (MOBILE) return [0, H / 2 - .53 * H];
+    return [(narrow() ? .76 : .70) * vw - vw / 2 + (dbg.dx || 0), 0];
+  }
+  function scaleOf(i) {
+    if (i === 0) return 1;
+    if (MOBILE) return .92 * vw / WF[i];
+    return .9 * clamp(H / 900, .6, 1.25) * (narrow() ? clamp(vw / 1100, .62, 1) : 1) * (dbg.zoom || 1); // dbg.zoom — только для осмотра деталей
   }
 
-  addEventListener('resize', () => { resize(); dirty = true; });
-  let dirty = true, cardF = 1, born = performance.now(), last = 0, acc = 0, cnt = 0, cleared = false;
-  addEventListener('scroll', () => { dirty = true; }, { passive: true });
-
-  if (RM) { /* четыре готовых кадра, смена по IntersectionObserver, без анимации прокрутки */
-    let cur = -1;
-    const stateIdx = { A: 0, B: 1, C: 2, D: 3 };
-    function showFor(key, a) {
-      const r = a.el.getBoundingClientRect();
-      const m = { cx: r.left + r.width / 2, cy: r.top + r.height / 2, s: r.width / a.base, W: [0, 0, 0, 0], e: 0, dim: a.dim, i: 0, u: 0, step: 5 };
-      m.W[stateIdx[key]] = 1;
-      apply(m, 0, 1, 1); renderer.render(scene, cam);
-    }
-    function pick() {
-      let best = null, bd = 1e9;
-      anchors.forEach(a => { const r = a.el.getBoundingClientRect(); if (r.bottom > 0 && r.top < vh) { const d = Math.abs(r.top + r.height / 2 - vh / 2); if (d < bd) { bd = d; best = a; } } });
-      const inCards = cards.some(c => { const r = c.getBoundingClientRect(); return r.top < vh * .5 && r.bottom > vh * .5; });
-      if (inCards) { canvas.style.transition = 'opacity .3s'; canvas.style.opacity = .18; return; }
-      if (!best) return;
-      const id = anchors.indexOf(best);
-      if (id === cur) { canvas.style.opacity = 1; return; }
-      cur = id; canvas.style.transition = 'opacity .3s'; canvas.style.opacity = 0;
-      setTimeout(() => { showFor(best.key, best); canvas.style.opacity = best.dim; dbg.rmState = best.key; }, 300);
-    }
-    const io = new IntersectionObserver(pick, { threshold: [0, .25, .5, .75, 1] });
-    anchors.forEach(a => io.observe(a.el)); cards.forEach(c => io.observe(c));
-    addEventListener('resize', () => { cur = -1; pick(); });
-    pick(); dbg.mode = 'rm-static'; return;
+  /* ---------- курсор (только десктоп) ---------- */
+  const mouse = { tx: 0, ty: 0, x: 0, y: 0, inside: false, E: 0, act: 0, last: 0, px: 0, py: 0, rawDist: 0 };
+  dbg.mouse = mouse;
+  if (HOVER) {
+    addEventListener('pointermove', e => {
+      if (e.pointerType && e.pointerType !== 'mouse') return;
+      const nx = e.clientX - vw / 2, ny = H / 2 - e.clientY;
+      if (!mouse.inside) { mouse.x = nx; mouse.y = ny; }
+      mouse.rawDist += Math.hypot(nx - mouse.tx, ny - mouse.ty); mouse.tx = nx; mouse.ty = ny; mouse.inside = true; mouse.last = performance.now();
+    }, { passive: true });
+    document.documentElement.addEventListener('pointerleave', () => { mouse.inside = false; });
+    addEventListener('blur', () => { mouse.inside = false; });
   }
 
-  // фаза появления: opacity 0 -> 1 за 900 мс
-  canvas.style.opacity = 1; dbg.mode = 'webgl';
-  born = performance.now();
-  let slowN = 0;
+  /* ---------- состояние ---------- */
+  let t = 0, sD = -.02, sE = 0, last = 0, born = performance.now(), dirty = true, pair = -1, curFrom = -1, curTo = -1, lastSy = -1, level = 0, acc = 0, cnt = 0, slowN = 0, fastN = 0, blackout = 0, perfSy = 0, stepN = 0;
+  const state = dbg.state = { t: 0, target: 0, sy: 0, e: 0, pair: 0 };
+  function setForms(a, b) {
+    if (a !== curFrom) { aFrom.array.set(F[a].pos); aFrom.needsUpdate = true; pFrom.array.set(F[a].prop); pFrom.needsUpdate = true; curFrom = a; }
+    if (b !== curTo) { aTo.array.set(F[b].pos); aTo.needsUpdate = true; pTo.array.set(F[b].prop); pTo.needsUpdate = true; curTo = b; }
+  }
+  const progOf = i => i === 3 ? sD : i === 4 ? sE : 1;
+  function updateStep() {
+    let n = 0; NODE_U.forEach(u => { if (sD >= u - .01) n++; }); n = Math.max(1, n);
+    if (stepEl && n !== stepN) { stepN = n; stepEl.textContent = 'Крок ' + n + ' з 5'; }
+  }
+  function applyUniforms(tv, sy, fade, tms) { // чистая арифметика, без чтения layout
+    const p = Math.min(4, Math.floor(tv)), f = tv - p, e = sm5((f - .10) / .80);
+    setForms(p, p + 1);
+    U.uE.value = e; U.uSc.value.set(scaleOf(p), scaleOf(p + 1));
+    const c0 = centerOf(p, sy), c1 = centerOf(p + 1, sy); U.uCF.value.set(c0[0], c0[1]); U.uCT.value.set(c1[0], c1[1]);
+    U.uAdd.value.set(p === 0 ? A_ADD : 0, p + 1 === 0 ? A_ADD : 0); U.uProg.value.set(progOf(p), progOf(p + 1)); U.uPen.value.set(p === 3 ? 1 : 0, p + 1 === 3 ? 1 : 0);
+    const rx = lerp(ROT[p][0], ROT[p + 1][0], e) - .08 * mouse.py, ry = lerp(ROT[p][1], ROT[p + 1][1], e) + .12 * mouse.px + (HOVER && !RM && level < 5 ? Math.sin(tms * .00025) * .04 : 0);
+    U.uRot.value.set(rx, ry);
+    U.uB.value = MOBILE ? .22 * vw : .30 * Math.min(vw, H);
+    U.uMR.value = clamp(.11 * vw, 110, 170);
+    U.uMouse.value.set(mouse.x, mouse.y, level < 5 ? mouse.force : 0);
+    U.uOpacity.value = fade;
+    state.rot = [+rx.toFixed(4), +ry.toFixed(4)]; state.t = +tv.toFixed(4); state.pair = p; state.e = +e.toFixed(3); state.sy = Math.round(sy); state.sD = +sD.toFixed(3); state.sE = +sE.toFixed(3); state.step = stepN;
+  }
+  mouse.force = 0;
+
+  // ступени (вниз при среднем кадре >40 мс 3 окна подряд, вверх при <20 мс 2 окна): 1 N×0.6, 2 N×0.35, 3 DPR 1, 4 без шума, 5 без курсора/холостого хода, 6 статичный кадр (только при >100 мс; сцена всё равно едет за прокруткой, без сглаживания)
+  function setLevel(l) {
+    const old = level; level = dbg.level = l;
+    geo.setDrawRange(0, Math.round(drawN0 * (l >= 2 ? .35 : l >= 1 ? .6 : 1)));
+    if ((l >= 3) !== (old >= 3)) { const pr = l >= 3 ? 1 : DPR; renderer.setPixelRatio(pr); U.uDpr.value = pr; renderer.setSize(vw, H, false); dbg.setPR++; }
+    U.uNoise.value = l >= 4 ? 0 : (MOBILE ? .5 : 1);
+    if (l >= 5) { mouse.force = 0; mouse.px = mouse.py = 0; }
+    dirty = true;
+  }
+
+  dbg.setLevel = setLevel; // для проверки ступеней вручную
+  /* ---------- resize: на телефоне адресная строка (та же ширина, |Δh| <= 140) игнорируется полностью ---------- */
+  let rzPending = false;
+  addEventListener('resize', () => {
+    const w = document.documentElement.clientWidth, h = innerHeight;
+    if (MOBILE && w === lastW && Math.abs(h - lastH) <= 140) { dbg.rzIgnored = (dbg.rzIgnored || 0) + 1; return; }
+    lastW = w; lastH = h;
+    if (rzPending) return; rzPending = true;
+    requestAnimationFrame(() => { rzPending = false; vw = document.documentElement.clientWidth; H = probe.offsetHeight || innerHeight; setSize(); measure(); if (RM) rmShow(); });
+  });
+  if (window.ResizeObserver) new ResizeObserver(() => { measure(); if (RM) rmShow(); }).observe(document.body);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { measure(); if (RM) rmShow(); });
+  measure();
+  addEventListener('scroll', () => { dirty = true; if (RM) rmScroll(); }, { passive: true });
+  t = targetT(clamp(scrollY, 0, maxScroll)); sD = lerp(-.02, 1.03, clamp((scrollY - dRange[0]) / (dRange[1] - dRange[0]), 0, 1)); sE = clamp((scrollY - eRange[0]) / (eRange[1] - eRange[0]), 0, 1);
+
+  /* ---------- prefers-reduced-motion / ?rm=1: 6 готовых кадров, смена по IntersectionObserver за 300 мс ---------- */
+  let rmCur = -1, rmTimer = 0;
+  function rmFrame(i) {
+    sD = 1.03; sE = 1; mouse.px = mouse.py = 0; mouse.force = 0; updateStep();
+    setForms(i, i); // from = to = форма i
+    const sy = clamp(scrollY, 0, maxScroll), c = centerOf(i, sy), s = scaleOf(i);
+    U.uE.value = 0; U.uSc.value.set(s, s); U.uCF.value.set(c[0], c[1]); U.uCT.value.set(c[0], c[1]);
+    U.uAdd.value.set(i === 0 ? A_ADD : 0, 0); U.uProg.value.set(1.03, 1.03); U.uPen.value.set(0, 0); U.uRot.value.set(ROT[i][0], ROT[i][1]); U.uMouse.value.set(0, 0, 0); U.uOpacity.value = 1;
+    U.uB.value = 0; renderer.render(scene, cam); dbg.rmState = 'ABCDEF'[i];
+  }
+  function rmShow() { if (rmCur >= 0) rmFrame(rmCur); }
+  function rmPick() {
+    const i = Math.round(targetT(clamp(scrollY, 0, maxScroll)));
+    if (i === rmCur) { canvas.style.opacity = 1; return; }
+    rmCur = i; canvas.style.transition = 'opacity .3s'; canvas.style.opacity = 0; clearTimeout(rmTimer);
+    rmTimer = setTimeout(() => { rmFrame(i); canvas.style.opacity = 1; }, 300);
+  }
+  let rmRaf = 0; function rmScroll() { if (rmCur === 0 && !rmRaf) rmRaf = requestAnimationFrame(() => { rmRaf = 0; if (rmCur === 0) rmFrame(0); }); }
+  if (RM) {
+    const io = new IntersectionObserver(rmPick, { threshold: [0, .25, .5, .75, 1] });
+    ['hero-chat', 'services', 'cases', 'process', 'terms', 'final'].forEach(id => io.observe(document.getElementById(id)));
+    addEventListener('scroll', () => { if (!rmRaf2) rmRaf2 = requestAnimationFrame(() => { rmRaf2 = 0; rmPick(); }); }, { passive: true });
+    var rmRaf2 = 0;
+    dbg.mode = 'rm-static'; dbg.renderNow = () => { rmFrame(rmCur < 0 ? 0 : rmCur); }; rmPick(); canvas.style.transition = 'none'; rmFrame(rmCur); canvas.style.opacity = 1; dbg.renderer = renderer; dbg.canvas = canvas; return;
+  }
+
+  /* ---------- кадр ---------- */
+  canvas.style.opacity = 1; dbg.mode = 'webgl'; born = performance.now(); dbg.renderer = renderer; dbg.canvas = canvas;
+  const noDeg = Q.get('fixed') === '1'; // отладка: без ступеней деградации
   function frame(now) {
     requestAnimationFrame(frame);
     if (document.hidden) { last = 0; return; }
-    if (last) {
-      const dt = now - last;
-      // измеряем после появления (первые 1.5 с — загрузка шрифтов и прогрев); 2 плохих окна подряд по 30 кадров = ступень вниз
-      if (dt < 250 && now - born > 1500) { acc += dt; cnt++; if (cnt === 30) { const avg = acc / 30; dbg.avgFrameMs = +avg.toFixed(1); acc = 0; cnt = 0; if (avg > 24) { if (++slowN >= 2 && dbg.level < 2) { dbg.level++; slowN = 0; if (dbg.level === 1) geo.setDrawRange(0, N >> 1); dirty = true; } } else slowN = 0; } }
+    const dt = last ? Math.min(now - last, 50) : 16.7; const real = last ? now - last : 0; last = now;
+    // замер: не считаем первые 3 с и 1.5 с после скачка прокрутки (>400 px за кадр)
+    const rawSy = scrollY; if (Math.abs(rawSy - perfSy) > 400) { blackout = now + 1500; acc = 0; cnt = 0; } perfSy = rawSy;
+    if (real && real < 250 && now - born > 3000 && now > blackout && !noDeg) {
+      acc += real; cnt++;
+      if (cnt === 30) {
+        const avg = acc / 30; dbg.avgFrameMs = +avg.toFixed(1); acc = 0; cnt = 0;
+        if (avg > 40 && (level < 5 || avg > 100)) { fastN = 0; if (++slowN >= 3 && level < 6) { setLevel(level + 1); slowN = 0; } }
+        else if (avg < 20) { slowN = 0; if (++fastN >= 2 && level > 0) { setLevel(level - 1); fastN = 0; } }
+        else { slowN = 0; fastN = 0; }
+      }
     }
-    last = now;
-    const m = measure();
-    cardF += (m.cardT - cardF) * .12; if (Math.abs(m.cardT - cardF) > .002) dirty = true;
-    const fade = clamp((now - born) / 900, 0, 1); if (fade < 1) dirty = true;
-    const idle = false;
-    const op = fade * m.dim * cardF;
-    if (op < .02) { if (!cleared) { renderer.clear(); cleared = true; } return; }
-    if (!dirty && !idle) return;
-    cleared = false; dirty = false;
-    apply(m, now, cardF, fade);
-    renderer.render(scene, cam);
-    dbg.frames++;
+    const sy = clamp(scrollY, 0, maxScroll), target = targetT(sy);
+    // морф: сглаживание по времени (τ 160 мс десктоп / 110 мс телефон) и предел |Δt| <= 0.08 за кадр
+    let d = (target - t) * (1 - Math.exp(-dt / (MOBILE ? 110 : 160))); d = clamp(d, -.08, .08); if (level >= 6) d = target - t; t += d; if (Math.abs(d) > dbg.maxDt) dbg.maxDt = Math.abs(d);
+    const sDt = lerp(-.02, 1.03, clamp((sy - dRange[0]) / (dRange[1] - dRange[0]), 0, 1)), sEt = clamp((sy - eRange[0]) / (eRange[1] - eRange[0]), 0, 1), k = 1 - Math.exp(-dt / 120);
+    const pD = sD, pE = sE; sD += (sDt - sD) * k; sE += (sEt - sE) * k;
+    updateStep();
+    let moving = Math.abs(target - t) > .0005 || Math.abs(sDt - sD) > .0005 || Math.abs(sEt - sE) > .0005 || sy !== lastSy || pD !== sD || pE !== sE;
+    lastSy = sy;
+    if (HOVER) {
+      const kk = 1 - Math.exp(-dt / 90); mouse.x += (mouse.tx - mouse.x) * kk; mouse.y += (mouse.ty - mouse.y) * kk;
+      const v = mouse.rawDist / Math.max(dt, 1) * 1000; mouse.rawDist = 0;
+      mouse.E += (clamp(v / 1200, 0, 1) - mouse.E) * (1 - Math.exp(-dt / 700));
+      const idleMs = performance.now() - mouse.last, tgtAct = mouse.inside && idleMs < 140 ? 1 : 0;
+      mouse.act += (tgtAct - mouse.act) * (1 - Math.exp(-dt / (mouse.inside ? 300 : 400)));
+      mouse.force = mouse.inside || mouse.act > .01 ? (.35 + .65 * mouse.E) * mouse.act : 0; if (mouse.force < .004) mouse.force = 0;
+      const nx = clamp(mouse.x / (vw / 2), -1, 1), ny = clamp(mouse.y / (H / 2), -1, 1), k4 = 1 - Math.exp(-dt / 450);
+      const tx = mouse.inside && level < 5 ? nx : 0, ty = mouse.inside && level < 5 ? ny : 0, ox = mouse.px, oy = mouse.py; mouse.px += (tx - mouse.px) * k4; mouse.py += (ty - mouse.py) * k4;
+      if (mouse.force > 0 || mouse.act > .01 || Math.abs(mouse.px - ox) > 1e-4 || Math.abs(mouse.py - oy) > 1e-4 || Math.abs(mouse.tx - mouse.x) > .3) moving = true;
+    }
+    const fade = clamp((now - born) / 900, 0, 1); if (fade < 1) moving = true;
+    const idleSway = HOVER && level < 5;
+    if (!(moving || dirty || idleSway)) return;
+    dirty = false;
+    state.target = +target.toFixed(4);
+    applyUniforms(t, sy, fade, now);
+    renderer.render(scene, cam); dbg.frames++;
   }
   requestAnimationFrame(frame);
-  dbg.renderer = renderer;
+  dbg.renderNow = () => { applyUniforms(t, clamp(scrollY, 0, maxScroll), 1, performance.now()); renderer.render(scene, cam); };
 }
 
 // LCP — текст: three.js грузится после первой отрисовки и простоя
