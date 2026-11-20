@@ -1315,6 +1315,34 @@
     .proc-scroll.live .proc-text.on{opacity:1;transform:none;}
   }
   @media (prefers-reduced-motion: reduce){ .proc-hint svg{animation:none;} }
+
+  /* ---------- ТЕЛЕФОН: ЩІЛЬНІШІ ВЕРТИКАЛЬНІ ВІДСТУПИ (20.11.2026, -30%) ----------
+     Лише відступи: тексти й зміст ті самі. Стоїть наприкінці стилів, щоб не програвати попереднім правилам. */
+  @media (max-width:700px){
+    section{padding:38px 0;}
+    .hero{padding:32px 0 28px;}
+    .section-head{margin-bottom:20px;}
+    .section-head .lead{margin-top:12px;}
+    .hero h1{margin-bottom:18px;}
+    .hero p.lead{margin-bottom:22px;}
+    .hero-facts{margin-top:28px;}
+    .niche-pick{margin-top:20px;}
+    .svc{padding-top:20px;padding-bottom:18px;}
+    .pack{padding-top:20px;padding-bottom:20px;}
+    .term{padding-top:22px;padding-bottom:22px;}
+    .case-body{padding-bottom:18px;}
+    .proc-text{padding-top:16px;padding-bottom:16px;}
+    .support{margin-top:32px;}
+    .faq-foot{margin-top:18px;}
+    .vow{margin-bottom:30px;}
+    .cta{padding-top:48px;padding-bottom:48px;}
+    .cta-vows{margin-top:24px;}
+    .notfit{padding:20px;}
+    .kit-sum,.calc-in,.calc-out{padding-top:18px;padding-bottom:18px;}
+    .promo-note{margin-bottom:18px;}
+    footer{padding:28px 0;}
+  }
+  .kit-fallback img{width:100%;height:100%;object-fit:contain;display:block;}
 </style>
 <noscript><style>#intro{display:none}.bloom,.navlinks a,.nav-cta{opacity:1;transform:none}</style></noscript>
 </head>
@@ -5247,7 +5275,8 @@ window.IMX3D = {
     else if(PROMO) elPrice.innerHTML = '<s>від ' + showPrice(it.flo) + '</s>від ' + showPrice(it.lo);
     else elPrice.textContent = 'від ' + showPrice(it.lo);
     elTerm.textContent = (it.extra ? it.extra + ' · ' : '') + (it.direct ? it.term : 'запуск ' + it.term);
-    fallback.innerHTML = '<svg viewBox="0 0 24 24">' + it.ico + '</svg>';
+    if(LITE) fallback.innerHTML = '<img src="/img/kit/' + it.k + '.webp" width="600" height="580" alt="" decoding="async">';
+    else fallback.innerHTML = '<svg viewBox="0 0 24 24">' + it.ico + '</svg>';
     if(it.direct){
       btnAdd.textContent = 'Залишити заявку на підтримку';
       btnAdd.classList.remove('on'); btnAdd.setAttribute('data-lead', 'support');
@@ -5331,13 +5360,25 @@ window.IMX3D = {
   var reduced = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
   var started = false;
 
+  /* Легкий режим (20.11.2026): на телефоні (до 768 px), при економії трафіку, повільній мережі й слабкому пристрої
+     three.js (133 КБ) і WebGL не вантажимо взагалі — замість моделі стоїть готовий знімок img/kit/<k>.webp.
+     Примусово повернути 3D: адреса з ?3d=1. */
+  var LITE = (function(){
+    if(/[?&]3d=1/.test(location.search)) return false;
+    var c = navigator.connection || {};
+    return (window.matchMedia && matchMedia('(max-width:768px)').matches) || !!c.saveData
+      || /^(slow-2g|2g|3g)$/.test(c.effectiveType || '')
+      || (navigator.deviceMemory && navigator.deviceMemory <= 2) || (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 2);
+  })();
+
   function start(){
-    if(started) return; started = true;
+    if(started || LITE) return; started = true;
     window.IMX3D.load()
       .then(function(T){ init3d(T); })
       .catch(function(){ /* лишається іконка */ });
   }
-  if('IntersectionObserver' in window){
+  if(LITE){ /* без 3D */ }
+  else if('IntersectionObserver' in window){
     var io = new IntersectionObserver(function(en){
       if(en[0].isIntersecting){ io.disconnect(); start(); }
     }, {rootMargin:(window.IMX3D.phone() ? '300px' : '600px') + ' 0px'});
