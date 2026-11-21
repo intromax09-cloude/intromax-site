@@ -6588,6 +6588,8 @@ async function boot() {
     const f = STOPS[i];
     if (f === 6) return [0, 0];
     const s = SL[i]; if (!s) return [0, 0];
+    // телефон: облако прибито к экрану (не едет вместе с текстом) — иначе оно отстаёт от нативной прокрутки и дёргается
+    if (MOBILE) return i === 0 ? [s.cx - vw / 2, H / 2 - s.cy] : [0, 0];
     if (i === 0) return [s.cx - vw / 2, H / 2 - (s.cy - sy)];
     const y = s.kind === 'ribbon' ? s.cy - sy : slotY(i, sy);
     return [s.cx - vw / 2, H / 2 - y];
@@ -6650,7 +6652,8 @@ async function boot() {
     U.uFly.value.set(fly.v * 60, fly.v * 60); U.uFw.value.set(fa === 5 ? 1 : 0, fb === 5 ? 1 : 0);
     // маска чтения: до 4 прямоугольников текста, видимых на экране (координаты во вьюпорте = docY − scrollY)
     const vis = [];
-    for (const q of readRects) { const y0 = q.top - sy, y1 = q.bottom - sy; if (y1 > -60 && y0 < H + 60) vis.push([q.left, y0, q.right, y1]); }
+    if (!MOBILE) for (const q of readRects) { const y0 = q.top - sy, y1 = q.bottom - sy; if (y1 > -60 && y0 < H + 60) vis.push([q.left, y0, q.right, y1]); }
+    U.uBriK.value = MOBILE ? .6 : 1;
     if (vis.length > 4) vis.sort((a, b) => Math.abs((a[1] + a[3]) / 2 - H / 2) - Math.abs((b[1] + b[3]) / 2 - H / 2));
     for (let k = 0; k < 4; k++) { const m = vis[k]; if (m) U.uMask.value[k].set(m[0], m[1], m[2], m[3]); else U.uMask.value[k].set(-1e5, -1e5, -1e5, -1e5); }
     state.rot = [+rx.toFixed(4), +ry.toFixed(4)]; state.t = +tv.toFixed(4); state.pair = p; state.e = +e.toFixed(3); state.sy = Math.round(sy); state.sD = +sD.toFixed(3); state.sE = +sE.toFixed(3); state.masks = vis.length;
@@ -6746,8 +6749,9 @@ async function boot() {
     const wo = wantOff(sy);
     if (wo !== off.on) { off.on = wo; off.since = now; canvas.classList.toggle('off', wo); dirty = true; }
     if (wo && now - off.since > 450) { dbg.offFrames = (dbg.offFrames || 0) + 1; return; }
-    const target = targetT(sy);
-    let d = (target - t) * (1 - Math.exp(-dt / (MOBILE ? 110 : 160))); d = clamp(d, -.08, .08); if (level >= 6) d = target - t; t += d; if (Math.abs(d) > dbg.maxDt) dbg.maxDt = Math.abs(d);
+    // телефон: форма меняется по времени (≈450 мс на смену), а не следует за пальцем
+    const target = MOBILE ? Math.round(targetT(sy)) : targetT(sy);
+    let d = MOBILE ? clamp(target - t, -dt / 450, dt / 450) : clamp((target - t) * (1 - Math.exp(-dt / 160)), -.08, .08); if (level >= 6) d = target - t; t += d; if (Math.abs(d) > dbg.maxDt) dbg.maxDt = Math.abs(d);
     const sDt = progD(sy), sEt = progE(sy), k = 1 - Math.exp(-dt / 120);
     const pD = sD, pE = sE; sD += (sDt - sD) * k; sE += (sEt - sE) * k;
     let moving = Math.abs(target - t) > .0005 || Math.abs(sDt - sD) > .0005 || Math.abs(sEt - sE) > .0005 || sy !== lastSy || pD !== sD || pE !== sE;
