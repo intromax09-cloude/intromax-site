@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Intromax: прототип сайту «Заявка»</title>
+<title>Intromax — боти, сайти та автоматизація для малого бізнесу</title>
 <meta name="robots" content="noindex">
 <meta name="description" content="Боти для Instagram Direct і Telegram, AI-агенти, сайти й автоматизація на n8n для малого бізнесу. Відповідь клієнту за секунду, запуск від 2 днів.">
 <meta name="theme-color" content="#13141c">
@@ -1605,6 +1605,31 @@
   .kit-sum .t,.pp-switch .mono,.pp-head em span,.pp-field label,.pp-live em,.field .hint,.foot-grid .t,.rail a span,.dock-sheet a b,.dock-sheet a em,.dock-ring i,
   b small,.svc-vars small{font-size:12px;}
   @media (max-width:700px){ .micro li{font-size:12px;} }
+
+  /* круг 3: меню бота компактными чипами, дотики 44, шрифты */
+  #hero-chat .kb{gap:4px;margin-top:-6px;}
+  #hero-chat .kb button{padding:5px 6px;font-size:12px;line-height:1.25;min-height:30px;}
+  @media (max-width:700px){
+    .burger{width:44px;height:44px;min-width:44px;min-height:44px;}
+    .kit-arrow{width:44px;height:44px;}
+    .kit-unsure{min-height:44px;display:inline-flex;align-items:center;}
+    .dock-where{min-height:44px;}
+    .foot-col a{padding:12px 0;min-height:44px;display:flex;align-items:center;}
+    .chat-input .field,.chat-input input.field{min-height:44px;}
+    .section-head .lead,.section-head.has-slot .lead{font-size:16.5px;line-height:1.6;}
+  }
+  #hero-chat .kb{gap:3px;margin-top:-8px;}
+  #hero-chat .kb button{padding:3px 6px;min-height:27px;}
+  #hero-chat .chat-body{padding-top:12px;padding-bottom:10px;gap:8px;}
+  .dock-caret{font-size:12px;}
+  @media (max-width:900px){ .hero p.lead{font-size:17.5px;line-height:1.55;} }
+  @media (max-width:700px){
+    .kit-arrow{width:45px;height:45px;}
+    .kit-unsure,.chat-input .field,.chat-input input.field{min-height:45px;}
+    .foot-col a{padding:0;min-height:44px;}
+    .mq{height:56px;}
+  }
+  @media (max-width:900px){ .hero p.lead{line-height:1.5;} }
 </style>
 <noscript><style>#intro{display:none}.bloom,.navlinks a,.nav-cta{opacity:1;transform:none}</style></noscript>
 </head>
@@ -3883,9 +3908,12 @@ window.IMX_MONEY = function(usd){
   var BACK = {t:'↩️ Меню', go:'menu'};
   var MENU = [
     {t:'🎯 Підібрати рішення за 3 питання', go:'quiz', wide:true},
+    {t:'👆 Спробувати бота як клієнт', go:'demo', wide:true},
     {t:'🧩 Послуги', go:'services'},
     {t:'💰 Ціни', go:'price'},
     {t:'📂 Кейси', go:'cases'},
+    {t:'❓ Питання', go:'faq'},
+    {t:'📞 Записатись на дзвінок', go:'call'},
     {t:'✍️ Заявка', go:'lead'},
     {t:'🙋 Покликати людину', go:'human', wide:true}
   ];
