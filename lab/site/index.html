@@ -571,6 +571,11 @@
   /* точки під курсором: полотно над сіткою .grain, малює лише точки біля миші, на телефоні вимкнено */
   #dot-glow{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;}
   @media (hover:none),(pointer:coarse),(prefers-reduced-motion:reduce){#dot-glow{display:none;}}
+  /* телефон: без 3D — ни облака, ни слотов под него; чистый фон и статичное мягкое свечение */
+  @media (max-width:900px),(pointer:coarse){
+    #cloud,.stage-slot,#svg-fallback{display:none !important;}
+    body{background-image:radial-gradient(120% 60% at 50% 0%,rgba(242,169,60,.10),transparent 70%);background-repeat:no-repeat;}
+  }
   /* коли полотно працює, саму сітку теж малює воно: CSS-плитка браузер округлює до пікселів екрана (масштаб 125%, 150%), і точки розходились з підсвіткою */
   @media (hover:hover) and (pointer:fine) and (prefers-reduced-motion:no-preference){html.dg-on .grain::before{display:none;}}
   /* розділи чергуються відтінком, щоб сторінка не зливалась у суцільну темряву */
@@ -5647,9 +5652,10 @@ window.IMX3D = {
   /* ---------------- 3D ---------------- */
   var reduced = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
   var started = false;
+  var no3d = window.matchMedia && (matchMedia('(max-width:900px)').matches || matchMedia('(pointer:coarse)').matches);
 
   function start(){
-    if(started) return; started = true;
+    if(started || no3d) return; started = true;
     window.IMX3D.load()
       .then(function(T){ init3d(T); })
       .catch(function(){ /* лишається іконка */ });
@@ -6398,7 +6404,9 @@ function hasGL() { try { const c = document.createElement('canvas'); return !!(c
 const WEAK = MOBILE && ((navigator.deviceMemory && navigator.deviceMemory < 4) || (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4));
 const qa = s => Array.from(document.querySelectorAll(s));
 
+const NO3D = MOBILE || matchMedia('(pointer:coarse)').matches;
 async function boot() {
+  if (NO3D) { const cv = document.getElementById('cloud'); if (cv) cv.remove(); dbg.mode = 'none-phone'; return; }
   if (Q.get('mode') === 'svg' || !hasGL() || saveData) { svgFallback(); dbg.mode = 'svg'; return; }
   const t0 = performance.now();
   // three.js: одна копия на сайт, грузится общим загрузчиком после снятия intro-lock и в простое
