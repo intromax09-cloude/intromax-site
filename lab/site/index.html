@@ -6092,6 +6092,14 @@ function rrPt(s, W, H, R) { // точка контура и внешняя но�
   if (s < b) return [-W / 2, -hy + s, -1, 0]; s -= b;
   const q = s / R; return [-hx - R * Math.cos(q), hy + R * Math.sin(q), -Math.cos(q), Math.sin(q)];
 }
+/* ---------- герой-объект: лента Мёбиуса (3 полуоборота). Одна формула для меша и для точек облака ---------- */
+const HERO_RING = 0.3; // яркость кольца точек вокруг телефона на первом экране: 1 = как было, 0 = убрано
+const HR = 232, HW = .36 * HR, HT = .03 * HR, HC = .02 * HR, HR_OUT = HR + HW; // радиус осевой линии, полуширина, полутолщина, скругление, внешний радиус (315 = 1,05 ширины телефона)
+function ribFrame(u) { // [центр, ширина w, нормаль n] в локальных px
+  const cu = Math.cos(u), su = Math.sin(u), th = 1.5 * u, ct = Math.cos(th), st = Math.sin(th);
+  return [[HR * cu, HR * su, 0], [ct * cu, ct * su, st], [st * cu, st * su, -ct]];
+}
+function ribPt(u, a, b) { const f = ribFrame(u), c = f[0], w = f[1], n = f[2]; return [c[0] + a * w[0] + b * n[0], c[1] + a * w[1] + b * n[1], c[2] + a * w[2] + b * n[2]]; }
 function* genA(F) {
   // десктоп: яркость ×0.8 (круг 2), кайма d 4…150, /34. Телефон: аура шире и стоит над ботом: d до 230, /64, яркость ×0.9, над ботом (текстовая зона) ×0.5
   const r = F.r, K = MOBILE ? .9 : .8, DM = MOBILE ? 230 : 142, DS = MOBILE ? 64 : 34, LK = MOBILE ? 1.6 : 1;
@@ -6099,7 +6107,7 @@ function* genA(F) {
   const E = 1 - Math.exp(-(DM - 4) / DS);
   for (let k = 0, n = C(MOBILE ? .50 : .40); k < n; k++) {
     const d = 4 - DS * Math.log(1 - r() * E), c = rrPt(r() * PERIM, PW, PH, PR), py = c[1] + c[3] * d;
-    F.add(c[0] + c[2] * d + (r() - .5), py + (r() - .5), -30 - 230 * r(), (d < 14 ? 1.5 : d < 40 ? 1 : .7) * K * zoneK(py), r() < .10 ? 1 : 0, -1, 0);
+    F.add(c[0] + c[2] * d + (r() - .5), py + (r() - .5), -30 - 230 * r(), (d < 14 ? 1.5 : d < 40 ? 1 : .7) * K * zoneK(py), r() < .10 ? 1 : 0, -4, 0);
   }
   yield;
   // 25%: десять линий-обтеканий (штрихи 70…140, пробелы 20…60)
@@ -6111,16 +6119,22 @@ function* genA(F) {
     for (let k = 0, n = Math.round(per); k < n; k++) {
       let q = r() * sum, di = 0; while (di < dashes.length - 1 && q > dashes[di][1]) { q -= dashes[di][1]; di++; }
       const c = rrPt(dashes[di][0] + q, PW, PH, PR), py = c[1] + c[3] * d;
-      F.add(c[0] + c[2] * d + (r() - .5) * .8, py + (r() - .5) * .8, zl + (r() - .5) * 30, bb * zoneK(py), r() < .10 ? 1 : 0, -1, 0);
+      F.add(c[0] + c[2] * d + (r() - .5) * .8, py + (r() - .5) * .8, zl + (r() - .5) * 30, bb * zoneK(py), r() < .10 ? 1 : 0, -4, 0);
     }
     yield;
+  }
+  // A′: 6000 точек на поверхности ленты (u = -3): ядро на самой поверхности и пыль рядом, 15 % янтарных; яркость включает прокрутка
+  for (let k = 0, n = C(.30); k < n; k++) {
+    const dust = r() < .35, a = (r() * 2 - 1) * HW, b = (r() < .5 ? 1 : -1) * HT, p = ribPt(r() * TAU, a, b), j = dust ? 34 : .8;
+    F.add(p[0] + (r() - .5) * j, p[1] + (r() - .5) * j, p[2] + (r() - .5) * j, dust ? .5 : 1.25, r() < .15 ? 1 : 0, -3, 0);
+    if (k % 800 === 799) yield;
   }
   // остальное: запас под телефоном (внутри контура), из него точки «вылазят» при прокрутке
   const hx = PW / 2 - PR, hy = PH / 2 - PR;
   fillDust(F, r => { let x, y; do { x = (r() - .5) * PW; y = (r() - .5) * PH; } while (Math.abs(x) > hx && Math.abs(y) > hy && Math.hypot(Math.abs(x) - hx, Math.abs(y) - hy) > PR); return [x, y, -140 + 120 * r()]; });
   for (let i = 0; i < F.n; i++) if (F.bri[i] === 0) F.bri[i] = .6; // страховка
   // под телефоном яркость выше дымки, амбер 10%
-  for (let i = 0; i < F.n; i++) { if (F.z[i] > -140 && F.z[i] < -20 && Math.abs(F.x[i]) < PW / 2 && Math.abs(F.y[i]) < PH / 2 && F.bri[i] < .5) { F.bri[i] = .75 * K; if (r() < .10) F.amb[i] = 1; } }
+  for (let i = 0; i < F.n; i++) { if (F.u[i] === -1 && F.z[i] > -140 && F.z[i] < -20 && Math.abs(F.x[i]) < PW / 2 && Math.abs(F.y[i]) < PH / 2 && F.bri[i] < .5) { F.bri[i] = .75 * K; if (r() < .10) F.amb[i] = 1; } }
 }
 
 /* ---------- B. Стек из 4 пластин: сайт, бот, CRM, аналитика ---------- */
@@ -6382,15 +6396,52 @@ async function buildForms() {
   return forms;
 }
 
-/* ---------- запасной SVG (нет WebGL / saveData): контур телефона из точек + пятно из точек в каждом слоте, < 2 КБ ---------- */
-function svgFallback() {
-  const host = document.getElementById('svg-fallback');
-  if (host) {
-    const r = rng(9); let wh = '', am = '', n = 0;
-    [14, 34, 62].forEach((d, ri) => { for (let s = r() * 30; s < PERIM + d * 3; s += 28 - ri * 4) { const c = rrPt(s * PERIM / (PERIM + d * 3), PW, PH, PR); const x = Math.round(c[0] + c[2] * d), y = Math.round(-(c[1] + c[3] * d)), seg = 'M' + x + ' ' + y + 'h0'; if (++n % 9 === 4) am += seg; else wh += seg; } });
-    host.innerHTML = '<path d="' + wh + '" stroke="#eee9db" stroke-opacity=".5" stroke-width="2.2" stroke-linecap="round" fill="none"/><path d="' + am + '" stroke="#f2a93c" stroke-width="2.6" stroke-linecap="round" fill="none"/>';
-    host.style.display = 'block';
+/* ---------- герой-объект: геометрия, студия отражений, раскладка, заглушка ---------- */
+function heroGeo(T) { // 360 сечений x 12 вершин, нормали считаются по формуле; замыкание с переворотом профиля (k + 6)
+  const S = 360, M = 12, pos = new Float32Array(S * M * 3), nor = new Float32Array(S * M * 3), prof = [], idx = new Uint16Array(S * M * 6);
+  for (let k = 0; k < M; k++) { const c = k / 3 | 0, fi = (c * 90 + (k % 3) * 45) * Math.PI / 180, cs = Math.cos(fi), sn = Math.sin(fi); prof.push([(c === 0 || c === 3 ? 1 : -1) * (HW - HC) + HC * cs, (c < 2 ? 1 : -1) * (HT - HC) + HC * sn, cs, sn]); }
+  for (let i = 0; i < S; i++) {
+    const f = ribFrame(i / S * TAU), c = f[0], w = f[1], n = f[2];
+    for (let k = 0; k < M; k++) { const q = prof[k], o = (i * M + k) * 3; for (let d = 0; d < 3; d++) { pos[o + d] = c[d] + q[0] * w[d] + q[1] * n[d]; nor[o + d] = q[2] * w[d] + q[3] * n[d]; } }
+    const ni = (i + 1) % S, sh = ni ? 0 : M / 2;
+    for (let k = 0; k < M; k++) {
+      const k1 = (k + 1) % M, A = i * M + k, B = i * M + k1, Cc = ni * M + (k + sh) % M, D = ni * M + (k1 + sh) % M, o = (i * M + k) * 6;
+      idx[o] = A; idx[o + 1] = B; idx[o + 2] = Cc; idx[o + 3] = B; idx[o + 4] = D; idx[o + 5] = Cc;
+    }
   }
+  const g = new T.BufferGeometry();
+  g.setAttribute('position', new T.BufferAttribute(pos, 3)); g.setAttribute('normal', new T.BufferAttribute(nor, 3)); g.setIndex(new T.BufferAttribute(idx, 1));
+  g.boundingSphere = new T.Sphere(new T.Vector3(), HR_OUT + 20);
+  return g;
+}
+function heroEnv(T, renderer) { // студия: тёмно-синяя комната, белая полоса сверху, один янтарный блик слева, холодный справа, тонкие линии
+  const s = new T.Scene();
+  s.add(new T.Mesh(new T.BoxGeometry(24, 24, 24), new T.MeshBasicMaterial({ color: 0x12141f, side: T.BackSide })));
+  const panel = (c, k, w, h, x, y, z) => { const m = new T.Mesh(new T.PlaneGeometry(w, h), new T.MeshBasicMaterial({ color: new T.Color(c).multiplyScalar(k), side: T.DoubleSide, toneMapped: false })); m.position.set(x, y, z); m.lookAt(0, 0, 0); s.add(m); };
+  panel(0xffffff, 4, 9, 2, 0, 9, 3); panel(0xf2a93c, 5, 2.4, 8, -9, 1, 3); panel(0x7f8bb5, 2.2, 1.6, 7, 9, 0, 2);
+  panel(0x8f97b8, 1.5, 22, 14, 0, 0, 11.5); // широкая приглушённая стальная подложка за камерой: лицевые грани не чёрные
+  panel(0xeee9db, 3, 16, .3, 0, 2.5, 10); panel(0xeee9db, 3, 16, .3, 0, -2, 10); panel(0xeee9db, 3, 12, .3, 0, -6.5, 8);
+  const pm = new T.PMREMGenerator(renderer), tex = pm.fromScene(s, .02).texture; pm.dispose(); return tex;
+}
+function heroFit(ph) { // положение и масштаб ленты от телефона и от правого края текста первого экрана; s < .76 (диаметр < 1,6 ширины телефона) = только SVG
+  const rg = document.createRange(); let tr = 0;
+  qa('.hero-text > *, .niche-pick .t, .niche-pick .row > *').forEach(e => { const q = e.matches('button,a') ? e.getBoundingClientRect() : (rg.selectNodeContents(e), rg.getBoundingClientRect()); if (q.width && q.bottom + scrollY > ph.cy - 10 - HR_OUT && q.top + scrollY < ph.cy - 10 + HR_OUT) tr = Math.max(tr, q.right); }); // только текст в высоте объекта
+  const cx = ph.cx - .22 * ph.w, s = tr ? Math.min(1, (cx - 14 - (tr + 24)) / HR_OUT) : 1; // 14 px запас на параллакс
+  return { x: cx, y: ph.cy - 10, s, ok: s >= 1.6 / 2.1 };
+}
+let heroSvgOn = false;
+function heroSvg(on, s) { // две пересекающиеся обводки ленты, без анимации (< 1 КБ)
+  const host = document.getElementById('svg-fallback'); if (!host) return;
+  on = on && s >= .4; host.style.display = on ? 'block' : 'none';
+  if (!on) return;
+  if (!heroSvgOn) { heroSvgOn = true; host.style.overflow = 'visible'; host.innerHTML = '<defs><linearGradient id="hg" gradientUnits="userSpaceOnUse" x1="-300" y1="-120" x2="300" y2="120"><stop offset="0" stop-color="#4b4e66"/><stop offset=".5" stop-color="#eee9db"/><stop offset="1" stop-color="#8a6a2c"/></linearGradient></defs><g fill="none" stroke="url(#hg)" opacity=".55"><ellipse rx="276" ry="150" stroke-width="36"/><ellipse rx="262" ry="96" stroke-width="28" transform="rotate(-24)"/></g>'; }
+  host.firstElementChild.nextElementSibling.setAttribute('transform', 'translate(-66 -10) rotate(-20) scale(' + s.toFixed(3) + ')');
+}
+
+/* ---------- запасной SVG (нет WebGL / saveData): лента вместо контура телефона + пятно из точек в каждом слоте ---------- */
+function svgFallback() {
+  const fitSvg = () => { const e = document.querySelector('#hero-chat'); if (!e) return; const q = e.parentNode.getBoundingClientRect(), f = heroFit({ cx: q.left + q.width / 2, cy: q.top + scrollY + PH / 2, w: 300 }); heroSvg(true, f.s); };
+  fitSvg(); addEventListener('resize', fitSvg);
   const r = rng(21); let wh = '', am = '';
   for (let i = 0; i < 70; i++) { const a = i / 70 * TAU * 2.3, d = 40 + (i % 7) * 12 + r() * 14, x = Math.round(160 + Math.cos(a) * d * 1.7), y = Math.round(90 + Math.sin(a) * d * .9), s = 'M' + x + ' ' + y + 'h0'; if (i % 9 === 4) am += s; else wh += s; }
   const svg = '<svg viewBox="0 0 320 180" preserveAspectRatio="xMidYMid meet" style="width:100%;height:100%" aria-hidden="true"><path d="' + wh + '" stroke="#eee9db" stroke-opacity=".5" stroke-width="2.4" stroke-linecap="round" fill="none"/><path d="' + am + '" stroke="#f2a93c" stroke-width="2.8" stroke-linecap="round" fill="none"/></svg>';
@@ -6439,17 +6490,18 @@ async function boot() {
       uDpr: { value: DPR }, uOpacity: { value: 0 }, uBriK: { value: 1 }, uCap: { value: MOBILE ? .5 : 1 },
       uSize: { value: MOBILE ? new THREE.Vector2(1.4, 2.4) : new THREE.Vector2(1.6, 2.8) },
       uVP: { value: new THREE.Vector2(vw, H) }, uMask: { value: [0, 1, 2, 3].map(() => new THREE.Vector4(-1e5, -1e5, -1e5, -1e5)) },
-      uTickU: { value: -9 }, uTickK: { value: 0 }, uFly: { value: new THREE.Vector2() }, uFw: { value: new THREE.Vector2() }
+      uHR: { value: new THREE.Vector2(HERO_RING, 0) }, uRibM: { value: new THREE.Matrix3() }, uRibP: { value: new THREE.Vector3() }, uTickU: { value: -9 }, uTickK: { value: 0 }, uFly: { value: new THREE.Vector2() }, uFw: { value: new THREE.Vector2() }
     },
     vertexShader: `
       attribute vec3 aTo; attribute vec4 pFrom; attribute vec4 pTo; attribute vec4 aRand; attribute float aSweep;
       uniform vec2 uAdd; uniform vec2 uSc; uniform vec2 uCF; uniform vec2 uCT; uniform float uE; uniform vec2 uProg; uniform vec2 uPen; uniform vec2 uRot;
       uniform float uB; uniform float uNoise; uniform vec3 uMouse; uniform float uMR; uniform float uDpr; uniform float uBriK; uniform vec2 uSize;
-      uniform vec2 uVP; uniform vec4 uMask[4]; uniform float uTickU; uniform float uTickK; uniform vec2 uFly; uniform vec2 uFw;
+      uniform vec2 uHR; uniform mat3 uRibM; uniform vec3 uRibP; uniform vec2 uVP; uniform vec4 uMask[4]; uniform float uTickU; uniform float uTickK; uniform vec2 uFly; uniform vec2 uFw;
       varying float vAmb; varying float vBri;
       float sm5(float x){ x = clamp(x,0.,1.); return x*x*x*(x*(x*6.-15.)+10.); }
       void side(vec4 pr, float s, float pen, out float bri, out float amb, out float sz){
         bri = pr.y; amb = pr.x; sz = 1.;
+        if(pr.z < -2.5){ bri *= pr.z < -3.5 ? uHR.x : uHR.y; return; }
         if(pr.z < -1.5){ sz = .62; return; }
         if(pr.z > -.5){
           float dd = s - pr.z; float lit = step(0., dd); float k = mix(.08, 1., lit);
@@ -6465,7 +6517,8 @@ async function boot() {
         float dly = .65*aSweep + .35*aRand.x;
         float ei = sm5(uE*1.45 - dly*.45);
         float sn = sin(3.14159265*ei);
-        vec3 p = mix(position*uSc.x, aTo*uSc.y, ei);
+        vec3 p0 = position; if(pFrom.z < -2.5 && pFrom.z > -3.5) p0 = uRibM*p0 + uRibP;
+        vec3 p = mix(p0*uSc.x, aTo*uSc.y, ei);
         float th = sn*(.5 + .4*aRand.y + length(p.xy)/420.);
         float cs = cos(th), sa = sin(th);
         p.xy = vec2(cs*p.x - sa*p.y, sa*p.x + cs*p.y);
@@ -6526,6 +6579,8 @@ async function boot() {
     maxScroll = Math.max(0, document.documentElement.scrollHeight - H);
     SL = new Array(9).fill(null);
     const ph = docRect(heroChat); SL[0] = { kind: 'phone', cx: ph.cx, cy: ph.cy, w: ph.w, h: ph.h };
+    const pc = heroChat.parentNode.getBoundingClientRect(); // колонка телефона без анимации появления: центр не прыгает после reveal
+    HF = heroFit({ cx: pc.left + pc.width / 2, cy: pc.top + sy0 + PH / 2, w: 300 }); heroSvg(!HF.ok, HF.s);
     [1, 3, 6, 8].forEach(i => { const el = slotEls[i]; if (el) { const q = docRect(el); SL[i] = { kind: 'slot', cx: q.cx, cy: q.cy, w: q.w, h: q.h }; } });
     // процесс: трек (закреплённая сцена) или вертикальная лента у меток шагов
     const pinMode = procSt && getComputedStyle(procSt).position === 'sticky' && slotEls[5] && slotEls[5].offsetParent;
@@ -6631,6 +6686,53 @@ async function boot() {
   let t = 0, sD = -.02, sE = 0, last = 0, born = performance.now(), dirty = true, curFrom = -1, curTo = -1, lastSy = -1, level = 0, acc = 0, cnt = 0, slowN = 0, fastN = 0, blackout = 0, perfSy = 0;
   const tick = { u: -9, k: 0 }, fly = { v: 0, go: 0, t0: 0 }, off = { on: false, since: 0 };
   const state = dbg.state = { t: 0, target: 0, sy: 0, e: 0, pair: 0 };
+
+  /* ---------- герой-объект: лента Мёбиуса (меш) и её же точки A′. Меш строится после первого кадра, текст (LCP) ничем не задержан ---------- */
+  const DEG = Math.PI / 180, sm3 = (a, b, x) => { x = clamp((x - a) / (b - a), 0, 1); return x * x * (3 - 2 * x); };
+  const hero = { ready: false, grp: null, mat: null, light: null, t0: 0, it: 0, cx: 0, cy: 0, lx: 0, ly: 0, vis: false };
+  let HF = { x: 0, y: 0, s: 1, ok: false };
+  const rotM = new THREE.Matrix4(), rotM3 = new THREE.Matrix3();
+  async function heroBuild() {
+    try {
+      renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = .95;
+      const mat = new THREE.MeshPhysicalMaterial({ color: 0xaab0c4, metalness: 1, roughness: .14, clearcoat: .5, clearcoatRoughness: .08, envMapIntensity: 1.2, side: THREE.DoubleSide, transparent: true, depthWrite: true });
+      mat.envMap = heroEnv(THREE, renderer);
+      const mesh = new THREE.Mesh(heroGeo(THREE), mat); mesh.renderOrder = -1; mesh.frustumCulled = false;
+      const grp = new THREE.Group(); grp.add(mesh);
+      const light = new THREE.DirectionalLight(0xf2a93c, 1.6); scene.add(grp); scene.add(light);
+      try { await renderer.compileAsync(scene, cam); } catch (e) { renderer.compile(scene, cam); }
+      grp.visible = light.visible = false; hero.grp = grp; hero.mat = mat; hero.light = light; hero.t0 = performance.now(); hero.ready = true; dirty = true; if (RM) rmShow();
+    } catch (e) { console.error('hero build failed', e); }
+  }
+  // шаг состояния: сглаживание курсора (τ 220 мс), время покачивания; true = нужен следующий кадр
+  function heroStep(dt, now) {
+    if (!hero.ready) return false;
+    const inside = HOVER && mouse.inside, k = 1 - Math.exp(-dt / 220);
+    const nx = clamp(mouse.tx / (vw / 2), -1, 1), ny = clamp(mouse.ty / (H / 2), -1, 1);
+    const tx = inside && level < 2 ? nx : 0, ty = inside && level < 2 ? ny : 0;
+    let a = Math.abs(tx - hero.cx) + Math.abs(ty - hero.cy);
+    hero.cx += (tx - hero.cx) * k; hero.cy += (ty - hero.cy) * k;
+    if (level < 3) { const lx = inside ? nx : 0, ly = inside ? ny : 0; a += Math.abs(lx - hero.lx) + Math.abs(ly - hero.ly); hero.lx += (lx - hero.lx) * k; hero.ly += (ly - hero.ly) * k; }
+    if (level < 4) hero.it += dt;
+    return a > .002 || (hero.vis && level < 4) || now - hero.t0 < 750;
+  }
+  // поза меша и точек A′ — одна функция от прокрутки: сдвиг вверх 0,55·scrollY, +65° по Y и +20° по Z, масштаб 1→0,85; меш растворяется, точки загораются
+  function heroApply(sy, now, rest, show) {
+    const g = hero.grp; if (!g) return;
+    const hold = Math.max(HOLD.length ? HOLD[0][1] : 330, 200), q = rest ? 0 : clamp(sy / hold, 0, 1), sq = Math.min(sy, hold);
+    const it = rest || level >= 5 ? 0 : hero.it, cxs = rest ? 0 : hero.cx, cys = rest ? 0 : hero.cy;
+    g.rotation.set((-18 - 9 * cys) * DEG, (25 + 14 * cxs + 8 * Math.sin(TAU * it / 14000) + 65 * q) * DEG, (12 + 20 * q) * DEG + .06 * it / 1000);
+    const s = HF.s * (1 - .15 * q) * (1 + .012 * Math.sin(TAU * it / 9000));
+    g.scale.setScalar(s);
+    g.position.set(HF.x - vw / 2 - 14 * cxs, H / 2 - (HF.y - (rest ? sy : .55 * sq + (sy - sq))) - 8 * cys, 0);
+    const o = (1 - sm3(.1, .85, q)) * (rest ? 1 : clamp((now - hero.t0) / 700, 0, 1));
+    hero.vis = !!show && HF.ok && level < 6 && o > .004;
+    g.visible = hero.light.visible = hero.vis; hero.mat.opacity = o;
+    hero.light.position.set(-300 + 126 * hero.lx, -200 + 126 * hero.ly, 450);
+    rotM.makeRotationFromEuler(g.rotation); rotM3.setFromMatrix4(rotM); rotM3.multiplyScalar(s);
+    const c0 = stopCenter(0, sy);
+    U.uRibM.value.copy(rotM3); U.uRibP.value.set(g.position.x - c0[0], g.position.y - c0[1], 0); U.uHR.value.set(HERO_RING, rest ? 0 : sm3(.05, .7, q));
+  }
   function setForms(a, b) {
     if (a !== curFrom) { aFrom.array.set(F[a].pos); aFrom.needsUpdate = true; pFrom.array.set(F[a].prop); pFrom.needsUpdate = true; curFrom = a; }
     if (b !== curTo) { aTo.array.set(F[b].pos); aTo.needsUpdate = true; pTo.array.set(F[b].prop); pTo.needsUpdate = true; curTo = b; }
@@ -6657,6 +6759,7 @@ async function boot() {
     U.uMouse.value.set(mouse.x, mouse.y, level < 5 ? mouse.force : 0);
     U.uOpacity.value = fade;
     U.uTickU.value = tick.u; U.uTickK.value = tick.k;
+    heroApply(sy, performance.now(), false, true);
     U.uFly.value.set(fly.v * 60, fly.v * 60); U.uFw.value.set(fa === 5 ? 1 : 0, fb === 5 ? 1 : 0);
     // маска чтения: до 4 прямоугольников текста, видимых на экране (координаты во вьюпорте = docY − scrollY)
     const vis = [];
@@ -6716,7 +6819,7 @@ async function boot() {
     U.uE.value = 0; U.uSc.value.set(s, s); U.uCF.value.set(c[0], c[1]); U.uCT.value.set(c[0], c[1]);
     U.uAdd.value.set(f === 0 ? A_ADD : 0, 0); U.uProg.value.set(1.03, 1.03); U.uPen.value.set(0, 0); U.uRot.value.set(ROT[f][0], ROT[f][1]); U.uMouse.value.set(0, 0, 0); U.uOpacity.value = footFade(sy);
     U.uFly.value.set(0, 0); U.uTickU.value = -9; U.uTickK.value = 0;
-    U.uB.value = 0;
+    U.uB.value = 0; heroApply(sy, performance.now(), true, f === 0);
     const vis = []; for (const q of readRects) { const y0 = q.top - sy, y1 = q.bottom - sy; if (y1 > -60 && y0 < H + 60) vis.push([q.left, y0, q.right, y1]); }
     for (let k = 0; k < 4; k++) { const m = vis[k]; if (m) U.uMask.value[k].set(m[0], m[1], m[2], m[3]); else U.uMask.value[k].set(-1e5, -1e5, -1e5, -1e5); }
     renderer.render(scene, cam); dbg.rmState = i;
@@ -6731,6 +6834,7 @@ async function boot() {
     rmTimer = setTimeout(() => { rmFrame(i); canvas.style.opacity = off2 ? 0 : 1; }, 300);
   }
   let rmRaf = 0; function rmScroll() { if (!rmRaf) rmRaf = requestAnimationFrame(() => { rmRaf = 0; rmPick(); }); }
+  requestAnimationFrame(() => idle().then(heroBuild));
   if (RM) {
     dbg.mode = 'rm-static'; dbg.renderNow = () => { rmFrame(rmCur < 0 ? 0 : rmCur); }; rmPick(); canvas.style.transition = 'none'; rmFrame(rmCur); canvas.style.opacity = 1; dbg.renderer = renderer; dbg.canvas = canvas; return;
   }
@@ -6777,6 +6881,7 @@ async function boot() {
       const tx = mouse.inside && level < 5 ? nx : 0, ty = mouse.inside && level < 5 ? ny : 0, ox = mouse.px, oy = mouse.py; mouse.px += (tx - mouse.px) * k4; mouse.py += (ty - mouse.py) * k4;
       if (mouse.force > 0 || mouse.act > .01 || Math.abs(mouse.px - ox) > 1e-4 || Math.abs(mouse.py - oy) > 1e-4 || Math.abs(mouse.tx - mouse.x) > .3) moving = true;
     }
+    if (heroStep(dt, now)) moving = true;
     const fade = clamp((now - born) / 900, 0, 1) * footFade(sy); if ((now - born) < 900) moving = true;
     const idleSway = HOVER && level < 5 && !wo;
     if (!(moving || dirty || idleSway)) return;
