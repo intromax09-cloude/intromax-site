@@ -1597,7 +1597,7 @@ d.classList.add(mob?'j-m':(/[?&]mode=svg/.test(q)||!gl||sd)?'j-svg':rm?'j-rm':'j
   .j-t2 > div > p:first-child{font-size:clamp(26px,3vw,46px);line-height:1.12;}
   .j-t > div{display:block;}
   .j-t > div > p{margin:0;}
-  .j-t .j-sub{margin-top:.9em;font-family:'Manrope',sans-serif;font-weight:500;letter-spacing:0;font-size:clamp(16px,1.5vw,22px);line-height:1.4;color:var(--text-dim);max-width:26ch;}
+  .j-t .j-sub{margin-top:.9em;font-family:'Manrope',sans-serif;font-weight:500;letter-spacing:0;font-size:clamp(16px,1.5vw,22px);line-height:1.4;color:var(--text);max-width:26ch;}
   .j-t3{max-width:min(560px,42vw);}
   .j-t3 > div > p:first-child{font-size:clamp(40px,4.5vw,68px);}
   .j-t3 .j-sub{opacity:0;}
@@ -1610,9 +1610,12 @@ d.classList.add(mob?'j-m':(/[?&]mode=svg/.test(q)||!gl||sd)?'j-svg':rm?'j-rm':'j
   .j-dot{width:.15em;height:.15em;border-radius:50%;background:var(--amber);box-shadow:0 0 .35em rgba(242,169,60,.6);flex:none;margin-top:.06em;}
   .j-name{margin:0;font-family:'Manrope',sans-serif;font-weight:800;letter-spacing:-.045em;line-height:1;color:var(--text);}
   .j-line{margin:.7em 0 1.6em;font-size:clamp(18px,1.7vw,26px);line-height:1.35;color:var(--text);max-width:24ch;}
-  .j-card .btn{pointer-events:auto;height:56px;padding:0 28px;justify-content:center;font-size:16px;}
-  .j-hint{position:absolute;z-index:5;left:0;right:0;bottom:26px;text-align:center;pointer-events:none;opacity:1;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:13px;letter-spacing:.06em;color:var(--text-dim);}
-  .j-hint::after{content:'';display:block;width:1px;height:22px;margin:8px auto 0;background:linear-gradient(var(--amber),transparent);}
+  .j-card{visibility:visible;}
+  .j-card .btn{pointer-events:none;}
+  .j-card.live .btn{pointer-events:auto;}
+  .j-card .btn{height:56px;padding:0 28px;justify-content:center;font-size:16px;}
+  .j-hint{position:absolute;z-index:5;left:max(24px,calc((100vw - 1240px)/2 + 24px));right:auto;bottom:26px;text-align:left;pointer-events:none;opacity:1;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:13px;letter-spacing:.06em;color:var(--text-dim);}
+  .j-hint::after{content:'';display:block;width:1px;height:22px;margin:8px 0 0 .6em;background:linear-gradient(var(--amber),transparent);}
 
   /* хаб: один непрозрачный лист; поднимается снизу и закрывает путешествие */
   #hub{position:relative;z-index:3;background:#161824;}
@@ -1655,6 +1658,7 @@ d.classList.add(mob?'j-m':(/[?&]mode=svg/.test(q)||!gl||sd)?'j-svg':rm?'j-rm':'j
   .hub-tabs button:focus-visible{outline:2px solid var(--amber);outline-offset:2px;}
   .hub-tabs button[hidden]{display:none;}
   .hub-cta{flex:none;height:48px;padding:0 24px;justify-content:center;}
+  .hub-panel[hidden="until-found"]{display:block !important;content-visibility:hidden;} /* общее [hidden]{display:none !important} иначе глушит until-found: Ctrl+F и beforematch */
   .hub-panel:not([hidden]){min-height:calc(100lvh - 145px);animation:hubFade .2s ease;}
   @keyframes hubFade{from{opacity:0;}to{opacity:1;}}
   .hub-panel section{padding:56px 0;scroll-margin-top:161px;}
@@ -1773,12 +1777,12 @@ d.classList.add(mob?'j-m':(/[?&]mode=svg/.test(q)||!gl||sd)?'j-svg':rm?'j-rm':'j
       <div class="wrap hero-grid">
     <div class="hero-text bloom" data-hero>
       <h1>Поки ви спите,<br>бізнес<br><em>відповідає сам</em></h1>
-      <p class="lead"><span class="d">Бот у Direct і Telegram, сайт та автоматизація. Клієнт отримує відповідь за секунду, а заявка одразу приходить вам у Telegram.</span><span class="m">Бот, сайт та автоматизація. Заявка клієнта одразу приходить вам у Telegram.</span><span class="j">Студія Intromax для салонів, клінік і СТО</span></p>
+      <p class="lead"><span class="d">Бот у Direct і Telegram, сайт та автоматизація. Заявка клієнта одразу приходить вам у Telegram.</span><span class="m">Бот, сайт та автоматизація. Заявка клієнта одразу приходить вам у Telegram.</span><span class="j">Студія Intromax для салонів, клінік, СТО та інших місцевих сервісів</span></p>
       <div class="hero-actions">
         <a href="#order" class="btn btn-primary">Порахувати ціну<span class="arr"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg></span></a>
         <a href="#cases" class="btn btn-ghost">Подивитись кейси</a>
       </div>
-      <ul class="micro"><li>Демо до оплати</li><li>ціна фіксується до старту</li><li>оплата етапами</li></ul>
+      <ul class="micro"><li>Демо до оплати</li><li>ціна фіксується до старту</li><li>оплата після результату</li></ul>
     </div>
       </div>
     </section>
@@ -2364,7 +2368,7 @@ d.classList.add(mob?'j-m':(/[?&]mode=svg/.test(q)||!gl||sd)?'j-svg':rm?'j-rm':'j
             <div class="proc-text">
               <span class="pt-n mono">03 / збірка</span>
               <h3>Збираємо етапами, кожен можна потримати</h3>
-              <p>Кожні кілька днів робоча версія за посиланням. Ви бачите прогрес і можете змінити курс, поки це недорого. Оплата етапами.</p>
+              <p>Кожні кілька днів робоча версія за посиланням. Ви бачите прогрес і можете змінити курс, поки це недорого. Оплата після результату.</p>
             </div>
             <div class="proc-text">
               <span class="pt-n mono">04 / тести</span>
@@ -2434,7 +2438,7 @@ d.classList.add(mob?'j-m':(/[?&]mode=svg/.test(q)||!gl||sd)?'j-svg':rm?'j-rm':'j
     </div>
     <div class="terms-grid">
       <div class="term bloom">
-        <h3>Оплата етапами</h3>
+        <h3>Оплата після результату</h3>
         <p>Не все наперед. Ціна фіксується до старту і не зростає в процесі.</p>
       </div>
       <div class="term bloom">
@@ -2511,7 +2515,7 @@ d.classList.add(mob?'j-m':(/[?&]mode=svg/.test(q)||!gl||sd)?'j-svg':rm?'j-rm':'j
       </details>
       <details>
         <summary>Як відбувається оплата?</summary>
-        <div class="ans"><p>Етапами: частина на старті, решта після того, як ви побачили робочий результат. Ціна фіксується до початку і не зростає в процесі. Оплатити можна на банківську картку або криптовалютою — спосіб узгоджуємо в листуванні.</p></div>
+        <div class="ans"><p>Після результату: частина на старті, решта після того, як ви побачили робочий результат. Ціна фіксується до початку і не зростає в процесі. Оплатити можна на банківську картку або криптовалютою — спосіб узгоджуємо в листуванні.</p></div>
       </details>
     </div>
   </div>
@@ -2769,6 +2773,14 @@ window.IMX_MONEY = function(usd){
 =========================================================================== */
 (function(){
   var REVIEWS = [
+    {
+      name:'Yuliia M.',
+      niche:'замовниця Freelancehunt, ресторан',
+      service:'доробка сайту на Framer',
+      rating:5,
+      date:'2026-10-06',
+      text:'Дуже задоволена роботою! Усе було виконано максимально точно відповідно до моїх побажань і технічного завдання. Якщо щось було незрозуміло — завжди уточнював, а в моментах, де я сама не дуже розбиралась, пропонував кращі й більш професійні рішення, додаткові функції та ідеї, про які я навіть не знала. Працює дуже швидко, якісно, завжди на зв’язку та оперативно дає зворотний зв’язок. Дуже вдячна за роботу і точно буду звертатися з наступними проєктами!'
+    },
     // {
     //   name:'Вікторія',
     //   handle:'@muse__viktoria',
@@ -3906,7 +3918,7 @@ window.IMX_MONEY = function(usd){
     {"@type":"Question","name":"Чи потрібен вам пароль від мого Instagram?","acceptedAnswer":{"@type":"Answer","text":"Ні. Підключення офіційне, через кнопку Instagram у самому сервісі: ви входите під своїм акаунтом і натискаєте «дозволити». Пароль ми не бачимо, і відключити доступ можна в будь-який момент однією кнопкою."}},
     {"@type":"Question","name":"Що буде, якщо бот не зрозуміє клієнта?","acceptedAnswer":{"@type":"Answer","text":"Бот не вигадує відповідь: він каже, що передасть питання людині, і лишає повідомлення власнику. У кожному боті є кнопка «покликати людину»."}},
     {"@type":"Question","name":"Що таке автоматизація на n8n простими словами?","acceptedAnswer":{"@type":"Answer","text":"Це коли сервіси передають дані один одному без вас: заявка з сайту потрапляє в CRM або таблицю, вам надходить сповіщення, а клієнту — нагадування за добу до візиту."}},
-    {"@type":"Question","name":"Як відбувається оплата?","acceptedAnswer":{"@type":"Answer","text":"Етапами: частина на старті, решта після того, як ви побачили робочий результат. Ціна фіксується до початку і не зростає в процесі. Оплатити можна на банківську картку або криптовалютою — спосіб узгоджуємо в листуванні."}}
+    {"@type":"Question","name":"Як відбувається оплата?","acceptedAnswer":{"@type":"Answer","text":"Після результату: частина на старті, решта після того, як ви побачили робочий результат. Ціна фіксується до початку і не зростає в процесі. Оплатити можна на банківську картку або криптовалютою — спосіб узгоджуємо в листуванні."}}
   ]
 }
 </script>
@@ -4125,7 +4137,7 @@ window.IMX_MONEY = function(usd){
       '\nАудит Instagram і сайту: ' + svc('audit') + ', готово за 1 день' +
       '\nПакет «Старт»: ' + packStart() +
       '\nПакет «Сайт + панель заявок»: ' + pr('.packs .pack-site .pr'),
-      'Оплата етапами: частина на старті, решта після робочого результату. Позначте потрібні послуги, і я порахую ціну набору зі знижкою.'
+      'Оплата після результату: частина на старті, решта після робочого результату. Позначте потрібні послуги, і я порахую ціну набору зі знижкою.'
     ], [
       {t:'💼 Набір для моєї ніші', go:'nset', wide:true},
       {t:'🧮 Порахувати набір', go:'calc'},
@@ -4157,7 +4169,7 @@ window.IMX_MONEY = function(usd){
     f_ban: function(){ return [['Блокують за масові розсилки незнайомим людям. Бот відповідає тільки тим, хто написав вам сам, і працює через офіційне підключення Meta. Це дозволений сценарій.'], [MORE_FAQ, LEAD, BACK]]; },
     f_miss: function(){ return [['Він не вигадує відповідь. Питання поза сценарієм бот передає вам, а після кнопки «покликати людину» замовкає в цьому діалозі. Можете перевірити просто тут: напишіть щось незвичне або натисніть «🙋 Покликати людину».'], [{t:'🙋 Покликати людину', go:'human'}, MORE_FAQ, BACK]]; },
     f_demo: function(){ return [['Так. Після заявки збираємо демо під ваше завдання: бот із вашими послугами й цінами, макет сторінки або схему автоматизації. Ви отримуєте посилання і пробуєте самі. Це безкоштовно і ні до чого не зобовʼязує.'], [{t:'👆 Спробувати бота як клієнт', go:'demo', wide:true}, LEAD, BACK]]; },
-    f_pay: function(){ return [['Оплата етапами: частина на старті, решта після робочого результату. Оплатити можна на банківську картку або криптовалютою. Точну ціну називаємо протягом доби після заявки і фіксуємо до початку роботи.'], [MORE_FAQ, LEAD, BACK]]; },
+    f_pay: function(){ return [['Оплата після результату: частина на старті, решта після робочого результату. Оплатити можна на банківську картку або криптовалютою. Точну ціну називаємо протягом доби після заявки і фіксуємо до початку роботи.'], [MORE_FAQ, LEAD, BACK]]; },
     f_time: function(){ return [['Базовий бот — 2–3 дні. Сайт-візитка — до тижня. AI-агент або розширений сайт — 1–2 тижні. Telegram Mini App — 2–3 тижні. Сценарій автоматизації — від одного дня, якщо доступи вже є.'], [MORE_FAQ, LEAD, BACK]]; },
     f_support: function(){ return [['Підтримка не обовʼязкова: бот і сайт працюють без неї. Вона включає правки в сценаріях і текстах, нагляд за оновленнями платформ і відповідь від нас протягом доби. Коштує 450–2 200 грн на місяць.'], [MORE_FAQ, LEAD, BACK]]; }
   };
@@ -5905,10 +5917,11 @@ window.IMX3D = {
     go(id);
     if(MAP[id] && history.replaceState) try{ history.replaceState(null, '', '#' + MAP[id]); }catch(_){}
   });
-  window.addEventListener('hashchange', function(){ var id = location.hash.slice(1); if(id && id !== 'top' && KNOWN.test(id)) go(id, {instant:true}); });
+  window.addEventListener('hashchange', function(){ var id = location.hash.slice(1); if(id && id !== 'top' && KNOWN.test(id)){ go(id, {instant:true}); caseFocus(id); } });
+  function caseFocus(id){ if(!/^case-/.test(id)) return; setTimeout(function(){ var ov = document.getElementById('case-overlay'), x = document.getElementById('case-x'); if(ov && x && ov.classList.contains('open')) x.focus({preventScroll:true}); }, 80); }
   function ready(cb){ if(!root.classList.contains('intro-lock')) return cb(); setTimeout(function(){ ready(cb); }, 200); }
   var h0 = location.hash.slice(1);
-  if(h0 && KNOWN.test(h0) && h0 !== 'top') ready(function(){ requestAnimationFrame(function(){ go(h0, {instant:true}); }); });
+  if(h0 && KNOWN.test(h0) && h0 !== 'top') ready(function(){ requestAnimationFrame(function(){ go(h0, {instant:true}); caseFocus(h0); }); });
 
   /* ---- рейка (десктоп) і док (телефон): «Початок» + вкладки хабу ---- */
   var rail = document.getElementById('rail'), dock = document.getElementById('dock');
@@ -6466,9 +6479,9 @@ const JT = JM === 'j-on' ? {
   op: [1, 0, 0, 0, 0], mr: [null, null, null, null], cache: new Map()
 } : null;
 /* текст и свечения стадий: чистая функция от сглаженного js (объект и заголовок не расходятся при рывке) */
-function jSet(el, o, y) {
+function jSet(el, o, y, keepVis) {
   const k = ((o * 500) | 0) + ':' + (y | 0); if (JT.cache.get(el) === k) return; JT.cache.set(el, k);
-  el.style.opacity = o < .002 ? 0 : o.toFixed(3); el.style.visibility = o < .01 ? 'hidden' : 'visible';
+  el.style.opacity = o < .002 ? 0 : o.toFixed(3); if (!keepVis) el.style.visibility = o < .01 ? 'hidden' : 'visible';
   el.style.transform = y ? 'translateY(' + y.toFixed(1) + 'px)' : '';
 }
 function jText(j) {
@@ -6477,7 +6490,7 @@ function jText(j) {
   JT.op = [o0, o1, o2, o3, oc];
   jSet(JT.hero, o0, yy(o0, .15, .15)); jSet(JT.t1, o1, yy(o1, .85, 1.15)); jSet(JT.t2, o2, yy(o2, 1.75, 2.55)); jSet(JT.t3, o3, yy(o3, 3.15, 3.5));
   JT.li.forEach((li, i) => { const su = 3 + .5 * TICK_U[i * 2] / 1.03, v = sm3(su - .04, su + .06, j); li.style.opacity = v.toFixed(3); });
-  jSet(JT.card, oc, j > 4.4 ? -60 * (1 - oc) : 24 * (1 - oc));
+  jSet(JT.card, oc, j > 4.4 ? -60 * (1 - oc) : 24 * (1 - oc), true); JT.card.classList.toggle('live', oc > .5);
   jSet(JT.hint, Math.max(o0, oc), 0);
   const sc = Math.max(o0, oc * .9); jSet(JT.scrim, sc, 0);
   const g = [trap(j, -1, 0, .55, 1.0), trap(j, .5, 1.0, 1.4, 1.8), trap(j, 1.4, 1.9, 2.6, 3.0), trap(j, 2.7, 3.2, 3.6, 3.9), trap(j, 3.6, 4.0, 5, 6)];
@@ -6570,7 +6583,7 @@ async function boot() {
         }
         // маска чтения: под заголовком стадии облако приглушено до 15 %, перо 48 px
         float mk = 1.; vec2 sp = vec2(p.x + uVP.x*.5, uVP.y*.5 - p.y);
-        for(int i = 0; i < 4; i++){ vec4 m = uMask[i]; float dx = max(max(m.x - sp.x, sp.x - m.z), 0.); float dy = max(max(m.y - sp.y, sp.y - m.w), 0.); mk *= mix(.15, 1., smoothstep(0., 48., length(vec2(dx, dy)))); }
+        for(int i = 0; i < 4; i++){ vec4 m = uMask[i]; float dx = max(max(m.x - sp.x, sp.x - m.z), 0.); float dy = max(max(m.y - sp.y, sp.y - m.w), 0.); mk *= mix(.08, 1., smoothstep(0., 48., length(vec2(dx, dy)))); }
         float bri = mix(bF, bT, ei)*(1. - .2*sn)*uBriK*(1. + .4*inr)*mk;
         vAmb = mix(aF, aT, ei); vBri = bri;
         vec4 mv = modelViewMatrix*vec4(p, 1.);
@@ -6777,7 +6790,9 @@ function loop(now) {
 
 // LCP — текст: three.js грузится после первой отрисовки, снятия заставки и простоя (через общий IMX3D.load)
 const t0 = performance.now();
-if (JT) { jMeasure(); requestAnimationFrame(loop); }
+if (JT) { jMeasure(); requestAnimationFrame(loop); JT.card.addEventListener('focusin', () => { if (scrollY < LAY.H * 3.9) scrollTo({ top: LAY.H * 4.05, behavior: 'instant' }); }); }
+/* порог MOBILE (≤900) пересечён в любую сторону: режим считается один раз, поэтому один перезапуск страницы (с защитой от цикла) */
+matchMedia('(max-width:900px)').addEventListener('change', () => { try { if (Date.now() - (+sessionStorage.getItem('imxRl') || 0) < 5000) return; sessionStorage.setItem('imxRl', Date.now()); } catch (e) {} location.reload(); });
 requestAnimationFrame(() => requestAnimationFrame(() => {
   boot().catch(e => { console.error('cloud boot failed', e); heroSvg(); const c = document.documentElement.classList; c.remove('j-on', 'j-rm'); c.add('j-svg'); });
 }));
