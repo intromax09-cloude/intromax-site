@@ -1200,56 +1200,6 @@ d.classList.add(mob?'j-m':(/[?&]mode=svg/.test(q)||!gl||sd)?'j-svg':rm?'j-rm':'j
   .calc-note{margin-top:auto;padding-top:20px;font-size:12px;line-height:1.55;color:var(--text-dim);}
   @media (max-width:900px){ .calc{grid-template-columns:minmax(0,1fr);} .calc-in,.calc-out{padding:24px 20px;} }
 
-  /* ---------- КЕЙСИ-СЦЕНИ (десктоп): афіша проєкту на всю ширину, збоку коротка панель; сцени складаються стосом ---------- */
-  @media (min-width:1001px){
-    .cases{display:flex;flex-direction:column;gap:28px;padding-bottom:12px;}
-    .case{
-      display:grid;grid-template-columns:minmax(0,46fr) minmax(0,54fr);
-      grid-template-areas:"shot bar" "shot body";grid-template-rows:auto 1fr;
-      position:sticky;top:calc(92px + var(--k,0) * 14px);
-      border-radius:28px;
-    }
-    .case:nth-child(even){grid-template-areas:"bar shot" "body shot";grid-template-columns:minmax(0,54fr) minmax(0,46fr);}
-    .case:hover{transform:none;}
-    .case-bar{
-      grid-area:bar;align-self:start;justify-self:start;z-index:2;margin:30px 42px 0;
-      padding:7px 14px;border:1px solid var(--line-strong);border-radius:100px;
-      background:rgba(12,13,18,.78);
-    }
-    .case-shot{
-      grid-area:shot;border-bottom:0;perspective:1400px;
-      border-right:1px solid var(--line);
-      aspect-ratio:1/1;container-type:size;
-    }
-    /* афіша 1200×750: лишаємо праву частину з пристроями, текст афіші дублював би панель збоку */
-    .case.poster .case-shot img{
-      position:absolute;max-width:none;width:auto;height:calc(var(--s,1) * 100cqh);
-      top:calc((1 - var(--s,1)) * 50cqh);
-      left:calc((100cqw - 1.6 * var(--s,1) * 100cqh) * var(--x,1));
-    }
-    .case:nth-child(even) .case-shot{border-right:0;border-left:1px solid var(--line);}
-    .case-shot img{
-      transform:rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) scale(1.01);
-      transition:transform .9s var(--ease);
-    }
-    .case:hover .case-shot img{transform:rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) scale(1.035);}
-    .case-body{grid-area:body;padding:22px 42px 30px;justify-content:center;}
-    .case-meta{margin-bottom:14px;}
-    .case h3{font-size:clamp(30px,3vw,42px);letter-spacing:-.035em;line-height:1.02;margin-bottom:14px;}
-    .case p{font-size:15px;line-height:1.6;margin-bottom:22px;display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden;}
-    .case-num{margin-top:0;padding:16px 0;margin-bottom:4px;}
-    .case-num b{font-size:44px;}
-    .case-tags{margin-bottom:22px;}
-    .case .btn{align-self:flex-start;padding:12px 20px;}
-    .case-no{float:right;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.04em;color:var(--amber);}
-    .case-next{align-self:flex-start;margin-top:14px;padding:6px 0;background:none;border:0;cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text-dim);transition:color .3s var(--ease);}
-    .case-next b{font-weight:500;color:var(--text);transition:color .3s var(--ease);}
-    .case-next:hover,.case-next:hover b{color:var(--amber);}
-    .case:nth-child(1){--k:0;} .case:nth-child(2){--k:1;} .case:nth-child(3){--k:2;}
-    .case:nth-child(4){--k:3;} .case:nth-child(5){--k:4;} .case:nth-child(6){--k:5;}
-  }
-  @media (min-width:1001px) and (max-height:759px){ .case{position:relative;top:auto;} }
-  @media (prefers-reduced-motion: reduce){ .case-shot img{transition:none !important;transform:none !important;} }
   /* ---------- ПРОЦЕС: п'ять кроків під прокрутку; праворуч вікно проєкту, приклад перемикається ---------- */
   .proc-list{display:none;list-style:none;margin:0 0 32px;border-top:1px solid var(--line);}
   .proc-list li{display:grid;grid-template-columns:38px auto minmax(0,1fr);align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid var(--line);color:var(--text-dim);transition:color .4s var(--ease);}
@@ -1310,17 +1260,6 @@ d.classList.add(mob?'j-m':(/[?&]mode=svg/.test(q)||!gl||sd)?'j-svg':rm?'j-rm':'j
   .pp-note span{grid-area:1/1;opacity:0;transition:opacity .35s var(--ease);}
   .pp-note span.on{opacity:1;}
   .pp-cap{margin-top:14px;font-size:12.5px;color:var(--text-dim);max-width:60ch;}
-  /* десктоп: сцена закріплена, поки йдуть п'ять кроків; низький екран і телефон бачать усі кроки списком */
-  @media (min-width:901px) and (min-height:760px){
-    .proc-scroll{height:300vh;}
-    .proc-sticky{position:sticky;top:96px;min-height:calc(100vh - 150px);display:grid;grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr);gap:64px;align-items:center;}
-    .proc-list,.proc-right{display:block;}
-    .proc-hint{display:flex;}
-    .proc-scroll.live .proc-texts{display:grid;}
-    .proc-scroll.live .proc-text{grid-area:1/1;border-top:0;padding:0;opacity:0;transform:translateY(12px);transition:opacity .45s var(--ease),transform .45s var(--ease);pointer-events:none;}
-    .proc-scroll.live .proc-text.on{opacity:1;transform:none;}
-  }
-  @media (prefers-reduced-motion: reduce){ .proc-hint svg{animation:none;} }
 </style>
 <style id="zs">
   /* =====================================================================
@@ -1493,21 +1432,6 @@ d.classList.add(mob?'j-m':(/[?&]mode=svg/.test(q)||!gl||sd)?'j-svg':rm?'j-rm':'j
   .chip,.case-filter button{min-height:40px;}
   @media (max-width:700px){ .chip{min-height:44px;} }
 
-  /* ---------- процес: смуга під сценою (стрічка-трек), на телефоні вертикальна стрічка зліва ---------- */
-  .proc-foot{display:none;}
-  @media (min-width:901px) and (min-height:760px){
-    .proc-sticky{grid-template-rows:minmax(0,1fr) auto;}
-    .proc-left{grid-row:1;} .proc-right{grid-row:1;}
-    .proc-foot{display:flex;align-items:center;gap:20px;grid-column:1 / -1;grid-row:2;min-height:110px;}
-    .proc-foot .proc-hint{margin:0;flex:none;}
-    .proc-hint .ph-a,.proc-hint .ph-b{display:none !important;}
-    .proc-foot .stage-slot{flex:1;height:110px;min-width:0;}
-    .proc-sticky{min-height:calc(100vh - 140px);}
-  }
-  @media not all and (min-width:901px) and (min-height:760px){
-    .proc-scroll:not(.live) .proc-texts{padding-left:36px;}
-    .proc-scroll .proc-foot{display:none;}
-  }
 
   /* ---------- формальні дрібниці ---------- */
   .faq-foot{margin-top:24px;}
@@ -1735,6 +1659,86 @@ d.classList.add(mob?'j-m':(/[?&]mode=svg/.test(q)||!gl||sd)?'j-svg':rm?'j-rm':'j
     .h0-left .niche-pick{order:3;margin-top:28px;}
     .h0-links{order:4;}
   }
+
+  /* ---------- хаб: липка панель вкладок, панелі ---------- */
+  .hub-h0{scroll-margin-top:0;}
+  html.in-hub .nav-right .nav-cta{display:none;} /* кнопка заявки одна на екрані: у панелі вкладок */
+  header{position:sticky;top:0;} /* шапка залишається поверх подорожі й під час прокрутки хабу */
+  .hub-bar{position:sticky;top:73px;z-index:45;background:rgba(22,24,36,.97);border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+  .hub-bar-in{display:flex;align-items:center;justify-content:space-between;gap:16px;height:72px;max-width:1240px;margin:0 auto;padding:0 24px;}
+  .hub-tabs{display:flex;gap:8px;min-width:0;}
+  .hub-tabs button{font:inherit;font-size:14px;font-weight:600;white-space:nowrap;color:var(--text-dim);background:transparent;border:1px solid var(--line);border-radius:100px;padding:0 18px;min-height:44px;cursor:pointer;transition:color .3s var(--ease),border-color .3s var(--ease),background .3s var(--ease);}
+  .hub-tabs button:hover{color:var(--text);border-color:var(--line-strong);}
+  .hub-tabs button[aria-selected="true"]{color:var(--amber);border-color:rgba(242,169,60,.5);background:rgba(242,169,60,.08);}
+  .hub-tabs button:focus-visible{outline:2px solid var(--amber);outline-offset:2px;}
+  .hub-tabs button[hidden]{display:none;}
+  .hub-cta{flex:none;height:48px;padding:0 24px;justify-content:center;}
+  .hub-panel:not([hidden]){min-height:calc(100lvh - 145px);animation:hubFade .2s ease;}
+  @keyframes hubFade{from{opacity:0;}to{opacity:1;}}
+  .hub-panel section{padding:56px 0;scroll-margin-top:161px;}
+  .hub-panel section::before{display:none;}
+  #cta{scroll-margin-top:100px;}
+  /* вступні абзаци під заголовками вкладок: лишаються в розмітці (SEO, читалки екрана), візуально згорнуті */
+  .hub-panel .section-head .lead{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;margin:0;}
+  .hub-panel .section-head h2{font-size:clamp(28px,3vw,40px);line-height:1.1;max-width:none;}
+  .hub-panel .section-head{margin-bottom:28px;}
+  /* послуги: чотири колонки, «що входить» у згортку, підтримка згорнута */
+  @media (min-width:1101px){
+    .svc-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;}
+    .svc,.svc:nth-child(n+7){grid-column:auto;}
+    .svc:nth-child(n+7) ul{display:block;}
+  }
+  .svc-more{margin:0 0 14px;}
+  .svc-more summary,.support-more summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:8px;min-height:44px;font-size:13px;font-weight:600;color:var(--text-dim);}
+  .svc-more summary::-webkit-details-marker,.support-more summary::-webkit-details-marker{display:none;}
+  .svc-more summary::after,.support-more summary::after{content:'';width:7px;height:7px;border-right:1.6px solid var(--amber);border-bottom:1.6px solid var(--amber);transform:rotate(45deg);margin:-3px 0 0 2px;transition:transform .3s var(--ease);}
+  .svc-more[open] summary::after,.support-more[open] summary::after{transform:rotate(225deg);margin-top:3px;}
+  .svc-more summary:focus-visible,.support-more summary:focus-visible{outline:2px solid var(--amber);outline-offset:2px;border-radius:6px;}
+  .svc-more summary:hover,.support-more summary:hover{color:var(--text);}
+  .support-more summary h3{margin:0;font-size:22px;letter-spacing:-.02em;}
+  .support-more summary{justify-content:space-between;color:var(--text);}
+  .support-more[open] summary{margin-bottom:10px;}
+  /* кейси: сітка афіш 3×2; на телефоні стрічка, як було */
+  @media (min-width:701px){
+    .case > .case-body p,.case > .case-body .case-tags{display:none;}
+    .case-body{padding:18px 20px 22px;}
+    .case h3{margin-bottom:12px;}
+  }
+  /* процес: перемикач кроків замість закріпленої сцени */
+  .proc-scroll{height:auto;}
+  .proc-sticky{position:static;min-height:0;display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:28px 56px;align-items:start;}
+  .proc-left{display:contents;}
+  .proc-list{display:flex;grid-column:1 / -1;margin:0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);list-style:none;}
+  .proc-list li{position:relative;flex:1 1 0;display:flex;flex-direction:column;align-items:flex-start;gap:4px;padding:14px 14px 16px 0;border:0;min-height:44px;cursor:pointer;}
+  .proc-list li:focus-visible{outline:2px solid var(--amber);outline-offset:-2px;}
+  .proc-list i{position:absolute;left:0;right:14px;bottom:-1px;height:1px;background:var(--line-strong);}
+  .proc-list i::after{content:'';position:absolute;left:0;top:-.5px;height:2px;width:calc(var(--f,0) * 100%);background:var(--amber);}
+  .proc-list li:hover{color:var(--text);}
+  .proc-texts{grid-column:1;}
+  .proc-scroll.live .proc-text{display:none;border-top:0;padding:0;}
+  .proc-scroll.live .proc-text.on{display:block;animation:hubFade .3s ease;}
+  .proc-right{display:block;grid-column:2;}
+  .proc-hint,.proc-foot{display:none;}
+  @media (max-width:900px){
+    .proc-sticky{grid-template-columns:minmax(0,1fr);}
+    .proc-texts,.proc-right{grid-column:1;}
+    .proc-list{overflow-x:auto;scrollbar-width:none;}
+    .proc-list::-webkit-scrollbar{display:none;}
+    .proc-list li{flex:0 0 auto;min-width:112px;}
+  }
+  #terms .terms-grid{grid-template-columns:repeat(3,1fr);}
+  @media (max-width:980px){ #terms .terms-grid{grid-template-columns:1fr 1fr;} }
+  @media (max-width:560px){ #terms .terms-grid{grid-template-columns:1fr;} }
+  @media (max-width:900px){
+    .hub-bar{top:57px;}
+    .hub-bar-in{height:auto;padding:0;display:block;}
+    .hub-tabs{overflow-x:auto;scrollbar-width:none;padding:8px 24px;}
+    .hub-tabs::-webkit-scrollbar{display:none;}
+    .hub-cta{display:none;}
+    .hub-panel section{padding:40px 0;scroll-margin-top:118px;}
+    .hub-panel:not([hidden]){min-height:0;}
+  }
+  @media (prefers-reduced-motion:reduce){ .hub-panel:not([hidden]),.proc-scroll.live .proc-text.on{animation:none;} }
 </style>
 <noscript><style>#intro{display:none}.bloom,.navlinks a,.nav-cta{opacity:1;transform:none}</style></noscript>
 </head>
@@ -1846,12 +1850,21 @@ d.classList.add(mob?'j-m':(/[?&]mode=svg/.test(q)||!gl||sd)?'j-svg':rm?'j-rm':'j
       </div>
     </div>
   </section>
+  <div class="hub-bar" id="hub-bar">
+    <div class="hub-bar-in">
+      <div class="hub-tabs" role="tablist" aria-label="Розділи сторінки">
+        <button type="button" role="tab" id="tab-services" aria-controls="tp-services" aria-selected="true" data-tab="services">Послуги й ціни</button><button type="button" role="tab" id="tab-order" aria-controls="tp-order" aria-selected="false" data-tab="order" tabindex="-1">Порахувати ціну</button><button type="button" role="tab" id="tab-cases" aria-controls="tp-cases" aria-selected="false" data-tab="cases" tabindex="-1">Кейси</button><button type="button" role="tab" id="tab-process" aria-controls="tp-process" aria-selected="false" data-tab="process" tabindex="-1">Як працюємо</button><button type="button" role="tab" id="tab-faq" aria-controls="tp-faq" aria-selected="false" data-tab="faq" tabindex="-1">Питання</button><button type="button" role="tab" id="tab-reviews" aria-controls="tp-reviews" aria-selected="false" data-tab="reviews" tabindex="-1">Відгуки</button>
+      </div>
+      <button type="button" class="btn btn-primary hub-cta" data-lead="unsure">Залишити заявку</button>
+    </div>
+  </div>
+  <div class="hub-panels" id="hub-panels">
+  <div class="hub-panel" role="tabpanel" id="tp-services" aria-labelledby="tab-services">
 <section id="services" class="tint-amber tint-line">
   <div class="wrap">
-    <div class="section-head has-slot">
+    <div class="section-head">
       <h2>Усі послуги та їхні ціни</h2>
       <p class="lead">Біля кожної послуги її ціна, строк запуску й абонплата. Усе в одному місці, без окремої таблиці цін. Точну цифру називаємо протягом доби після заявки, і після старту роботи вона не змінюється.</p>
-      <div class="stage-slot" data-stage="B" aria-hidden="true"></div>
     </div>
 
     <p class="promo-note" data-promo>Ціни запуску діють до 31 грудня 2026. Далі повертаються звичайні, вони закреслені поруч.</p>
@@ -2088,13 +2101,103 @@ d.classList.add(mob?'j-m':(/[?&]mode=svg/.test(q)||!gl||sd)?'j-svg':rm?'j-rm':'j
       <p class="price-note"><b>Від чого залежить підсумкова сума (рахуємо від стартової ціни «від X грн»):</b> кількість гілок у сценарії, чи потрібна інтеграція з вашими сервісами, скільки сторінок і чи є готові тексти й фото. Дрібні правки на етапі розробки не тарифікуються.</p>
   </div>
 </section>
-
+  </div>
+  <div class="hub-panel" role="tabpanel" id="tp-order" aria-labelledby="tab-order">
+<section id="order" class="tint-line">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Зберіть комплект і одразу побачите ціну</h2>
+      <p class="lead">Гортайте послуги й додавайте потрібні. Ціна, строк і знижка за комплект рахуються на місці. Точну цифру називаємо протягом доби після заявки.</p>
+    </div>
+    <div class="kit bloom" id="kit">
+      <div class="kit-main">
+        <div class="chips kit-tabs" id="kit-tabs"></div>
+        <div class="kit-stage" id="kit-stage">
+          <canvas id="kit-canvas" aria-hidden="true"></canvas>
+          <div class="kit-fallback" id="kit-fallback" aria-hidden="true"></div>
+          <button type="button" class="kit-arrow prev" id="kit-prev" aria-label="Попередня послуга">&#8249;</button>
+          <button type="button" class="kit-arrow next" id="kit-next" aria-label="Наступна послуга">&#8250;</button>
+          <div class="kit-dots" id="kit-dots" aria-hidden="true"></div>
+        </div>
+        <div class="kit-info" aria-live="polite">
+          <h3 id="kit-title">Бот у Direct</h3>
+          <p id="kit-desc"></p>
+          <div class="kit-meta"><b id="kit-price"></b><span id="kit-term"></span></div>
+          <button type="button" class="btn btn-ghost" id="kit-add">Додати в комплект</button>
+        </div>
+      </div>
+      <aside class="kit-sum" aria-live="polite">
+        <div class="t">Ваш комплект</div>
+        <ul id="kit-list"></ul>
+        <div class="kit-total">
+          <div class="cost" id="kit-total">0 грн</div>
+          <div class="kit-was" id="kit-was">Додайте першу послугу, і тут зʼявиться ціна.</div>
+        </div>
+        <div class="kit-save" id="kit-save" hidden></div>
+        <button type="button" class="btn btn-primary" id="kit-go" disabled>Отримати точну ціну</button>
+        <p class="kit-fine" data-promo>До 31 грудня діють ціни запуску. За дві й більше послуг додаємо ще 10% знижки.</p>
+        <p class="kit-fine" data-after hidden>Знижка зростає з кожною послугою: до 15% за дві, до 20% за три, до 25% за чотири, до 30% за пʼять.</p>
+        <p class="kit-fine">Розрахунок орієнтовний. Точну цифру називаємо до початку роботи, і далі вона не змінюється.</p>
+        <button type="button" class="kit-unsure" data-lead="unsure">Не знаєте, що обрати? Опишіть завдання словами</button>
+      </aside>
+    </div>
+  </div>
+</section>
+<section id="routine" class="tint-amber tint-line">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Скільки коштує ручна рутина</h2>
+      <p class="lead">Посуньте повзунки під свою команду. Рахують ваші цифри, не наші.</p>
+    </div>
+    <div class="calc bloom">
+      <div class="calc-in">
+        <div class="calc-row">
+          <label for="rc-people">Скільки людей виконує рутину</label><b class="mono" id="rc-people-v">3</b>
+          <input type="range" class="rng" id="rc-people" min="1" max="30" step="1" value="3">
+        </div>
+        <div class="calc-row">
+          <label for="rc-hours">Годин на тиждень у кожного</label><b class="mono" id="rc-hours-v">6</b>
+          <input type="range" class="rng" id="rc-hours" min="1" max="40" step="1" value="6">
+        </div>
+        <div class="calc-row">
+          <label for="rc-rate">Вартість години працівника</label><b class="mono" id="rc-rate-v">₴200</b>
+          <input type="range" class="rng" id="rc-rate" min="50" max="1000" step="10" value="200">
+        </div>
+        <div class="calc-row">
+          <label for="rc-share">Яку частку можна автоматизувати</label><b class="mono" id="rc-share-v">50%</b>
+          <input type="range" class="rng" id="rc-share" min="10" max="90" step="5" value="50">
+        </div>
+        <p class="calc-hint">Рутина — це копіювання між таблицями, ручні звіти, перенесення заявок, звірки, нагадування й повторювані розрахунки.</p>
+      </div>
+      <div class="calc-out" aria-live="polite">
+        <div class="calc-cap">Орієнтовна економія за рік</div>
+        <div class="calc-big mono" id="rc-year">₴86 400</div>
+        <div class="calc-sub">оплаченого часу, який більше не йде на рутину</div>
+        <div class="calc-bar" aria-hidden="true"><i id="rc-bar"></i></div>
+        <div class="calc-legend">
+          <div><span>Зараз вручну</span><b class="mono" id="rc-now">₴172 800</b></div>
+          <div><span>Після автоматизації</span><b class="mono" id="rc-after">₴86 400</b></div>
+        </div>
+        <div class="calc-stats">
+          <div><b class="mono" id="rc-hrs">432</b><span>годин економії на рік</span></div>
+          <div><b class="mono" id="rc-days">54</b><span>робочих днів економії на рік</span></div>
+        </div>
+        <div class="calc-actions">
+          <button type="button" class="btn btn-primary" id="rc-go" data-lead="automation">Прибрати цю рутину<span class="arr"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg></span></button>
+          <a href="#services" class="btn btn-ghost">Подивитись ціни</a>
+        </div>
+        <p class="calc-note">Розрахунок: люди × години × 48 робочих тижнів × вартість години. Це орієнтир, а не обіцянка економії: він не враховує вартість впровадження й завдання, які не варто автоматизувати.</p>
+      </div>
+    </div>
+  </div>
+</section>
+  </div>
+  <div class="hub-panel" role="tabpanel" id="tp-cases" aria-labelledby="tab-cases">
 <section id="cases" class="tint-plum tint-line">
   <div class="wrap">
-    <div class="section-head has-slot">
+    <div class="section-head">
       <h2>Проєкти, у які можна <em>зазирнути</em></h2>
       <p class="lead">Замовлення клієнтів і наші власні розробки. Натисніть на картку, щоб побачити повний розбір: завдання, що зроблено, технічні рішення й стек.</p>
-      <div class="stage-slot" data-stage="C" aria-hidden="true"></div>
     </div>
     <div class="case-filter" role="group" aria-label="Фільтр кейсів">
       <button type="button" data-f="all" aria-pressed="true">Усі</button><button type="button" data-f="client" aria-pressed="false">Для клієнтів</button><button type="button" data-f="own" aria-pressed="false">Власні розробки</button>
@@ -2247,101 +2350,12 @@ d.classList.add(mob?'j-m':(/[?&]mode=svg/.test(q)||!gl||sd)?'j-svg':rm?'j-rm':'j
     </div>
   </div>
 </section>
-
-<section id="routine" class="tint-amber tint-line">
-  <div class="wrap">
-    <div class="section-head">
-      <h2>Скільки коштує ручна рутина</h2>
-      <p class="lead">Посуньте повзунки під свою команду. Рахують ваші цифри, не наші.</p>
-    </div>
-    <div class="calc bloom">
-      <div class="calc-in">
-        <div class="calc-row">
-          <label for="rc-people">Скільки людей виконує рутину</label><b class="mono" id="rc-people-v">3</b>
-          <input type="range" class="rng" id="rc-people" min="1" max="30" step="1" value="3">
-        </div>
-        <div class="calc-row">
-          <label for="rc-hours">Годин на тиждень у кожного</label><b class="mono" id="rc-hours-v">6</b>
-          <input type="range" class="rng" id="rc-hours" min="1" max="40" step="1" value="6">
-        </div>
-        <div class="calc-row">
-          <label for="rc-rate">Вартість години працівника</label><b class="mono" id="rc-rate-v">₴200</b>
-          <input type="range" class="rng" id="rc-rate" min="50" max="1000" step="10" value="200">
-        </div>
-        <div class="calc-row">
-          <label for="rc-share">Яку частку можна автоматизувати</label><b class="mono" id="rc-share-v">50%</b>
-          <input type="range" class="rng" id="rc-share" min="10" max="90" step="5" value="50">
-        </div>
-        <p class="calc-hint">Рутина — це копіювання між таблицями, ручні звіти, перенесення заявок, звірки, нагадування й повторювані розрахунки.</p>
-      </div>
-      <div class="calc-out" aria-live="polite">
-        <div class="calc-cap">Орієнтовна економія за рік</div>
-        <div class="calc-big mono" id="rc-year">₴86 400</div>
-        <div class="calc-sub">оплаченого часу, який більше не йде на рутину</div>
-        <div class="calc-bar" aria-hidden="true"><i id="rc-bar"></i></div>
-        <div class="calc-legend">
-          <div><span>Зараз вручну</span><b class="mono" id="rc-now">₴172 800</b></div>
-          <div><span>Після автоматизації</span><b class="mono" id="rc-after">₴86 400</b></div>
-        </div>
-        <div class="calc-stats">
-          <div><b class="mono" id="rc-hrs">432</b><span>годин економії на рік</span></div>
-          <div><b class="mono" id="rc-days">54</b><span>робочих днів економії на рік</span></div>
-        </div>
-        <div class="calc-actions">
-          <button type="button" class="btn btn-primary" id="rc-go" data-lead="automation">Прибрати цю рутину<span class="arr"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg></span></button>
-          <a href="#services" class="btn btn-ghost">Подивитись ціни</a>
-        </div>
-        <p class="calc-note">Розрахунок: люди × години × 48 робочих тижнів × вартість години. Це орієнтир, а не обіцянка економії: він не враховує вартість впровадження й завдання, які не варто автоматизувати.</p>
-      </div>
-    </div>
   </div>
-</section>
-
-<section id="order" class="tint-line">
-  <div class="wrap">
-    <div class="section-head">
-      <h2>Зберіть комплект і одразу побачите ціну</h2>
-      <p class="lead">Гортайте послуги й додавайте потрібні. Ціна, строк і знижка за комплект рахуються на місці. Точну цифру називаємо протягом доби після заявки.</p>
-    </div>
-    <div class="kit bloom" id="kit">
-      <div class="kit-main">
-        <div class="chips kit-tabs" id="kit-tabs"></div>
-        <div class="kit-stage" id="kit-stage">
-          <canvas id="kit-canvas" aria-hidden="true"></canvas>
-          <div class="kit-fallback" id="kit-fallback" aria-hidden="true"></div>
-          <button type="button" class="kit-arrow prev" id="kit-prev" aria-label="Попередня послуга">&#8249;</button>
-          <button type="button" class="kit-arrow next" id="kit-next" aria-label="Наступна послуга">&#8250;</button>
-          <div class="kit-dots" id="kit-dots" aria-hidden="true"></div>
-        </div>
-        <div class="kit-info" aria-live="polite">
-          <h3 id="kit-title">Бот у Direct</h3>
-          <p id="kit-desc"></p>
-          <div class="kit-meta"><b id="kit-price"></b><span id="kit-term"></span></div>
-          <button type="button" class="btn btn-ghost" id="kit-add">Додати в комплект</button>
-        </div>
-      </div>
-      <aside class="kit-sum" aria-live="polite">
-        <div class="t">Ваш комплект</div>
-        <ul id="kit-list"></ul>
-        <div class="kit-total">
-          <div class="cost" id="kit-total">0 грн</div>
-          <div class="kit-was" id="kit-was">Додайте першу послугу, і тут зʼявиться ціна.</div>
-        </div>
-        <div class="kit-save" id="kit-save" hidden></div>
-        <button type="button" class="btn btn-primary" id="kit-go" disabled>Отримати точну ціну</button>
-        <p class="kit-fine" data-promo>До 31 грудня діють ціни запуску. За дві й більше послуг додаємо ще 10% знижки.</p>
-        <p class="kit-fine" data-after hidden>Знижка зростає з кожною послугою: до 15% за дві, до 20% за три, до 25% за чотири, до 30% за пʼять.</p>
-        <p class="kit-fine">Розрахунок орієнтовний. Точну цифру називаємо до початку роботи, і далі вона не змінюється.</p>
-        <button type="button" class="kit-unsure" data-lead="unsure">Не знаєте, що обрати? Опишіть завдання словами</button>
-      </aside>
-    </div>
-  </div>
-</section>
-
+  <div class="hub-panel" role="tabpanel" id="tp-process" aria-labelledby="tab-process">
 <section id="process" class="tint-plum tint-line">
   <div class="wrap">
     <div class="section-head">
-      <h2>Ваш продукт, ваш шлях: від брифу до здачі</h2>
+      <h2 id="proc-h">Ваш продукт, ваш шлях: від брифу до здачі</h2>
       <p class="lead">Ідеї бувають різні, тому план складаємо під вашу. П’ять кроків ті самі, а зміст кожного свій: для застосунку, маркетплейсу чи внутрішнього інструмента він різний.</p>
     </div>
     <div class="proc-scroll">
@@ -2426,15 +2440,13 @@ d.classList.add(mob?'j-m':(/[?&]mode=svg/.test(q)||!gl||sd)?'j-svg':rm?'j-rm':'j
           </div>
           <p class="pp-cap">Ілюстрація: умовні приклади, дані вигадані. У вас буде свій продукт і свої етапи.</p>
         </div>
-        <div class="proc-foot"><p class="proc-hint" aria-hidden="true"><span class="mono" id="ph-n">1 / 5</span><span class="ph-a">Крутіть далі</span><span class="ph-b">Далі: умови</span><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></p><div class="stage-slot" data-stage="D" aria-hidden="true"></div></div>
-      </div>
+              </div>
     </div>
     <p class="price-note"><b>Скільки це триває:</b> бот — 2–3 дні, сайт-візитка — до тижня, AI-агент або розширений сайт — 1–2 тижні, Telegram Mini App — 2–3 тижні, сценарій автоматизації — від одного дня, якщо доступи вже є. Від вас на всьому шляху потрібно 10 хвилин на бриф і відповіді на кілька уточнень.</p>
   </div>
 </section>
-
 <section id="terms" class="tint-line">
-  <div class="wrap slot-wrap">
+  <div class="wrap">
     <div class="section-head">
       <h2>Про що домовляємось до першої гривні</h2>
     </div>
@@ -2464,10 +2476,10 @@ d.classList.add(mob?'j-m':(/[?&]mode=svg/.test(q)||!gl||sd)?'j-svg':rm?'j-rm':'j
         <p>Без менеджерів-посередників: ваші питання й правки отримує той, хто збирає проєкт.</p>
       </div>
     </div>
-    <div class="stage-slot" data-stage="E" aria-hidden="true"></div>
   </div>
 </section>
-
+  </div>
+  <div class="hub-panel" role="tabpanel" id="tp-faq" aria-labelledby="tab-faq">
 <section id="faq" class="tint-plum tint-line">
   <div class="wrap">
     <div class="section-head">
@@ -2522,7 +2534,6 @@ d.classList.add(mob?'j-m':(/[?&]mode=svg/.test(q)||!gl||sd)?'j-svg':rm?'j-rm':'j
     </div>
   </div>
 </section>
-
 <section id="fit" class="tint-line">
   <div class="wrap">
     <div class="section-head">
@@ -2552,7 +2563,8 @@ d.classList.add(mob?'j-m':(/[?&]mode=svg/.test(q)||!gl||sd)?'j-svg':rm?'j-rm':'j
     </div>
   </div>
 </section>
-
+  </div>
+  <div class="hub-panel" role="tabpanel" id="tp-reviews" aria-labelledby="tab-reviews">
 <section id="reviews">
   <div class="wrap">
     <div class="section-head">
@@ -2568,9 +2580,10 @@ d.classList.add(mob?'j-m':(/[?&]mode=svg/.test(q)||!gl||sd)?'j-svg':rm?'j-rm':'j
     </div>
   </div>
 </section>
-
+  </div>
+  </div>
 <section id="cta">
-  <div class="wrap slot-wrap">
+  <div class="wrap">
     <div class="cta bloom">
       <h2>Готові перестати <em>губити</em> заявки?</h2>
       <p>Опишіть завдання у формі — відповімо протягом доби з ціною, строком і демо під вашу нішу.</p>
@@ -2581,7 +2594,6 @@ d.classList.add(mob?'j-m':(/[?&]mode=svg/.test(q)||!gl||sd)?'j-svg':rm?'j-rm':'j
       </div>
       <ul class="cta-vows"><li>Демо до оплати</li><li>Ціна фіксується до старту</li><li>Усе лишається вашим</li></ul>
     </div>
-    <div class="stage-slot" data-stage="F" aria-hidden="true"></div>
   </div>
 </section>
 </div>
@@ -2853,7 +2865,7 @@ window.IMX_MONEY = function(usd){
       /* відгуків ще немає: розділ і посилання на нього приховані, зʼявляться з першим відгуком */
       var sec = document.getElementById('reviews');
       if(sec) sec.hidden = true;
-      [].forEach.call(document.querySelectorAll('a[href="#reviews"]'), function(a){ a.hidden = true; });
+      [].forEach.call(document.querySelectorAll('a[href="#reviews"],[data-tab="reviews"]'), function(a){ a.hidden = true; });
       return;
     }
 
@@ -4263,6 +4275,7 @@ window.IMX_MONEY = function(usd){
   }
 
   function scrollToId(id){
+    if(window.IMX_GO) return window.IMX_GO(id);
     var o = document.getElementById(id);
     if(o) o.scrollIntoView({behavior: CALM ? 'auto' : 'smooth', block:'start'});
   }
@@ -5090,72 +5103,14 @@ window.IMX_MONEY = function(usd){
 })();
 </script>
 
-<script>
-/* КЕЙСИ-СЦЕНИ: номер проєкту й кнопка «Далі» (тільки десктоп, де сцени складаються стосом) */
-(function(){
-  var grid = document.querySelector('.cases');
-  if(!grid || !window.matchMedia('(min-width:1001px)').matches) return;
-  var cards = [].slice.call(grid.querySelectorAll('.case'));
-  var pad = function(n){ return (n < 10 ? '0' : '') + n; };
-  cards.forEach(function(c){
-    var meta = c.querySelector('.case-meta'), body = c.querySelector('.case-body');
-    var no = document.createElement('span'); no.className = 'case-no'; if(meta) meta.insertBefore(no, meta.firstChild);
-    var nx = document.createElement('button'); nx.type = 'button'; nx.className = 'case-next';
-    nx.innerHTML = '<span class="cn-t"></span> <b></b> ↓'; if(body) body.appendChild(nx);
-    nx.addEventListener('click', function(e){
-      e.stopPropagation();
-      var vis = cards.filter(function(x){ return !x.classList.contains('is-off'); });
-      var i = vis.indexOf(c), next = vis[i + 1];
-      if(!next){ var f = document.getElementById('routine'); if(f) f.scrollIntoView({behavior:'smooth'}); return; }
-      var gap = 28, y = grid.getBoundingClientRect().top + scrollY;
-      for(var k = 0; k < i + 1; k++) y += vis[k].offsetHeight + gap;
-      scrollTo({top: y - 92 - (i + 1) * 14, behavior:'smooth'});
-    });
-  });
-  function number(){
-    var vis = cards.filter(function(x){ return !x.classList.contains('is-off'); });
-    cards.forEach(function(c){
-      var i = vis.indexOf(c), no = c.querySelector('.case-no'), nx = c.querySelector('.case-next');
-      if(i < 0) return;
-      c.style.setProperty('--k', i);
-      no.textContent = pad(i + 1) + ' / ' + pad(vis.length);
-      var next = vis[i + 1];
-      nx.querySelector('.cn-t').textContent = next ? 'Далі:' : 'Далі: калькулятор';
-      var b = nx.querySelector('b'); b.textContent = next ? next.querySelector('h3').textContent : '';
-    });
-  }
-  number();
-  var fl = document.querySelector('.case-filter');
-  if(fl) fl.addEventListener('click', function(){ setTimeout(number, 0); });
-})();
-</script>
+
 
 <script>
-/* КЕЙСИ-СЦЕНИ: екран трохи нахиляється за курсором (тільки мишка, без reduced motion) */
-(function(){
-  if(!window.matchMedia('(hover:hover) and (min-width:1001px)').matches) return;
-  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  [].forEach.call(document.querySelectorAll('.case-shot'), function(shot){
-    var img = shot.querySelector('img'); if(!img) return;
-    shot.addEventListener('pointermove', function(e){
-      var r = shot.getBoundingClientRect();
-      var x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5;
-      img.style.setProperty('--ry', (x * 4).toFixed(2) + 'deg');
-      img.style.setProperty('--rx', (-y * 3).toFixed(2) + 'deg');
-    });
-    shot.addEventListener('pointerleave', function(){
-      img.style.setProperty('--ry', '0deg'); img.style.setProperty('--rx', '0deg');
-    });
-  });
-})();
-</script>
-
-<script>
-/* ПРОЦЕС: п'ять кроків під прокрутку. Лінії біля кроків заповнюються, праворуч змінюється вікно проєкту, кнопки міняють приклад. */
+/* ПРОЦЕС: п'ять кроків — перемикач (клік, стрілки). Текст кроку, вікно проєкту праворуч і приклад змінюються разом. Без JS усі кроки лежать підряд. */
 (function(){
   var sc = document.querySelector('.proc-scroll');
   if(!sc) return;
-  var st = sc.querySelector('.proc-sticky');
+  var ol = sc.querySelector('.proc-list');
   var lis = [].slice.call(sc.querySelectorAll('.proc-list li'));
   var texts = [].slice.call(sc.querySelectorAll('.proc-text'));
   var views = [].slice.call(sc.querySelectorAll('.pp-view'));
@@ -5163,37 +5118,33 @@ window.IMX_MONEY = function(usd){
   var notes = [].slice.call(sc.querySelectorAll('.pp-note span'));
   var panel = sc.querySelector('.proc-panel');
   var btns = [].slice.call(sc.querySelectorAll('.pp-switch button'));
-  var hint = sc.querySelector('.proc-hint'), hn = document.getElementById('ph-n');
-  var N = texts.length, ticking = false;
   btns.forEach(function(b){
     b.addEventListener('click', function(){
       panel.setAttribute('data-pv', b.getAttribute('data-pv'));
       btns.forEach(function(x){ x.classList.toggle('on', x === b); });
     });
   });
-  function paint(i, p){
+  function paint(i){
     [texts, views, badges, notes].forEach(function(arr){ arr.forEach(function(t, k){ t.classList.toggle('on', k === i); }); });
     lis.forEach(function(li, k){
       li.classList.toggle('on', k === i);
-      li.style.setProperty('--f', Math.max(0, Math.min(1, p * N - k)).toFixed(3));
+      li.setAttribute('aria-selected', k === i ? 'true' : 'false');
+      li.tabIndex = k === i ? 0 : -1;
+      li.style.setProperty('--f', k <= i ? 1 : 0);
     });
-    if(hint){ hint.classList.toggle('last', i === N - 1); hn.textContent = (i + 1) + ' / ' + N; }
   }
-  function update(){
-    ticking = false;
-    var pinned = getComputedStyle(st).position === 'sticky';
-    sc.classList.toggle('live', pinned);
-    if(!pinned){ lis.forEach(function(li){ li.style.setProperty('--f', 1); }); return; }
-    var r = sc.getBoundingClientRect();
-    var run = r.height - st.offsetHeight;
-    var p = run > 0 ? (96 - r.top) / run : 0;
-    p = Math.max(0, Math.min(0.999, p));
-    paint(Math.floor(p * N), p);
-  }
-  function req(){ if(!ticking){ ticking = true; requestAnimationFrame(update); } }
-  addEventListener('scroll', req, {passive:true});
-  addEventListener('resize', req);
-  update();
+  ol.removeAttribute('aria-hidden'); ol.setAttribute('role', 'tablist'); ol.setAttribute('aria-labelledby', 'proc-h');
+  lis.forEach(function(li, k){
+    li.setAttribute('role', 'tab');
+    li.addEventListener('click', function(){ paint(k); });
+    li.addEventListener('keydown', function(e){
+      var n = e.key === 'ArrowRight' ? (k + 1) % lis.length : e.key === 'ArrowLeft' ? (k - 1 + lis.length) % lis.length : e.key === 'Home' ? 0 : e.key === 'End' ? lis.length - 1 : -1;
+      if(n < 0) return;
+      e.preventDefault(); paint(n); lis[n].focus();
+    });
+  });
+  sc.classList.add('live');
+  paint(0);
 })();
 </script>
 
@@ -5895,32 +5846,94 @@ window.IMX3D = {
 
 <script>
 /* ===========================================================================
-   НАВІГАТОР
-   Десктоп — рейка з точками праворуч, телефон — док унизу: де ви зараз,
-   скільки сторінки пройдено, список розділів і кнопка заявки під пальцем.
+   ХАБ: вкладки (role=tablist), переходи за якорями, рейка і док
+   Без JS усі панелі лежать підряд. З JS неактивні панелі hidden="until-found":
+   текст лишається в DOM, знаходиться Ctrl+F і відкриває свою вкладку (beforematch).
+   Якорі (#order, #cases, #faq …) пропускають подорож: миттєво до хабу, вкладка, далі м'яко до секції.
    =========================================================================== */
 (function(){
-  var SECTIONS = [
-    ['services','Послуги й ціни'], ['cases','Кейси'], ['routine','Калькулятор'], ['order','Конструктор'],
-    ['process','Процес'], ['terms','Умови'], 
-    ['faq','Питання'], ['fit','Кому підходить'], ['reviews','Відгуки'], ['cta','Заявка']
-  ].filter(function(s){ var el = document.getElementById(s[0]); return el && !el.hidden; })
-  /* порядок точок — як розділи стоять на сторінці, навіть якщо їх переставлять */
-  .sort(function(a, b){ return document.getElementById(a[0]).compareDocumentPosition(document.getElementById(b[0])) & 4 ? -1 : 1; });
+  var root = document.documentElement, hub = document.getElementById('hub');
+  if(!hub) return;
+  var JOURNEY = root.classList.contains('j-on');
+  var bar = document.getElementById('hub-bar'), panelsEl = document.getElementById('hub-panels');
+  var tabs = [].slice.call(hub.querySelectorAll('.hub-tabs [role="tab"]')), panels = {}, names = [];
+  tabs.forEach(function(t){ var n = t.getAttribute('data-tab'); names.push(n); panels[n] = document.getElementById(t.getAttribute('aria-controls')); });
+  var MAP = {services:'services', order:'order', routine:'order', cases:'cases', process:'process', terms:'process', faq:'faq', fit:'faq', reviews:'reviews'};
+  var cur = null;
+
+  function hubTop(){ return hub.getBoundingClientRect().top + window.scrollY; }
+  function show(n){
+    if(!panels[n] || (cur === n && !panels[n].hidden)) return;
+    cur = n;
+    tabs.forEach(function(t){ var on = t.getAttribute('data-tab') === n; t.setAttribute('aria-selected', on ? 'true' : 'false'); t.tabIndex = on ? 0 : -1; });
+    names.forEach(function(k){ var p = panels[k]; if(k === n) p.removeAttribute('hidden'); else p.setAttribute('hidden', 'until-found'); });
+    /* блоки з появою (.bloom) у прихованій вкладці не перетинали екран: показуємо одразу */
+    [].forEach.call(panels[n].querySelectorAll('.bloom'), function(e){ e.classList.add('reveal'); });
+    /* 3D конструктора і сцена рахують розмір при першому показі */
+    window.dispatchEvent(new Event('resize'));
+    root.dispatchEvent(new CustomEvent('imx-tab', {detail:n}));
+  }
+  names.forEach(function(n){ if(panels[n]) panels[n].addEventListener('beforematch', function(){ show(n); }); });
+  var first = names.filter(function(n){ var t = tabs[names.indexOf(n)]; return !t.hidden; })[0] || names[0];
+  show(first);
+
+  function userTab(n){
+    show(n);
+    try{ history.replaceState(null, '', '#' + n); }catch(_){}
+    var barH = bar ? bar.offsetHeight : 72, top = document.querySelector('header').offsetHeight + barH;
+    var y = panelsEl.getBoundingClientRect().top + window.scrollY - top;
+    if(window.scrollY > y) window.scrollTo({top:y, behavior:'instant'});
+  }
+  tabs.forEach(function(t, i){
+    t.addEventListener('click', function(){ userTab(t.getAttribute('data-tab')); });
+    t.addEventListener('keydown', function(e){
+      var vis = tabs.filter(function(x){ return !x.hidden; }), k = vis.indexOf(t), nx = null;
+      if(e.key === 'ArrowRight') nx = vis[(k + 1) % vis.length];
+      else if(e.key === 'ArrowLeft') nx = vis[(k - 1 + vis.length) % vis.length];
+      else if(e.key === 'Home') nx = vis[0];
+      else if(e.key === 'End') nx = vis[vis.length - 1];
+      if(nx){ e.preventDefault(); nx.focus(); userTab(nx.getAttribute('data-tab')); }
+    });
+  });
+
+  /* переход к якорю */
+  function go(id, o){
+    o = o || {};
+    if(id === 'top'){ window.scrollTo({top:0, behavior:'instant'}); return; }
+    var n = MAP[id] || (/^case-/.test(id) ? 'cases' : null);
+    if(n) show(n);
+    var el = id === 'hero-chat' || id === 'hub-h0' ? document.getElementById('hub-h0') : (/^case-/.test(id) ? document.getElementById('cases') : document.getElementById(id));
+    if(!el) return;
+    if(JOURNEY && id !== 'hero-chat' && id !== 'hub-h0'){ var ht = hubTop(); if(window.scrollY < ht - 2) window.scrollTo({top:ht, behavior:'instant'}); }
+    el.scrollIntoView({behavior: o.instant ? 'instant' : 'smooth', block:'start'});
+  }
+  window.IMX_GO = go;
+  var KNOWN = /^(top|cta|hero-chat|hub-h0|services|order|routine|cases|process|terms|faq|fit|reviews|case-[a-z]+)$/;
+  document.addEventListener('click', function(e){
+    var a = e.target.closest && e.target.closest('a[href^="#"]'); if(!a || e.defaultPrevented) return;
+    var id = a.getAttribute('href').slice(1); if(!KNOWN.test(id)) return;
+    e.preventDefault();
+    if(/^case-/.test(id)){ go(id); try{ location.hash = id; }catch(_){} return; }
+    go(id);
+    if(MAP[id] && history.replaceState) try{ history.replaceState(null, '', '#' + MAP[id]); }catch(_){}
+  });
+  function ready(cb){ if(!root.classList.contains('intro-lock')) return cb(); setTimeout(function(){ ready(cb); }, 200); }
+  var h0 = location.hash.slice(1);
+  if(h0 && KNOWN.test(h0) && h0 !== 'top') ready(function(){ requestAnimationFrame(function(){ go(h0, {instant:true}); }); });
+
+  /* ---- рейка (десктоп) і док (телефон): «Початок» + вкладки хабу ---- */
   var rail = document.getElementById('rail'), dock = document.getElementById('dock');
   var sheet = document.getElementById('dock-sheet'), veil = document.getElementById('dock-veil');
   var where = document.getElementById('dock-where'), nameEl = document.getElementById('dock-name');
   var ring = document.getElementById('dock-ring'), numEl = document.getElementById('dock-num');
-  if(!rail || !dock || !SECTIONS.length) return;
-
+  if(!rail || !dock) return;
+  var SECTIONS = [['top', 'Початок']].concat(tabs.filter(function(t){ return !t.hidden; }).map(function(t){ return [t.getAttribute('data-tab'), t.textContent.trim()]; }));
   function pad(n){ return (n < 10 ? '0' : '') + n; }
   SECTIONS.forEach(function(s, i){
     rail.insertAdjacentHTML('beforeend', '<a href="#' + s[0] + '"><span>' + s[1] + '</span><i></i></a>');
     sheet.insertAdjacentHTML('beforeend', '<a href="#' + s[0] + '"><b>' + pad(i + 1) + '</b>' + s[1] + '<em>ви тут</em></a>');
   });
-  var els = SECTIONS.map(function(s){ return document.getElementById(s[0]); });
   var footer = document.querySelector('footer');
-
   function setSheet(open){
     sheet.classList.toggle('open', open); veil.classList.toggle('open', open);
     where.setAttribute('aria-expanded', open ? 'true' : 'false');
@@ -5929,29 +5942,29 @@ window.IMX3D = {
   veil.addEventListener('click', function(){ setSheet(false); });
   sheet.addEventListener('click', function(e){ if(e.target.closest('a')) setSheet(false); });
   document.addEventListener('keydown', function(e){ if(e.key === 'Escape') setSheet(false); });
-
-  var cur = -2, ticking = false;
+  var last = -2, ticking = false;
   function update(){
     ticking = false;
-    var y = window.scrollY, vh = window.innerHeight, line = vh * 0.42, idx = -1;
-    for(var i = 0; i < els.length; i++){ if(els[i].getBoundingClientRect().top <= line) idx = i; }
+    var y = window.scrollY, vh = window.innerHeight;
+    var inHub = hub.getBoundingClientRect().top <= vh * 0.5;
+    root.classList.toggle('in-hub', inHub);
+    var idx = inHub ? Math.max(0, SECTIONS.map(function(s){ return s[0]; }).indexOf(cur)) : 0;
     var max = document.documentElement.scrollHeight - vh;
     ring.style.setProperty('--p', max > 0 ? Math.min(100, y / max * 100).toFixed(1) : 0);
     var nearEnd = footer && footer.getBoundingClientRect().top < vh - 40;
-    dock.classList.toggle('show', idx >= 0 && !nearEnd);
+    dock.classList.toggle('show', inHub && !nearEnd);
     if(nearEnd) setSheet(false);
-    if(idx === cur) return;
-    cur = idx;
-    nameEl.textContent = idx < 0 ? 'Початок' : SECTIONS[idx][1];
-    numEl.textContent = pad(Math.max(1, idx + 1));
+    if(idx === last) return;
+    last = idx;
+    nameEl.textContent = SECTIONS[idx][1];
+    numEl.textContent = pad(idx + 1);
     [rail, sheet].forEach(function(box){
-      [].forEach.call(box.children, function(a, i){
-        a.classList.toggle('on', i === idx); a.classList.toggle('seen', i < idx);
-      });
+      [].forEach.call(box.children, function(a, i){ a.classList.toggle('on', i === idx); a.classList.toggle('seen', i < idx); });
     });
   }
   window.addEventListener('scroll', function(){ if(!ticking){ ticking = true; requestAnimationFrame(update); } }, {passive:true});
   window.addEventListener('resize', update);
+  root.addEventListener('imx-tab', function(){ last = -2; update(); });
   update();
 })();
 </script>
@@ -5960,6 +5973,19 @@ window.IMX3D = {
 <script>
 /* Стрічки на телефоні: крапки під кожною показують, скільки карток і де ви зараз */
 (function(){
+  /* згортки в хабі: «що входить» у картці послуги, «Щомісячна підтримка» */
+  [].forEach.call(document.querySelectorAll('.svc > ul'), function(ul){
+    var d = document.createElement('details'); d.className = 'svc-more';
+    d.innerHTML = '<summary>Детальніше</summary>';
+    ul.parentNode.insertBefore(d, ul); d.appendChild(ul);
+  });
+  [].forEach.call(document.querySelectorAll('.support'), function(s){
+    var h = s.querySelector('h3'); if(!h) return;
+    var d = document.createElement('details'); d.className = 'support-more';
+    var sm = document.createElement('summary'); sm.appendChild(h); d.appendChild(sm);
+    while(s.firstChild) d.appendChild(s.firstChild);
+    s.appendChild(d);
+  });
   var SEL = '.svc-grid,.packs,.cases,.terms-grid,.support-grid';
   [].forEach.call(document.querySelectorAll(SEL), function(row){
     var n = row.children.length;
