@@ -1592,13 +1592,18 @@ d.classList.add(mob?'j-m':(/[?&]mode=svg/.test(q)||!gl||sd)?'j-svg':rm?'j-rm':'j
   html:not(.j-on) .j-t,html:not(.j-on) .j-card,html:not(.j-on) .j-hint{display:none;}
   .j-t > *{display:inline-block;margin:0;font-family:'Manrope',sans-serif;font-weight:800;letter-spacing:-.035em;line-height:1.04;color:var(--text);}
   .j-t1{max-width:min(600px,42vw);}
-  .j-t1 > p{font-size:clamp(40px,4.5vw,68px);}
+  .j-t1 > div > p:first-child{font-size:clamp(40px,4.5vw,68px);}
   .j-t2{bottom:46%;max-width:min(760px,56vw);}
-  .j-t2 > p{font-size:clamp(26px,3vw,46px);line-height:1.12;}
-  .j-t3{max-width:min(520px,40vw);}
-  .j-t3 > ul{list-style:none;font-family:'JetBrains Mono',ui-monospace,monospace;font-weight:400;letter-spacing:0;font-size:clamp(15px,1.3vw,19px);line-height:1.5;}
-  .j-t3 li{display:flex;align-items:center;gap:14px;padding:12px 0;opacity:0;}
-  .j-t3 li::before{content:'';width:8px;height:8px;border-radius:50%;background:var(--amber);flex:none;}
+  .j-t2 > div > p:first-child{font-size:clamp(26px,3vw,46px);line-height:1.12;}
+  .j-t > div{display:block;}
+  .j-t > div > p{margin:0;}
+  .j-t .j-sub{margin-top:.9em;font-family:'Manrope',sans-serif;font-weight:500;letter-spacing:0;font-size:clamp(16px,1.5vw,22px);line-height:1.4;color:var(--text-dim);max-width:26ch;}
+  .j-t3{max-width:min(560px,42vw);}
+  .j-t3 > div > p:first-child{font-size:clamp(40px,4.5vw,68px);}
+  .j-t3 .j-sub{opacity:0;}
+  html.j-on .hero p.lead .d,html.j-on .hero p.lead .m,html.j-rm .hero p.lead .d,html.j-rm .hero p.lead .m,html.j-on .micro,html.j-rm .micro{display:none;}
+  .hero p.lead .j{display:none;}
+  html.j-on .hero p.lead .j,html.j-rm .hero p.lead .j{display:inline;}
   /* визитка: знак, имя, суть */
   .j-card{flex-direction:column;align-items:flex-start;justify-content:center;max-width:min(760px,56vw);}
   .j-brand{display:flex;align-items:center;gap:.12em;font-size:clamp(64px,8.6vw,132px);}
@@ -1768,7 +1773,7 @@ d.classList.add(mob?'j-m':(/[?&]mode=svg/.test(q)||!gl||sd)?'j-svg':rm?'j-rm':'j
       <div class="wrap hero-grid">
     <div class="hero-text bloom" data-hero>
       <h1>Поки ви спите,<br>бізнес<br><em>відповідає сам</em></h1>
-      <p class="lead"><span class="d">Бот у Direct і Telegram, сайт та автоматизація. Клієнт отримує відповідь за секунду, а заявка одразу приходить вам у Telegram.</span><span class="m">Бот, сайт та автоматизація. Заявка клієнта одразу приходить вам у Telegram.</span></p>
+      <p class="lead"><span class="d">Бот у Direct і Telegram, сайт та автоматизація. Клієнт отримує відповідь за секунду, а заявка одразу приходить вам у Telegram.</span><span class="m">Бот, сайт та автоматизація. Заявка клієнта одразу приходить вам у Telegram.</span><span class="j">Студія Intromax для салонів, клінік і СТО</span></p>
       <div class="hero-actions">
         <a href="#order" class="btn btn-primary">Порахувати ціну<span class="arr"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg></span></a>
         <a href="#cases" class="btn btn-ghost">Подивитись кейси</a>
@@ -1778,12 +1783,12 @@ d.classList.add(mob?'j-m':(/[?&]mode=svg/.test(q)||!gl||sd)?'j-svg':rm?'j-rm':'j
       </div>
     </section>
     <svg id="svg-fallback" viewBox="-320 -320 640 640" aria-hidden="true"></svg>
-    <div class="j-t j-t1" id="j-t1" aria-hidden="true"><p>Боти, сайти та автоматизація</p></div>
-    <div class="j-t j-t2" id="j-t2" aria-hidden="true"><p>Клієнт отримує відповідь за секунду, а заявка одразу приходить вам у Telegram</p></div>
-    <div class="j-t j-t3" id="j-t3" aria-hidden="true"><ul><li>Демо до оплати</li><li>Ціна фіксується до старту</li><li>Оплата етапами</li></ul></div>
+    <div class="j-t j-t1" id="j-t1" aria-hidden="true"><div><p>Боти, сайти та автоматизація</p><p class="j-sub">Від першого повідомлення клієнта до вашої заявки</p></div></div>
+    <div class="j-t j-t2" id="j-t2" aria-hidden="true"><div><p>Відповідь клієнту, заявка вам</p><p class="j-sub">Заявка одразу приходить вам у Telegram</p></div></div>
+    <div class="j-t j-t3" id="j-t3" aria-hidden="true"><div><p>Демо до оплати</p><p class="j-sub">Покажемо на прикладі вашої ніші</p></div></div>
     <div class="j-card" id="j-card">
       <div class="j-brand"><span class="j-dot" aria-hidden="true"></span><p class="j-name">Intromax</p></div>
-      <p class="j-line">Боти, сайти та автоматизація для малого бізнесу</p>
+      <p class="j-line">Боти, сайти та автоматизація для малого бізнесу в Україні</p>
       <a href="#hero-chat" class="btn btn-primary">Спробуйте бота просто тут</a>
     </div>
     <div class="j-hint" id="j-hint" aria-hidden="true">Крутіть далі</div>
@@ -6457,7 +6462,7 @@ const measureLay = () => { LAY.vw = document.documentElement.clientWidth; LAY.H 
 measureLay();
 const JT = JM === 'j-on' ? {
   hero: $('top'), t1: $('j-t1'), t2: $('j-t2'), t3: $('j-t3'), card: $('j-card'), hint: $('j-hint'), scrim: $('j-scrim'),
-  g: [0, 1, 2, 3, 4].map(k => document.querySelector('.j-bg .g' + k)), li: Array.from(document.querySelectorAll('#j-t3 li')),
+  g: [0, 1, 2, 3, 4].map(k => document.querySelector('.j-bg .g' + k)), li: Array.from(document.querySelectorAll('#j-t3 p')),
   op: [1, 0, 0, 0, 0], mr: [null, null, null, null], cache: new Map()
 } : null;
 /* текст и свечения стадий: чистая функция от сглаженного js (объект и заголовок не расходятся при рывке) */
