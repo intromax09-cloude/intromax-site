@@ -1341,22 +1341,10 @@ d.classList.add(mob?'j-m':(/[?&]mode=svg/.test(q)||!gl||sd)?'j-svg':rm?'j-rm':'j
   }
 
   /* ---------- слоти: порожні, під форму хмари; без фону ---------- */
-  .stage-slot{pointer-events:none;position:relative;}
-  .section-head.has-slot{max-width:none;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:24px;align-items:start;min-height:360px;}
-  .section-head.has-slot > *:not(.stage-slot){grid-column:1 / 8;}
-  .section-head.has-slot > .stage-slot{grid-column:8 / 13;grid-row:1 / span 6;align-self:stretch;min-height:360px;}
-  .section-head.has-slot h2{max-width:14ch;}
-  .section-head.has-slot .lead{font-size:18px;max-width:44ch;}
   @media (max-width:1099px){
-    .section-head.has-slot{display:flex;flex-direction:column;align-items:stretch;min-height:0;}
-    .section-head.has-slot > .stage-slot{order:-1;height:260px;min-height:0;margin-bottom:24px;}
-    .section-head.has-slot h2{max-width:22ch;}
   }
   @media (max-width:700px){
-    section:has(> .wrap > .section-head.has-slot),section.has-slot-sec{padding-top:8px;}
-    .section-head.has-slot > .stage-slot{height:140px;margin-bottom:24px;}
     .section-head h2{font-size:32px;line-height:1.1;}
-    .section-head .lead,.section-head.has-slot .lead{font-size:16px;line-height:1.55;}
   }
   .section-head h2{letter-spacing:-.03em;}
   .section-head .lead{line-height:1.6;}
@@ -1364,20 +1352,14 @@ d.classList.add(mob?'j-m':(/[?&]mode=svg/.test(q)||!gl||sd)?'j-svg':rm?'j-rm':'j
   #order .section-head .lead,#routine .section-head .lead,#terms .section-head .lead,#faq .section-head .lead{max-width:44ch;}
 
   /* слот у умовах і заявці займає праві 5 колонок усього блоку */
-  #terms .wrap.slot-wrap,#cta .wrap.slot-wrap{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:24px;align-items:start;}
-  #terms .wrap.slot-wrap > .section-head,#terms .wrap.slot-wrap > .terms-grid{grid-column:1 / 8;}
-  #terms .wrap.slot-wrap > .stage-slot,#cta .wrap.slot-wrap > .stage-slot{grid-column:8 / 13;grid-row:1 / span 3;align-self:stretch;min-height:420px;}
   #terms .terms-grid{grid-template-columns:1fr 1fr;}
   #terms .term{padding:24px;border-radius:16px;}
   #terms .term h3{font-size:18px;font-weight:700;}
   @media (max-width:1099px){
-    #terms .wrap.slot-wrap,#cta .wrap.slot-wrap{display:flex;flex-direction:column;align-items:stretch;}
-    #terms .wrap.slot-wrap > .stage-slot,#cta .wrap.slot-wrap > .stage-slot{order:-1;height:260px;min-height:0;margin-bottom:24px;}
     #terms .terms-grid{grid-template-columns:repeat(3,1fr);}
   }
   @media (max-width:980px){ #terms .terms-grid{grid-template-columns:1fr 1fr;} }
   @media (max-width:700px){
-    #terms .wrap.slot-wrap > .stage-slot,#cta .wrap.slot-wrap > .stage-slot{height:140px;margin-bottom:24px;}
     #terms{padding-top:8px;} #cta{padding-top:8px;}
   }
 
@@ -1451,7 +1433,6 @@ d.classList.add(mob?'j-m':(/[?&]mode=svg/.test(q)||!gl||sd)?'j-svg':rm?'j-rm':'j
   .notfit .yes li::before{color:var(--amber);}
 
   /* ---------- заявка: без картки, ліворуч текст, праворуч слот ---------- */
-  #cta .wrap.slot-wrap > .cta{grid-column:1 / 8;}
   .cta{background:none;border:0;box-shadow:none;border-radius:0;padding:24px 0 0;text-align:left;overflow:visible;}
   .cta h2{font-size:clamp(36px,4.6vw,64px);line-height:1.02;margin:0 0 20px;max-width:14ch;}
   .cta p{margin:0 0 32px;max-width:44ch;font-size:18px;line-height:1.6;}
@@ -1522,8 +1503,6 @@ d.classList.add(mob?'j-m':(/[?&]mode=svg/.test(q)||!gl||sd)?'j-svg':rm?'j-rm':'j
     .hero .btn-ghost{width:auto;height:56px;border:1px solid var(--line-strong);}
   }
   @media (max-width:700px){
-    section:has(> .wrap > .section-head.has-slot),section.has-slot-sec,#terms,#cta{padding-top:0;}
-    .section-head.has-slot > .stage-slot,#terms .wrap.slot-wrap > .stage-slot,#cta .wrap.slot-wrap > .stage-slot{margin-bottom:24px;}
     .notfit li{font-size:14px;line-height:1.5;}
     .vow{font-size:26px;margin:-20px 0 28px;}
     .faq .ans p{font-size:15px;line-height:1.6;}
@@ -1532,7 +1511,6 @@ d.classList.add(mob?'j-m':(/[?&]mode=svg/.test(q)||!gl||sd)?'j-svg':rm?'j-rm':'j
     .foot-row a{display:inline-block;padding:12px 0;}
     .foot-word{margin-bottom:0;}
     .foot-tg{margin:0 0 4px;}
-    .section-head .lead,.section-head.has-slot .lead{font-size:16px;line-height:1.55;}
   }
 
   /* круг 2: нигде мельче 12 px */
@@ -1551,7 +1529,6 @@ d.classList.add(mob?'j-m':(/[?&]mode=svg/.test(q)||!gl||sd)?'j-svg':rm?'j-rm':'j
     .dock-where{min-height:44px;}
     .foot-col a{padding:12px 0;min-height:44px;display:flex;align-items:center;}
     .chat-input .field,.chat-input input.field{min-height:44px;}
-    .section-head .lead,.section-head.has-slot .lead{font-size:16.5px;line-height:1.6;}
   }
   #hero-chat .kb{gap:3px;margin-top:-8px;}
   #hero-chat .kb button{padding:3px 6px;min-height:27px;}
@@ -1814,7 +1791,7 @@ d.classList.add(mob?'j-m':(/[?&]mode=svg/.test(q)||!gl||sd)?'j-svg':rm?'j-rm':'j
 </div>
 <div class="mq" aria-hidden="true"><div class="mq-track" id="mq-track"><span class="">Бот у Instagram Direct</span><i></i><span class="o">Telegram-бот</span><i></i><span class="">AI-агент</span><i></i><span class="o">Сайт-візитка</span><i></i><span class="">Розширений сайт або магазин</span><i></i><span class="o">Автоматизація процесів</span><i></i><span class="">Telegram Mini App</span><i></i><span class="o">Аудит Instagram і сайту</span><i></i><div class="dup"><span class="">Бот у Instagram Direct</span><i></i><span class="o">Telegram-бот</span><i></i><span class="">AI-агент</span><i></i><span class="o">Сайт-візитка</span><i></i><span class="">Розширений сайт або магазин</span><i></i><span class="o">Автоматизація процесів</span><i></i><span class="">Telegram Mini App</span><i></i><span class="o">Аудит Instagram і сайту</span><i></i></div></div></div>
 <div id="hub">
-  <section class="hub-h0" id="hub-h0">
+  <section class="hub-h0" id="hub-h0" tabindex="-1">
     <div class="wrap h0-grid">
       <div class="h0-left">
       <button type="button" class="try-bot bloom" data-hero aria-controls="hero-chat">
@@ -5070,7 +5047,7 @@ window.IMX_MONEY = function(usd){
   }
   /* зміна ніші в першому екрані: якщо гість ще нічого не писав, діалог починається наново */
   window.IMX_CHAT = { focus:function(){
-    phone.scrollIntoView({behavior: CALM ? 'auto' : 'smooth', block:'center'});
+    if(window.IMX_GO) window.IMX_GO('hero-chat', {instant: CALM}); else phone.scrollIntoView({behavior: CALM ? 'auto' : 'smooth', block:'center'});
     setTimeout(function(){ start(); try{ input.focus({preventScroll:true}); }catch(e){} }, CALM ? 0 : 450);
   }, restart:function(){
     if(!started || st.step || st.sending) return;
@@ -5081,7 +5058,7 @@ window.IMX_MONEY = function(usd){
       /* прийшли за посиланням на бота: підводимо чат до екрана, щойно заставка відпустила сторінку */
       var jump = function(){
         if(document.documentElement.classList.contains('intro-lock')) return setTimeout(jump, 200);
-        phone.scrollIntoView({behavior: CALM ? 'auto' : 'smooth', block:'center'});
+        if(window.IMX_GO) window.IMX_GO('hero-chat', {instant: CALM}); else phone.scrollIntoView({behavior: CALM ? 'auto' : 'smooth', block:'center'});
         setTimeout(start, CALM ? 0 : 500);
       };
       return jump();
@@ -5865,7 +5842,12 @@ window.IMX3D = {
   function show(n){
     if(!panels[n] || (cur === n && !panels[n].hidden)) return;
     cur = n;
-    tabs.forEach(function(t){ var on = t.getAttribute('data-tab') === n; t.setAttribute('aria-selected', on ? 'true' : 'false'); t.tabIndex = on ? 0 : -1; });
+    tabs.forEach(function(t){
+      var on = t.getAttribute('data-tab') === n; t.setAttribute('aria-selected', on ? 'true' : 'false'); t.tabIndex = on ? 0 : -1;
+      /* на телефоні лента вкладок прокручується: активна — по центру */
+      var st = t.parentNode;
+      if(on && st.scrollWidth > st.clientWidth + 2) st.scrollTo({left: t.offsetLeft - (st.clientWidth - t.offsetWidth) / 2, behavior: 'smooth'});
+    });
     names.forEach(function(k){ var p = panels[k]; if(k === n) p.removeAttribute('hidden'); else p.setAttribute('hidden', 'until-found'); });
     /* блоки з появою (.bloom) у прихованій вкладці не перетинали екран: показуємо одразу */
     [].forEach.call(panels[n].querySelectorAll('.bloom'), function(e){ e.classList.add('reveal'); });
@@ -5913,10 +5895,12 @@ window.IMX3D = {
     var a = e.target.closest && e.target.closest('a[href^="#"]'); if(!a || e.defaultPrevented) return;
     var id = a.getAttribute('href').slice(1); if(!KNOWN.test(id)) return;
     e.preventDefault();
-    if(/^case-/.test(id)){ go(id); try{ location.hash = id; }catch(_){} return; }
+    if(/^case-/.test(id)){ if(location.hash === '#' + id) go(id); else location.hash = id; return; } /* окно кейса открывает его же слушатель hashchange */
+    if(a.classList.contains('skip-anim')){ go(id, {instant:true}); var h0 = document.getElementById('hub-h0'); if(h0) h0.focus({preventScroll:true}); return; }
     go(id);
     if(MAP[id] && history.replaceState) try{ history.replaceState(null, '', '#' + MAP[id]); }catch(_){}
   });
+  window.addEventListener('hashchange', function(){ var id = location.hash.slice(1); if(id && id !== 'top' && KNOWN.test(id)) go(id, {instant:true}); });
   function ready(cb){ if(!root.classList.contains('intro-lock')) return cb(); setTimeout(function(){ ready(cb); }, 200); }
   var h0 = location.hash.slice(1);
   if(h0 && KNOWN.test(h0) && h0 !== 'top') ready(function(){ requestAnimationFrame(function(){ go(h0, {instant:true}); }); });
@@ -6716,9 +6700,6 @@ async function boot() {
     dirty = true;
   }
   dbg.setLevel = setLevel;
-  addEventListener('lead-done', () => {});
-  /* hover плитки условий → вспышка своей галочки на листе (если лист сейчас на экране) */
-  if (HOVER) document.querySelectorAll('#terms .term').forEach((el, i) => el.addEventListener('pointerenter', () => { tick.u = TICK_U[i] !== undefined ? TICK_U[i] : -9; tick.k = 1; dirty = true; }));
 
   function relayout() { measureLay(); vw = LAY.vw; H = LAY.H; setSize(); jMeasure(); dirty = true; if (RM) rmFrame(); }
   let rzP = false;
